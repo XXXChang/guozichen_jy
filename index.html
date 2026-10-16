@@ -8,7 +8,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 50%, #e8eaf6 100%);
+            background: linear-gradient(135deg, #ffeef8 0%, #ffe0ec 30%, #ffd6e7 60%, #e3f2fd 100%);
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -29,13 +29,19 @@
             padding: 20px;
         }
 
-        /* 头像 */
-        .avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 3px solid rgba(100, 181, 246, 0.6);
+        /* 双头像组合 */
+        .avatar-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin-bottom: 30px;
+            position: relative;
+        }
+        .avatar {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.9);
             background: linear-gradient(135deg, #64b5f6, #42a5f5, #1e88e5);
             display: flex;
             justify-content: center;
@@ -45,10 +51,39 @@
             box-shadow: 0 8px 32px rgba(100, 181, 246, 0.4), 0 0 60px rgba(100, 181, 246, 0.2);
             cursor: pointer;
             transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+        }
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
         }
         .avatar:hover {
             transform: scale(1.1);
             box-shadow: 0 12px 40px rgba(100, 181, 246, 0.5), 0 0 80px rgba(100, 181, 246, 0.3);
+        }
+        .avatar-left {
+            z-index: 2;
+        }
+        .avatar-right {
+            margin-left: -25px;
+            z-index: 1;
+        }
+        .heart-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 32px;
+            z-index: 3;
+            filter: drop-shadow(0 2px 4px rgba(255, 100, 130, 0.4));
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+        @keyframes heartbeat {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.15); }
         }
 
         /* 标题 */
@@ -58,6 +93,18 @@
             margin-bottom: 10px;
             letter-spacing: 4px;
             text-shadow: 2px 2px 8px rgba(21, 101, 192, 0.15);
+            background: linear-gradient(135deg, #e91e63, #ff6b9d, #c2185b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* 恋爱主题装饰 */
+        .love-decor {
+            font-size: 24px;
+            margin: 8px 0 20px;
+            letter-spacing: 12px;
+            opacity: 0.7;
         }
 
         /* 打字机效果 */
@@ -75,24 +122,24 @@
             top: 30px;
             right: 30px;
             z-index: 10;
-            background: rgba(255, 255, 255, 0.75);
+            background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-radius: 18px;
             padding: 18px 28px;
-            box-shadow: 0 8px 32px rgba(100, 181, 246, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
-            border: 1px solid rgba(100, 181, 246, 0.3);
+            box-shadow: 0 8px 32px rgba(233, 30, 99, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            border: 1px solid rgba(255, 182, 193, 0.5);
             text-align: center;
             min-width: 180px;
             transition: all 0.3s ease;
         }
         .memory-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(100, 181, 246, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+            box-shadow: 0 12px 40px rgba(233, 30, 99, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.6) inset;
         }
         .memory-label {
             font-size: 11px;
-            color: #64b5f6;
+            color: #e91e63;
             letter-spacing: 2px;
             text-transform: uppercase;
             margin-bottom: 4px;
@@ -100,13 +147,13 @@
         }
         .memory-date {
             font-size: 12px;
-            color: #90a4ae;
+            color: #ff8fb1;
             margin-bottom: 8px;
         }
         .memory-count {
             font-size: 42px;
             font-weight: 700;
-            background: linear-gradient(135deg, #1976d2, #64b5f6, #42a5f5);
+            background: linear-gradient(135deg, #e91e63, #ff6b9d, #c2185b);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -115,7 +162,7 @@
         }
         .memory-unit {
             font-size: 13px;
-            color: #90a4ae;
+            color: #ff8fb1;
             margin-top: 2px;
             letter-spacing: 1px;
         }
@@ -170,15 +217,17 @@
     </div>
 
     <div class="content">
-        <div class="avatar" onclick="this.style.transform='scale(0.9)'">👋</div>
-        <h1>guozichen_jy</h1>
-        <div class="subtitle" id="subtitle"></div>
-        <div class="links">
-            <a href="https://github.com" class="link-card">GitHub</a>
-            <a href="#" class="link-card">博客</a>
-            <a href="#" class="link-card">项目</a>
-            <a href="#" class="link-card">关于</a>
+        <div class="avatar-group">
+            <div class="avatar avatar-left" onclick="this.style.transform='scale(0.9)'">
+                <img src="assets/gzc_jy_Img/HeadIcon1.jpg" alt="头像1">
+            </div>
+            <div class="heart-icon">💕</div>
+            <div class="avatar avatar-right" onclick="this.style.transform='scale(0.9)'">
+                <img src="assets/gzc_jy_Img/HeadIcon2.jpg" alt="头像2">
+            </div>
         </div>
+        <h1>GZC_JY</h1>
+        <div class="subtitle" id="subtitle"></div>
     </div>
 
     <div class="footer">guozichen_jy · 2026</div>
@@ -248,44 +297,49 @@
         const daysElement = document.getElementById('daysCount');
         animateNumber(daysElement, daysSince);
 
-        // 粒子背景
+        // 粒子背景 - 飘落爱心
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        const particles = Array.from({ length: 80 }, () => ({
+        const particles = Array.from({ length: 40 }, () => ({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
-            r: Math.random() * 2 + 1,
-            vx: (Math.random() - 0.5) * 0.5,
-            vy: (Math.random() - 0.5) * 0.5
+            r: Math.random() * 3 + 2,
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: Math.random() * 0.5 + 0.2,
+            alpha: Math.random() * 0.5 + 0.3,
+            color: ['#ff6b9d', '#ff8fb1', '#ffb3c6', '#e91e63'][Math.floor(Math.random() * 4)]
         }));
 
+        function drawHeart(x, y, size, color, alpha) {
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            const s = size;
+            ctx.moveTo(x, y + s * 0.3);
+            ctx.bezierCurveTo(x, y, x - s, y, x - s, y + s * 0.5);
+            ctx.bezierCurveTo(x - s, y + s, x, y + s * 1.3, x, y + s * 1.5);
+            ctx.bezierCurveTo(x, y + s * 1.3, x + s, y + s, x + s, y + s * 0.5);
+            ctx.bezierCurveTo(x + s, y, x, y, x, y + s * 0.3);
+            ctx.fill();
+            ctx.restore();
+        }
+
         function draw() {
-            ctx.fillStyle = 'rgba(227, 242, 253, 0.2)';
+            ctx.fillStyle = 'rgba(255, 238, 248, 0.15)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             particles.forEach(p => {
                 p.x += p.vx; p.y += p.vy;
-                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(144, 202, 249, 0.7)';
-                ctx.fill();
-            });
-            // 连线
-            particles.forEach((a, i) => {
-                particles.slice(i + 1).forEach(b => {
-                    const d = Math.hypot(a.x - b.x, a.y - b.y);
-                    if (d < 150) {
-                        ctx.beginPath();
-                        ctx.moveTo(a.x, a.y);
-                        ctx.lineTo(b.x, b.y);
-                        ctx.strokeStyle = `rgba(179, 229, 252, ${0.3 - d / 500})`;
-                        ctx.stroke();
-                    }
-                });
+                if (p.x < 0) p.x = canvas.width;
+                if (p.x > canvas.width) p.x = 0;
+                if (p.y > canvas.height) {
+                    p.y = -10;
+                    p.x = Math.random() * canvas.width;
+                }
+                drawHeart(p.x, p.y, p.r, p.color, p.alpha);
             });
             requestAnimationFrame(draw);
         }
