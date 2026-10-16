@@ -1085,14 +1085,14 @@
         };
 
         function spawn(x, y) {
-            // 一次点击爆出 8~14 颗爱心
-            const count = 8 + Math.floor(Math.random() * 7);
+            // 一次点击爆出 3~5 颗爱心（克制一点）
+            const count = 3 + Math.floor(Math.random() * 3);
             for (let i = 0; i < count; i++) {
                 const a = (Math.PI * 2 * i) / count + Math.random() * 0.5;
-                const r = Math.random() * 10;
+                const r = Math.random() * 8;
                 const p = new Particle(x + Math.cos(a) * r, y + Math.sin(a) * r);
-                p.vx = Math.cos(a) * (1.5 + Math.random() * 2);
-                p.vy = Math.sin(a) * (1.5 + Math.random() * 2) - 2;
+                p.vx = Math.cos(a) * (1.2 + Math.random() * 1.5);
+                p.vy = Math.sin(a) * (1.2 + Math.random() * 1.5) - 1.5;
                 particles.push(p);
             }
         }

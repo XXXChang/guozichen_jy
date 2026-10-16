@@ -5,10 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>guozichen_jy</title>
     <style>
+        :root {
+            /* 淡紫色主题（替代原蓝色） */
+            --bg-1: #faf5ff;   /* 最浅 */
+            --bg-2: #f3e8ff;
+            --bg-3: #e9d5ff;
+            --bg-4: #ddd6fe;   /* 最深 */
+            --c-50:  #f5f3ff;
+            --c-100: #ede9fe;
+            --c-300: #c4b5fd;
+            --c-400: #a78bfa;
+            --c-500: #8b5cf6;
+            --c-600: #7c3aed;
+            --c-700: #6d28d9;
+            --c-800: #5b21b6;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: linear-gradient(135deg, #f0f9ff 0%, #e3f2fd 30%, #d6e9f8 60%, #c5dff5 100%);
+            background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 30%, var(--bg-3) 60%, var(--bg-4) 100%);
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -43,13 +58,13 @@
             height: 110px;
             border-radius: 50%;
             border: 4px solid rgba(255, 255, 255, 0.9);
-            background: linear-gradient(135deg, #64b5f6, #42a5f5, #1e88e5);
+            background: linear-gradient(135deg, var(--c-400), var(--c-500), var(--c-700));
             display: flex;
             justify-content: center;
             align-items: center;
             font-size: 48px;
             color: white;
-            box-shadow: 0 8px 32px rgba(100, 181, 246, 0.4), 0 0 60px rgba(100, 181, 246, 0.2);
+            box-shadow: 0 8px 32px rgba(139, 92, 246, 0.4), 0 0 60px rgba(139, 92, 246, 0.2);
             cursor: pointer;
             transition: all 0.3s ease;
             overflow: hidden;
@@ -63,7 +78,7 @@
         }
         .avatar:hover {
             transform: scale(1.1);
-            box-shadow: 0 12px 40px rgba(100, 181, 246, 0.5), 0 0 80px rgba(100, 181, 246, 0.3);
+            box-shadow: 0 12px 40px rgba(139, 92, 246, 0.5), 0 0 80px rgba(139, 92, 246, 0.3);
         }
         .avatar-left {
             z-index: 2;
@@ -90,11 +105,11 @@
         /* 标题 */
         h1 {
             font-size: 48px;
-            color: #1565c0;
+            color: var(--c-800);
             margin-bottom: 10px;
             letter-spacing: 4px;
-            text-shadow: 2px 2px 8px rgba(21, 101, 192, 0.15);
-            background: linear-gradient(135deg, #1976d2, #42a5f5, #64b5f6);
+            text-shadow: 2px 2px 8px rgba(124, 58, 237, 0.15);
+            background: linear-gradient(135deg, var(--c-600), var(--c-500), var(--c-400));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -111,7 +126,7 @@
         /* 打字机效果 */
         .subtitle {
             font-size: 18px;
-            color: #1976d2;
+            color: var(--c-600);
             margin-bottom: 20px;
             min-height: 24px;
             font-weight: 500;
@@ -133,19 +148,19 @@
             -webkit-backdrop-filter: blur(20px);
             border-radius: 18px;
             padding: 18px 28px;
-            box-shadow: 0 8px 32px rgba(100, 181, 246, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
-            border: 1px solid rgba(100, 181, 246, 0.4);
+            box-shadow: 0 8px 32px rgba(139, 92, 246, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            border: 1px solid rgba(139, 92, 246, 0.4);
             text-align: center;
             min-width: 180px;
             transition: all 0.3s ease;
         }
         .memory-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(100, 181, 246, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+            box-shadow: 0 12px 40px rgba(139, 92, 246, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.6) inset;
         }
         .memory-label {
             font-size: 11px;
-            color: #1976d2;
+            color: var(--c-600);
             letter-spacing: 2px;
             text-transform: uppercase;
             margin-bottom: 4px;
@@ -153,13 +168,13 @@
         }
         .memory-date {
             font-size: 12px;
-            color: #64b5f6;
+            color: var(--c-400);
             margin-bottom: 8px;
         }
         .memory-count {
             font-size: 42px;
             font-weight: 700;
-            background: linear-gradient(135deg, #1565c0, #1976d2, #42a5f5);
+            background: linear-gradient(135deg, var(--c-800), var(--c-600), var(--c-500));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -168,7 +183,7 @@
         }
         .memory-unit {
             font-size: 13px;
-            color: #64b5f6;
+            color: var(--c-400);
             margin-top: 2px;
             letter-spacing: 1px;
         }
@@ -186,20 +201,20 @@
             padding: 14px 32px;
             border-radius: 50px;
             text-decoration: none;
-            color: #1565c0;
+            color: var(--c-700);
             font-size: 16px;
             font-weight: 500;
             transition: all 0.3s ease;
-            border: 1px solid rgba(100, 181, 246, 0.4);
+            border: 1px solid rgba(139, 92, 246, 0.4);
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(10px);
-            box-shadow: 0 4px 15px rgba(100, 181, 246, 0.15);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.15);
         }
         .link-card:hover {
             transform: translateY(-4px);
-            border-color: #1976d2;
-            box-shadow: 0 8px 25px rgba(100, 181, 246, 0.3);
-            color: #0d47a1;
+            border-color: var(--c-600);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+            color: var(--c-800);
             background: rgba(255, 255, 255, 0.9);
         }
 
@@ -207,7 +222,7 @@
         .footer {
             position: fixed;
             bottom: 20px;
-            color: rgba(100, 181, 246, 0.5);
+            color: rgba(139, 92, 246, 0.5);
             font-size: 13px;
         }
     </style>
@@ -232,11 +247,10 @@
                 <img src="assets/gzc_jy_Img/HeadIcon2.jpg" alt="头像2">
             </div>
         </div>
-        <h1>GZC_JY</h1>
+        <h1>JY_GZC</h1>
         <div class="subtitle" id="subtitle"></div>
     </div>
 
-    <div class="footer">guozichen_jy · 2026</div>
 
     <script src="assets/js/utils.js"></script>
     <script>
@@ -323,7 +337,7 @@
             vx: (Math.random() - 0.5) * 0.4,
             vy: Math.random() * 0.6 + 0.3,
             alpha: Math.random() * 0.5 + 0.3,
-            color: ['#1976d2', '#2196f3', '#42a5f5', '#64b5f6', '#90caf9'][Math.floor(Math.random() * 5)]
+            color: ['#7c3aed', '#8b5cf6', '#a78bfa', '#c4b5fd', '#ddd6fe'][Math.floor(Math.random() * 5)]
         }));
 
         function drawHeart(x, y, size, color, alpha) {
@@ -342,7 +356,7 @@
         }
 
         function draw() {
-            ctx.fillStyle = 'rgba(240, 249, 255, 0.15)';
+            ctx.fillStyle = 'rgba(250, 245, 255, 0.15)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             particles.forEach(p => {
                 p.x += p.vx; p.y += p.vy;
