@@ -55,8 +55,18 @@
             mix-blend-mode: overlay;
         }
 
-        /* 背景粒子 */
-        canvas { position: fixed; top: 0; left: 0; z-index: 0; }
+        /* 背景爱心粒子画布 */
+        #canvas { position: fixed; top: 0; left: 0; z-index: 0; }
+
+        /* 全局点击爱心特效画布（必须在背景粒子之上，pointer-events 不拦截点击） */
+        #heartCanvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
 
         /* 主内容 */
         .content {
@@ -315,6 +325,7 @@
 </head>
 <body>
     <canvas id="canvas"></canvas>
+    <canvas id="heartCanvas"></canvas>
 
     <a href="pages/days.html" class="memory-card">
         <div class="memory-date">2026.09.12</div>
@@ -462,6 +473,103 @@
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         });
+    </script>
+
+    <!-- 全局点击爱心特效（紫色系，与主界面主题一致） -->
+    <script>
+    (function () {
+        const canvas = document.getElementById('heartCanvas');
+        const ctx = canvas.getContext('2d');
+        let dpr = window.devicePixelRatio || 1;
+        let particles = [];
+
+        function resize() {
+            dpr = window.devicePixelRatio || 1;
+            canvas.width  = window.innerWidth  * dpr;
+            canvas.height = window.innerHeight * dpr;
+            canvas.style.width  = window.innerWidth + 'px';
+            canvas.style.height = window.innerHeight + 'px';
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        // 爱心形状路径（以中心为原点）
+        function heartShape(size) {
+            ctx.beginPath();
+            const s = size;
+            ctx.moveTo(0, s * 0.3);
+            ctx.bezierCurveTo(0, -s * 0.2,  -s * 0.6, -s * 0.2,  -s * 0.5, s * 0.2);
+            ctx.bezierCurveTo(-s * 0.4, s * 0.6, 0, s * 0.8, 0, s);
+            ctx.bezierCurveTo(0, s * 0.8,  s * 0.4, s * 0.6,  s * 0.5, s * 0.2);
+            ctx.bezierCurveTo(s * 0.6, -s * 0.2, 0, -s * 0.2, 0, s * 0.3);
+            ctx.closePath();
+        }
+
+        // 粒子：爱心向上飘 + 缩放 + 渐隐
+        function Particle(x, y) {
+            this.x = x;
+            this.y = y;
+            this.size = 14 + Math.random() * 14;     // 初始大小
+            this.vx = (Math.random() - 0.5) * 3;     // 横向轻微漂移
+            this.vy = -(2 + Math.random() * 2.5);    // 向上飘
+            this.life = 1;                            // 1 → 0
+            this.decay = 0.012 + Math.random() * 0.012;
+            this.angle = (Math.random() - 0.5) * 0.6;
+            this.spin = (Math.random() - 0.5) * 0.05;
+            // 紫色系：与主界面 --c-400~--c-800 主题一致
+            const purples = ['#c4b5fd', '#a78bfa', '#8b5cf6', '#7c3aed', '#6d28d9'];
+            this.color = purples[Math.floor(Math.random() * purples.length)];
+        }
+
+        Particle.prototype.update = function () {
+            this.x += this.vx;
+            this.y += this.vy;
+            this.vy += 0.05;        // 轻微重力（向上飞慢）
+            this.vx *= 0.99;
+            this.angle += this.spin;
+            this.life -= this.decay;
+        };
+
+        Particle.prototype.draw = function () {
+            ctx.save();
+            ctx.globalAlpha = Math.max(this.life, 0);
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.angle);
+            ctx.fillStyle = this.color;
+            heartShape(this.size);
+            ctx.fill();
+            // 描边增加立体感
+            ctx.lineWidth = 1.2;
+            ctx.strokeStyle = 'rgba(109, 40, 217, 0.6)';
+            ctx.stroke();
+            ctx.restore();
+        };
+
+        function spawn(x, y) {
+            // 一次点击爆出 3~5 颗爱心
+            const count = 3 + Math.floor(Math.random() * 3);
+            for (let i = 0; i < count; i++) {
+                const a = (Math.PI * 2 * i) / count + Math.random() * 0.5;
+                const r = Math.random() * 8;
+                const p = new Particle(x + Math.cos(a) * r, y + Math.sin(a) * r);
+                p.vx = Math.cos(a) * (1.2 + Math.random() * 1.5);
+                p.vy = Math.sin(a) * (1.2 + Math.random() * 1.5) - 1.5;
+                particles.push(p);
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            particles = particles.filter(p => p.life > 0);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // 全局点击触发（不区分按钮/链接）
+        window.addEventListener('click', e => spawn(e.clientX, e.clientY));
+    })();
     </script>
 </body>
 </html>
