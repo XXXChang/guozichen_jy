@@ -26,7 +26,8 @@
             align-items: center;
             min-height: 100vh;
             text-align: center;
-            padding: 20px;
+            padding: 80px 20px;
+            overflow: hidden; /* 防止任何子元素溢出 */
         }
 
         /* 双头像组合 */
@@ -237,6 +238,7 @@
 
     <div class="footer">guozichen_jy · 2026</div>
 
+    <script src="assets/js/utils.js"></script>
     <script>
         // 打字机
         const texts = ["Welcome to my page", "欢迎来到我的主页", "Let's build something great"];
@@ -245,33 +247,39 @@
 
         function type() {
             const current = texts[textIndex];
-            el.textContent = isDeleting
-                ? current.substring(0, charIndex--)
-                : current.substring(0, charIndex++);
-            let delay = isDeleting ? 50 : 100;
-            if (!isDeleting && charIndex === current.length) {
-                delay = 2000; isDeleting = true;
-            } else if (isDeleting && charIndex === 0) {
-                isDeleting = false; textIndex = (textIndex + 1) % texts.length;
-                delay = 400;
+            const len = current.length;
+
+            if (isDeleting) {
+                // 删字：先递减，再渲染。删完时切到下一句
+                charIndex--;
+                el.textContent = current.substring(0, charIndex);
+                if (charIndex <= 0) {
+                    // 删完了：切下一句、稍作停顿
+                    isDeleting = false;
+                    textIndex = (textIndex + 1) % texts.length;
+                    charIndex = 0;
+                    setTimeout(type, 400);
+                    return;
+                }
+                setTimeout(type, 50);
+            } else {
+                // 打字：先递增，再渲染。打完时停留后开始删字
+                charIndex++;
+                el.textContent = current.substring(0, charIndex);
+                if (charIndex >= len) {
+                    // 打完了：停留 2s 后开始删字
+                    setTimeout(() => {
+                        isDeleting = true;
+                        type();
+                    }, 2000);
+                    return;
+                }
+                setTimeout(type, 100);
             }
-            setTimeout(type, delay);
         }
         type();
 
-        // 计算纪念日天数
-        function calculateDaysSince(dateStr) {
-            const now = new Date();
-            const past = new Date(dateStr);
-            
-            now.setHours(0, 0, 0, 0);
-            past.setHours(0, 0, 0, 0);
-            
-            const diffTime = now - past;
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
-            
-            return diffDays;
-        }
+        // 纪念日天数计算已抽离到 assets/js/utils.js
 
         // 格式化数字（带动画效果）
         function animateNumber(element, target) {

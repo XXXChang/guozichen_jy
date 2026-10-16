@@ -1,6 +1,28 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+    <!-- ============================================
+         📅 事件数据（统一数据源：直接打开本文件或 HTTP 访问都使用此副本）
+         ✏️ 添加/修改事件：编辑下方 id="eventsData" 块里的内容
+         ℹ️  assets/data/events.json 已停用（保留为只读备份，不再被脚本读取）
+         ============================================ -->
+    <script type="application/json" id="eventsData">
+{
+    "events": [
+        { "date": "2025-11-08",  "name": "初次相遇",                "tag": "相识", "type": "anniversary" },
+
+        { "date": "2026-09-12",  "name": "在一起啦",                "tag": "相爱", "type": "anniversary" },
+
+        { "startDate": "2025-12-20", "endDate": "2025-12-21", "name": "南京",                      "tag": "在一起", "type": "together" },
+        { "startDate": "2026-07-11", "endDate": "2026-07-21", "name": "武汉-长沙-邵阳-武汉",        "tag": "在一起", "type": "together" },
+        { "startDate": "2026-08-13", "endDate": "2026-08-16", "name": "武汉-南昌-武汉",            "tag": "在一起", "type": "together" },
+        { "startDate": "2026-09-05", "endDate": "2026-09-06", "name": "广州",                      "tag": "在一起", "type": "together" },
+        { "startDate": "2026-09-12", "endDate": "2026-09-14", "name": "武汉",                      "tag": "在一起", "type": "together" },
+        { "startDate": "2026-10-04", "endDate": "2026-10-11", "name": "武汉",                      "tag": "在一起", "type": "together" }
+    ]
+}
+    </script>
+
     <meta charset="UTF-8">
     <title>纪念日详情</title>
     <style>
@@ -10,29 +32,54 @@
             background: linear-gradient(135deg, #f0f9ff 0%, #e3f2fd 30%, #d6e9f8 60%, #c5dff5 100%);
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            padding: 40px 20px;
+            padding: 24px 20px 60px;
             box-sizing: border-box;
         }
-        .container {
+
+        /* 全局点击爱心特效画布 */
+        #heartCanvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;   /* 不拦截鼠标事件 */
+            z-index: 9999;
+        }
+
+        /* 主布局：左右高度对齐（日历多高，右侧就多高） */
+        .main-layout {
             display: flex;
             gap: 32px;
-            flex-wrap: wrap;
-            justify-content: center;
+            align-items: stretch;          /* 关键：拉伸等高 */
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        /* 右侧：两卡片等分撑满，高度与左边日历一致 */
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            flex: 1;
+            min-height: 0;                 /* 允许 flex 子项压缩 */
         }
         .card {
             background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-radius: 24px;
-            padding: 40px 48px;
+            padding: 24px 28px;
             box-shadow: 0 8px 32px rgba(100, 181, 246, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
             border: 1px solid rgba(100, 181, 246, 0.4);
-            min-width: 320px;
             text-align: center;
             transition: all 0.3s ease;
+            flex: 1 1 0;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         .card:hover {
             transform: translateY(-4px);
@@ -43,15 +90,15 @@
             color: #1976d2;
             letter-spacing: 4px;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
         .card-date {
             font-size: 13px;
             color: #64b5f6;
-            margin-bottom: 24px;
+            margin-bottom: 8px;
         }
         .main-count {
-            font-size: 88px;
+            font-size: 64px;
             font-weight: 700;
             background: linear-gradient(135deg, #1565c0, #1976d2, #42a5f5);
             -webkit-background-clip: text;
@@ -70,22 +117,19 @@
             width: 60%;
             height: 1px;
             background: linear-gradient(to right, transparent, rgba(100, 181, 246, 0.4), transparent);
-            margin: 28px auto;
+            margin: 16px auto;
+            flex-shrink: 0;
+            align-self: center;
         }
-        .next-section {
-            text-align: left;
-        }
+        .next-section { text-align: left; margin-top: 4px; flex-shrink: 0; }
         .next-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 10px 0;
+            padding: 8px 0;
             font-size: 14px;
         }
-        .next-label {
-            color: #1976d2;
-            font-weight: 500;
-        }
+        .next-label { color: #1976d2; font-weight: 500; }
         .next-value {
             background: linear-gradient(135deg, #1565c0, #1976d2, #42a5f5);
             -webkit-background-clip: text;
@@ -94,11 +138,403 @@
             font-weight: 700;
             font-size: 18px;
         }
-        .next-date {
-            color: #90caf9;
-            font-size: 12px;
-            margin-left: 8px;
+        .next-date { color: #90caf9; font-size: 12px; margin-left: 8px; }
+
+        /* 日历 */
+        .calendar {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(100, 181, 246, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            border: 1px solid rgba(100, 181, 246, 0.4);
+            width: 500px;
+            flex-shrink: 0;
+            box-sizing: border-box;
         }
+        .cal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+        .cal-title {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1565c0, #1976d2, #42a5f5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .cal-nav {
+            display: flex;
+            gap: 8px;
+        }
+        .cal-nav button {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid rgba(100, 181, 246, 0.4);
+            background: rgba(255, 255, 255, 0.6);
+            color: #1976d2;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .cal-nav button:hover:not(:disabled) {
+            background: #1976d2;
+            color: white;
+            transform: scale(1.05);
+        }
+        .cal-nav button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            background: #cfd8dc;
+        }
+
+        /* 早于最小月份的空状态 */
+        .cal-empty-state {
+            grid-column: 1 / -1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, rgba(187, 222, 251, 0.3), rgba(144, 202, 249, 0.3));
+            border-radius: 16px;
+            color: #1976d2;
+        }
+        .cal-empty-emoji {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+        .cal-empty-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1565c0;
+            margin-bottom: 6px;
+        }
+        .cal-empty-sub {
+            font-size: 13px;
+            color: #64b5f6;
+        }
+        .cal-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+        .cal-weekday {
+            text-align: center;
+            font-size: 12px;
+            color: #64b5f6;
+            font-weight: 600;
+            letter-spacing: 1px;
+            padding: 6px 0;
+        }
+        .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-template-rows: repeat(6, 1fr);
+            gap: 6px;
+        }
+        .cal-day {
+            aspect-ratio: 1 / 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1;
+            color: #455a64;
+            background: rgba(255, 255, 255, 0.4);
+            cursor: default;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        .cal-day.empty {
+            background: transparent;
+        }
+        /* 上/下月日期：灰置，不参与事件高亮 */
+        .cal-day.other-month {
+            background: rgba(255, 255, 255, 0.15);
+            color: #b0bec5;
+            opacity: 0.55;
+        }
+        .cal-day.other-month:hover {
+            transform: none;
+        }
+        .cal-day.today {
+            background: linear-gradient(135deg, #1976d2, #42a5f5);
+            color: white;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.4);
+        }
+
+        /* 5 种事件类型：仅用于格子上小圆点配色；格子背景统一为 has-event 高亮 */
+        .cal-day.type-anniversary .dot { background: #e91e63; }
+        .cal-day.type-festival    .dot { background: #ff9800; }
+        .cal-day.type-together    .dot { background: #1976d2; }
+        .cal-day.type-special     .dot { background: #ff6f00; }
+        .cal-day.type-birthday    .dot { background: #9c27b0; }
+
+        /* 有事件的格子：统一柔和蓝色高亮（不再按类型区分背景） */
+        .cal-day.has-event {
+            background: linear-gradient(135deg, rgba(187, 222, 251, 0.55), rgba(144, 202, 249, 0.55));
+            color: #0d47a1;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .cal-day.has-event:hover {
+            box-shadow: 0 4px 12px rgba(100, 181, 246, 0.4);
+        }
+        .cal-day.has-event.range-middle {
+            background: linear-gradient(135deg, rgba(187, 222, 251, 0.4), rgba(144, 202, 249, 0.4));
+        }
+        .cal-day .dots {
+            display: flex;
+            flex-direction: row;
+            gap: 3px;
+            margin-top: 4px;
+            justify-content: center;
+        }
+        .cal-day .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #1976d2;
+        }
+        .cal-day .dot.type-anniversary { background: #e91e63; }
+        .cal-day .dot.type-festival    { background: #ff9800; }
+        .cal-day .dot.type-together    { background: #1976d2; }
+        .cal-day .dot.type-special       { background: #ff6f00; }
+        .cal-day .dot.type-birthday    { background: #9c27b0; }
+        .cal-day.today .dot { background: white; }
+
+        /* 没有事件时也要保留高度（占位） */
+        .cal-day .dots.placeholder { visibility: hidden; }
+        /* 事件计数总览（默认折叠：汇总行 + 展开按钮） */
+        .events-summary {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+            margin-top: 4px;
+        }
+        .events-summary .sum-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .events-summary .sum-dot.type-anniversary { background: #e91e63; }
+        .events-summary .sum-dot.type-festival    { background: #ff9800; }
+        .events-summary .sum-dot.type-together    { background: #1976d2; }
+        .events-summary .sum-dot.type-special     { background: #ff6f00; }
+        .events-summary .sum-dot.type-birthday    { background: #9c27b0; }
+        .events-summary .sum-count {
+            font-size: 13px;
+            color: #455a64;
+            margin-left: 6px;
+        }
+        .events-summary .sum-count b {
+            color: #1976d2;
+            font-size: 16px;
+            margin: 0 2px;
+        }
+        .events-toggle {
+            margin-left: auto;
+            background: rgba(187, 222, 251, 0.35);
+            border: 1px solid rgba(25, 118, 210, 0.25);
+            color: #1976d2;
+            font-size: 12px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: background 0.15s;
+        }
+        .events-toggle:hover {
+            background: rgba(187, 222, 251, 0.6);
+        }
+        .events-toggle .toggle-icon {
+            font-size: 10px;
+            line-height: 1;
+        }
+        .events-toggle[aria-expanded="true"] .toggle-icon {
+            transform: rotate(180deg);
+            display: inline-block;
+        }
+        .events-empty {
+            color: #90caf9;
+            font-size: 13px;
+        }
+        /* ============== 事件详情 Modal ============== */
+        .events-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.18s ease;
+        }
+        .events-modal.show { opacity: 1; }
+        .events-modal-mask {
+            position: absolute;
+            inset: 0;
+            background: rgba(13, 71, 161, 0.32);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+        .events-modal-card {
+            position: relative;
+            width: min(520px, calc(100vw - 32px));
+            max-height: calc(100vh - 64px);
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(13, 71, 161, 0.25);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: scale(0.96) translateY(8px);
+            transition: transform 0.18s ease;
+        }
+        .events-modal.show .events-modal-card {
+            transform: scale(1) translateY(0);
+        }
+        .events-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(25, 118, 210, 0.1);
+            background: linear-gradient(135deg, #e3f2fd, #ffffff);
+        }
+        .events-modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0d47a1;
+        }
+        .events-modal-close {
+            background: transparent;
+            border: none;
+            color: #607d8b;
+            font-size: 18px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s, color 0.15s;
+        }
+        .events-modal-close:hover {
+            background: rgba(25, 118, 210, 0.1);
+            color: #0d47a1;
+        }
+        .events-modal-body {
+            padding: 12px 16px 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .modal-event-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            background: rgba(187, 222, 251, 0.18);
+            font-size: 13px;
+            color: #37474f;
+            transition: background 0.12s;
+        }
+        .modal-event-row:hover {
+            background: rgba(187, 222, 251, 0.4);
+        }
+        .modal-event-row .sum-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .modal-event-row .sum-dot.type-anniversary { background: #e91e63; }
+        .modal-event-row .sum-dot.type-festival    { background: #ff9800; }
+        .modal-event-row .sum-dot.type-together    { background: #1976d2; }
+        .modal-event-row .sum-dot.type-special     { background: #ff6f00; }
+        .modal-event-row .sum-dot.type-birthday    { background: #9c27b0; }
+        .modal-event-row .event-date {
+            color: #1976d2;
+            font-weight: 500;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+        .modal-event-row .event-tag {
+            background: rgba(25, 118, 210, 0.12);
+            color: #1976d2;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+        .modal-event-row .event-name {
+            color: #263238;
+            flex: 1;
+            font-weight: 500;
+        }
+
+        /* 事件列表 */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 16px;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            font-size: 12px;
+            color: #455a64;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .legend-dot.type-anniversary { background: linear-gradient(135deg, #ec407a, #f06292); }
+        .legend-dot.type-festival    { background: linear-gradient(135deg, #fb8c00, #ffa726); }
+        .legend-dot.type-together    { background: linear-gradient(135deg, #1976d2, #42a5f5); }
+        .legend-dot.type-special       { background: linear-gradient(135deg, #ffb300, #ff6f00); }
+        .legend-dot.type-birthday    { background: linear-gradient(135deg, #8e24aa, #ba68c8); }
+
+        .events {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(100, 181, 246, 0.2);
+        }
+        .events-title {
+            font-size: 14px;
+            color: #1976d2;
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+
         .back {
             position: fixed;
             top: 24px;
@@ -121,89 +557,563 @@
 </head>
 <body>
     <a href="../index.html" class="back">← 返回</a>
-    <div class="container">
-        <div class="card">
-            <div class="card-title">在一起</div>
-            <div class="card-date">2026.09.12</div>
-            <div class="main-count" id="togetherCount">--</div>
-            <div class="main-unit">天</div>
-            <div class="divider"></div>
-            <div class="next-section">
-                <div class="next-item">
-                    <span class="next-label">距离 100 天</span>
-                    <span><span class="next-value" id="togetherHundred">--</span><span class="next-date">天</span></span>
-                </div>
-                <div class="next-item">
-                    <span class="next-label">距离一周年</span>
-                    <span><span class="next-value" id="togetherYear">--</span><span class="next-date">天</span></span>
+
+    <!-- 全局点击爱心特效画布 -->
+    <canvas id="heartCanvas"></canvas>
+
+    <div class="main-layout">
+        <!-- 日历靠左 -->
+        <div class="calendar">
+            <div class="cal-header">
+                <div class="cal-title" id="calTitle"></div>
+                <div class="cal-nav">
+                    <button id="prevMonth">‹</button>
+                    <button id="nextMonth">›</button>
                 </div>
             </div>
+            <div class="cal-weekdays">
+                <div class="cal-weekday">日</div>
+                <div class="cal-weekday">一</div>
+                <div class="cal-weekday">二</div>
+                <div class="cal-weekday">三</div>
+                <div class="cal-weekday">四</div>
+                <div class="cal-weekday">五</div>
+                <div class="cal-weekday">六</div>
+            </div>
+            <div class="cal-grid" id="calGrid"></div>
+
+            <div class="legend">
+                <div class="legend-item"><span class="legend-dot type-anniversary"></span>纪念日</div>
+                <div class="legend-item"><span class="legend-dot type-festival"></span>节日</div>
+                <div class="legend-item"><span class="legend-dot type-together"></span>在一起</div>
+                <div class="legend-item"><span class="legend-dot type-birthday"></span>生日</div>
+                <div class="legend-item"><span class="legend-dot type-special"></span>特殊事件</div>
+            </div>
+
+            <div class="events">
+                <div class="events-title">本月事件</div>
+                <div id="eventList"></div>
+            </div>
         </div>
-        <div class="card">
-            <div class="card-title">相识</div>
-            <div class="card-date">2025.11.08</div>
-            <div class="main-count" id="meetCount">--</div>
-            <div class="main-unit">天</div>
-            <div class="divider"></div>
-            <div class="next-section">
-                <div class="next-item">
-                    <span class="next-label">距离 400 天</span>
-                    <span><span class="next-value" id="meetHundred">--</span><span class="next-date">天</span></span>
+
+        <!-- 右侧：两卡片上下排列 -->
+        <div class="container">
+            <div class="card">
+                <div class="card-title">在一起</div>
+                <div class="card-date">2026.09.12</div>
+                <div class="main-count" id="togetherCount">--</div>
+                <div class="main-unit">天</div>
+                <div class="divider"></div>
+                <div class="next-section">
+                    <div class="next-item">
+                        <span class="next-label">距离 <span id="togetherHundredLabel">100</span> 天</span>
+                        <span><span class="next-value" id="togetherHundred">--</span><span class="next-date">天</span></span>
+                    </div>
+                    <div class="next-item">
+                        <span class="next-label">距离一周年</span>
+                        <span><span class="next-value" id="togetherYear">--</span><span class="next-date">天</span></span>
+                    </div>
                 </div>
-                <div class="next-item">
-                    <span class="next-label">距离 2026.11.08</span>
-                    <span><span class="next-value" id="meetYear">--</span><span class="next-date">天</span></span>
+            </div>
+            <div class="card">
+                <div class="card-title">相识</div>
+                <div class="card-date">2025.11.08</div>
+                <div class="main-count" id="meetCount">--</div>
+                <div class="main-unit">天</div>
+                <div class="divider"></div>
+                <div class="next-section">
+                    <div class="next-item">
+                        <span class="next-label">距离 <span id="meetHundredLabel">400</span> 天</span>
+                        <span><span class="next-value" id="meetHundred">--</span><span class="next-date">天</span></span>
+                    </div>
+                    <div class="next-item">
+                        <span class="next-label">距离一周年</span>
+                        <span><span class="next-value" id="meetYear">--</span><span class="next-date">天</span></span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <script>
-        function calculateDaysSince(dateStr) {
-            const start = new Date(dateStr);
-            const today = new Date();
-            start.setHours(0, 0, 0, 0);
-            today.setHours(0, 0, 0, 0);
-            const diff = today - start;
-            return Math.floor(diff / (1000 * 60 * 60 * 24)) + 1;
-        }
-        function nextHundred(days) {
-            return Math.ceil(days / 100) * 100;
-        }
-        function daysToHundred(days) {
-            return nextHundred(days) - days;
-        }
-        function nextYearDate(dateStr) {
-            const start = new Date(dateStr);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            let nextYear = start.getFullYear() + 1;
-            let next = new Date(nextYear, start.getMonth(), start.getDate());
-            while (next <= today) {
-                nextYear += 1;
-                next = new Date(nextYear, start.getMonth(), start.getDate());
-            }
-            return next;
-        }
-        function daysToDate(target) {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const diff = target - today;
-            return Math.ceil(diff / (1000 * 60 * 60 * 24));
-        }
 
-        // 在一起
+    <script src="../assets/js/utils.js"></script>
+    <script>
+        // ============== 纪念日卡片 ==============
         const togetherDays = calculateDaysSince('2026-09-12');
         document.getElementById('togetherCount').textContent = togetherDays;
-        document.getElementById('togetherHundred').textContent = daysToHundred(togetherDays);
-        const togetherYear = nextYearDate('2026-09-12');
-        document.getElementById('togetherYear').textContent = daysToDate(togetherYear);
+        document.getElementById('togetherHundredLabel').textContent = nextHundredDay(togetherDays);
+        document.getElementById('togetherHundred').textContent = daysToNextHundredDay(togetherDays);
+        document.getElementById('togetherYear').textContent = daysToNextAnniversary('2026-09-12');
 
-        // 相识
         const meetDays = calculateDaysSince('2025-11-08');
         document.getElementById('meetCount').textContent = meetDays;
-        document.getElementById('meetHundred').textContent = daysToHundred(meetDays);
-        const meetYear = nextYearDate('2025-11-08');
-        document.getElementById('meetYear').textContent = daysToDate(meetYear);
+        document.getElementById('meetHundredLabel').textContent = nextHundredDay(meetDays);
+        document.getElementById('meetHundred').textContent = daysToNextHundredDay(meetDays);
+        document.getElementById('meetYear').textContent = daysToNextAnniversary('2025-11-08');
+
+        // ============== 日历 ==============
+        // 事件数据：当前统一从页面顶部 <script id="eventsData"> 内嵌副本读取
+        //   （assets/data/events.json 已停用，保留为只读备份）
+        // 事件支持两种形式：
+        //   1) 单日：{ date: "2026-10-01", name, tag, type }
+        //   2) 区间：{ startDate: "2026-10-01", endDate: "2026-10-03", name, tag, type }
+        // 内部统一为展开形式：events[dateStr] = [ { name, tag, type, range? }, ... ]
+        //   range 仅在区间事件中存在：{ startDate, endDate }（用于列表展示与悬停提示）
+        let events = {};
+        let allEvents = [];  // 保留原始事件（含区间），供事件列表用
+
+        function dateToStr(d) {
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        }
+        function parseDate(str) {
+            // 解析 "YYYY-MM-DD" 为本地日期（避免 UTC 偏移）
+            const [y, m, d] = str.split('-').map(Number);
+            return new Date(y, m - 1, d);
+        }
+
+        // 内置节日（按用户给的日期，2026 年）
+        const FESTIVALS = [
+            { date: '2026-01-01', name: '元旦',     tag: '节日', type: 'festival' },
+            { date: '2026-02-14', name: '情人节',   tag: '节日', type: 'festival' },
+            { date: '2026-02-16', name: '除夕',     tag: '节日', type: 'festival' },
+            { date: '2026-02-17', name: '春节',     tag: '节日', type: 'festival' },
+            { date: '2026-04-04', name: '清明节',   tag: '节日', type: 'festival' },
+            { date: '2026-05-01', name: '劳动节',   tag: '节日', type: 'festival' },
+            { date: '2026-05-20', name: '520',      tag: '节日', type: 'festival' },
+            { date: '2026-06-19', name: '端午节',   tag: '节日', type: 'festival' },
+            { date: '2026-08-19', name: '七夕节',   tag: '节日', type: 'festival' },
+            { date: '2026-09-25', name: '中秋节',   tag: '节日', type: 'festival' },
+            { date: '2026-12-25', name: '圣诞节',   tag: '节日', type: 'festival' }
+        ];
+
+        function parseEventsData(data) {
+            events = {};
+            allEvents = [];
+            const list = [...(data.events || []), ...FESTIVALS];
+            list.forEach(e => {
+                const type = e.type || 'special';
+                const meta = { name: e.name, tag: e.tag, type };
+                if (e.startDate && e.endDate) {
+                    // 区间事件
+                    const start = parseDate(e.startDate);
+                    const end = parseDate(e.endDate);
+                    const range = { startDate: e.startDate, endDate: e.endDate };
+                    allEvents.push({ ...meta, range });
+                    // 展开到区间内每一天
+                    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+                        const key = dateToStr(d);
+                        if (!events[key]) events[key] = [];
+                        events[key].push({ ...meta, range });
+                    }
+                } else if (e.date) {
+                    // 单日事件
+                    const key = e.date;
+                    allEvents.push({ ...meta, date: key });
+                    if (!events[key]) events[key] = [];
+                    events[key].push(meta);
+                }
+            });
+        }
+
+        async function loadEvents() {
+            // 事件数据源：统一使用页面顶部 <script id="eventsData"> 内嵌副本
+            // 历史说明：曾支持从 assets/data/events.json 加载；若该文件被重新启用且
+            // 移除 _disabled 标记，可在此处恢复 fetch 逻辑。当前默认从内嵌副本读取。
+            try {
+                const inline = document.getElementById('eventsData').textContent;
+                const data = JSON.parse(inline);
+                // 若未来重新启用 events.json，可在此加：if (data._disabled) { /* 跳过 fetch */ }
+                parseEventsData(data);
+            } catch (err) {
+                console.error('解析内嵌事件数据失败：', err);
+                events = {};
+            }
+        }
+
+        // 日历起始：2025 年 11 月（之前的年月不显示）
+        const MIN_YEAR = 2025;
+        const MIN_MONTH = 10; // 0-indexed：10 = 11 月
+
+        let currentYear, currentMonth;
+
+        async function initCalendar() {
+            await loadEvents();
+            // 默认显示当前月；如果当前月早于下界（如本地时间跨年偏差）则取下界
+            const now = new Date();
+            let y = now.getFullYear();
+            let m = now.getMonth();
+            if (y < MIN_YEAR || (y === MIN_YEAR && m < MIN_MONTH)) {
+                y = MIN_YEAR;
+                m = MIN_MONTH;
+            }
+            currentYear = y;
+            currentMonth = m;
+            renderCalendar();
+        }
+
+        function isBeforeMin() {
+            return currentYear < MIN_YEAR ||
+                (currentYear === MIN_YEAR && currentMonth < MIN_MONTH);
+        }
+
+        function renderCalendar() {
+            document.getElementById('calTitle').textContent = `${currentYear} 年 ${currentMonth + 1} 月`;
+
+            const grid = document.getElementById('calGrid');
+            const weekdays = document.querySelector('.cal-weekdays');
+            const prevBtn = document.getElementById('prevMonth');
+
+            // 禁用/启用上个月按钮
+            prevBtn.disabled = isBeforeMin();
+
+            // 早于最小月份时，不显示星期表头和日期网格
+            if (isBeforeMin()) {
+                weekdays.style.display = 'none';
+                grid.innerHTML = `
+                    <div class="cal-empty-state">
+                        <div class="cal-empty-emoji">📅</div>
+                        <div class="cal-empty-text">从 ${MIN_YEAR} 年 ${MIN_MONTH + 1} 月开始记录</div>
+                        <div class="cal-empty-sub">点击 › 跳到 ${MIN_YEAR} 年 ${MIN_MONTH + 1} 月</div>
+                    </div>
+                `;
+                renderEventList(); // 列表照常（虽然本月应该空）
+                return;
+            } else {
+                weekdays.style.display = '';
+            }
+
+            grid.innerHTML = '';
+
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const today = new Date();
+            const isThisMonth = today.getFullYear() === currentYear && today.getMonth() === currentMonth;
+
+            // 固定 6 行 × 7 列 = 42 格：避免 1 号周六/周日导致某些月份出现第 6 行造成高度跳动
+            // 上个月日期（灰色）
+            const prevMonthLast = new Date(currentYear, currentMonth, 0);
+            const prevYear = prevMonthLast.getFullYear();
+            const prevMonth = prevMonthLast.getMonth();
+            const prevDays = prevMonthLast.getDate();
+            for (let i = firstDay - 1; i >= 0; i--) {
+                const day = document.createElement('div');
+                day.className = 'cal-day other-month';
+                const d = prevDays - i;
+                day.innerHTML = `
+                    <span class="d-num">${d}</span>
+                    <div class="dots placeholder"></div>`;
+                day.title = '';
+                grid.appendChild(day);
+            }
+
+            // 日期
+            for (let d = 1; d <= daysInMonth; d++) {
+                const day = document.createElement('div');
+                day.className = 'cal-day';
+                const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+
+                if (isThisMonth && d === today.getDate()) {
+                    day.classList.add('today');
+                }
+                if (events[dateStr]) {
+                    const dayEvents = events[dateStr];
+                    // 统一高亮（不按类型区分背景）
+                    day.classList.add('has-event');
+                    // 悬停提示
+                    day.title = dayEvents.map(e => {
+                        if (e.range) {
+                            return `[${e.tag}] ${e.name}\n${e.range.startDate} ~ ${e.range.endDate}`;
+                        }
+                        return `[${e.tag}] ${e.name}`;
+                    }).join('\n');
+                    // 圆点：同一天同 type 只画 1 个（去重）
+                    const seenTypes = new Set();
+                    const uniqueDots = dayEvents.filter(ev => {
+                        if (seenTypes.has(ev.type)) return false;
+                        seenTypes.add(ev.type);
+                        return true;
+                    });
+                    const dotsHtml = uniqueDots.map(ev =>
+                        `<span class="dot type-${ev.type}"></span>`
+                    ).join('');
+                    day.innerHTML = `
+                        <span class="d-num">${d}</span>
+                        <div class="dots">${dotsHtml}</div>`;
+                } else {
+                    // 无事件：纯数字 + 占位高度（用空 dots 撑住对齐）
+                    day.innerHTML = `
+                        <span class="d-num">${d}</span>
+                        <div class="dots placeholder"></div>`;
+                }
+                grid.appendChild(day);
+            }
+
+            // 下个月日期（灰色），补满到 35 格
+            const nextMonthDate = new Date(currentYear, currentMonth + 1, 1);
+            const nextYear = nextMonthDate.getFullYear();
+            const nextMonth = nextMonthDate.getMonth();
+            let nextD = 1;
+            // 固定 6 行（42 格），避免极端月份导致 5/6 行切换引起日历高度变化
+            while (grid.children.length < 42) {
+                const day = document.createElement('div');
+                day.className = 'cal-day other-month';
+                day.innerHTML = `
+                    <span class="d-num">${nextD}</span>
+                    <div class="dots placeholder"></div>`;
+                day.title = '';
+                grid.appendChild(day);
+                nextD++;
+            }
+
+            renderEventList();
+        }
+
+        function renderEventList() {
+            const list = document.getElementById('eventList');
+            // 用 allEvents（保留原始区间/单日结构），筛选本月内的
+            // 区间事件：只要有任一天落在本月就算 1 个事件（不展开到天）
+            const monthEvents = allEvents.filter(e => {
+                if (e.range) {
+                    const start = parseDate(e.range.startDate);
+                    const end   = parseDate(e.range.endDate);
+                    const monthStart = new Date(currentYear, currentMonth, 1);
+                    const monthEnd   = new Date(currentYear, currentMonth + 1, 0);
+                    return end >= monthStart && start <= monthEnd;
+                } else {
+                    const d = parseDate(e.date);
+                    return d.getFullYear() === currentYear && d.getMonth() === currentMonth;
+                }
+            }).sort((a, b) => {
+                if (a.type === 'special' && b.type !== 'special') return 1;
+                if (a.type !== 'special' && b.type === 'special') return -1;
+                const ka = a.range ? a.range.startDate : a.date;
+                const kb = b.range ? b.range.startDate : b.date;
+                return ka.localeCompare(kb);
+            });
+
+            if (monthEvents.length === 0) {
+                list.innerHTML = '<div class="events-empty">本月暂无特殊事件</div>';
+                return;
+            }
+
+            // 头部（始终显示）：汇总 + 展开/收起按钮
+            // 统计去重后的 type（不同 type 不同颜色各画 1 个点）
+            const seenTypes = new Set();
+            const typeDots = monthEvents.filter(e => {
+                if (seenTypes.has(e.type)) return false;
+                seenTypes.add(e.type);
+                return true;
+            });
+            const dotsHtml = typeDots.map(e =>
+                `<span class="sum-dot type-${e.type}" title="${e.name}"></span>`
+            ).join('');
+
+            // 详情列表（展开时显示）：按日期分组
+            const detailHtml = monthEvents.map(e => {
+                const dateText = e.range
+                    ? `${e.range.startDate} ~ ${e.range.endDate}`
+                    : e.date;
+                return `
+                    <div class="event-row">
+                        <span class="sum-dot type-${e.type}"></span>
+                        <span class="event-date">${dateText}</span>
+                        <span class="event-tag">${e.tag}</span>
+                        <span class="event-name">${e.name}</span>
+                    </div>
+                `;
+            }).join('');
+
+            list.innerHTML = `
+                <div class="events-summary" id="eventsSummary">
+                    ${dotsHtml}
+                    <span class="sum-count">本月共 <b>${monthEvents.length}</b> 个事件</span>
+                    <button type="button" class="events-toggle" id="eventsToggle">
+                        <span class="toggle-text">展开</span>
+                        <span class="toggle-icon">▾</span>
+                    </button>
+                </div>
+            `;
+
+            // 绑定"展开"按钮：弹出覆盖式 modal
+            document.getElementById('eventsToggle').addEventListener('click', () => {
+                openEventsModal(monthEvents);
+            });
+        }
+
+        // ============== 事件详情 Modal（覆盖式） ==============
+        function openEventsModal(monthEvents) {
+            // 防止重复打开
+            if (document.getElementById('eventsModal')) return;
+
+            const detailHtml = monthEvents.map(e => {
+                const dateText = e.range
+                    ? `${e.range.startDate} ~ ${e.range.endDate}`
+                    : e.date;
+                return `
+                    <div class="modal-event-row">
+                        <span class="sum-dot type-${e.type}"></span>
+                        <span class="event-date">${dateText}</span>
+                        <span class="event-tag">${e.tag}</span>
+                        <span class="event-name">${e.name}</span>
+                    </div>
+                `;
+            }).join('');
+
+            const modal = document.createElement('div');
+            modal.id = 'eventsModal';
+            modal.className = 'events-modal';
+            modal.innerHTML = `
+                <div class="events-modal-mask" data-close="1"></div>
+                <div class="events-modal-card" role="dialog" aria-modal="true">
+                    <div class="events-modal-header">
+                        <div class="events-modal-title">${currentYear} 年 ${currentMonth + 1} 月 · 事件</div>
+                        <button type="button" class="events-modal-close" data-close="1" aria-label="关闭">✕</button>
+                    </div>
+                    <div class="events-modal-body">
+                        ${detailHtml}
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            document.body.style.overflow = 'hidden';
+
+            // 触发动画
+            requestAnimationFrame(() => modal.classList.add('show'));
+
+            // 关闭逻辑：点遮罩 / 点 ✕ / 按 ESC
+            const close = () => {
+                modal.classList.remove('show');
+                setTimeout(() => {
+                    modal.remove();
+                    document.body.style.overflow = '';
+                }, 180);
+                document.removeEventListener('keydown', onKey);
+            };
+            const onKey = (ev) => { if (ev.key === 'Escape') close(); };
+            modal.addEventListener('click', (ev) => {
+                if (ev.target.dataset.close === '1') close();
+            });
+            document.addEventListener('keydown', onKey);
+        }
+
+        document.getElementById('prevMonth').addEventListener('click', () => {
+            if (isBeforeMin()) return; // 已经在 2025-01，按钮也禁用
+            currentMonth--;
+            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            // 越界保护
+            if (isBeforeMin()) { currentYear = MIN_YEAR; currentMonth = MIN_MONTH; }
+            renderCalendar();
+        });
+        document.getElementById('nextMonth').addEventListener('click', () => {
+            currentMonth++;
+            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            renderCalendar();
+        });
+
+        initCalendar();
+    </script>
+
+    <!-- 全局点击爱心特效 -->
+    <script>
+    (function () {
+        const canvas = document.getElementById('heartCanvas');
+        const ctx = canvas.getContext('2d');
+        let dpr = window.devicePixelRatio || 1;
+        let particles = [];
+
+        function resize() {
+            dpr = window.devicePixelRatio || 1;
+            canvas.width  = window.innerWidth  * dpr;
+            canvas.height = window.innerHeight * dpr;
+            canvas.style.width  = window.innerWidth + 'px';
+            canvas.style.height = window.innerHeight + 'px';
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        // 爱心形状路径（以中心为原点，宽 24、高 22，可缩放）
+        function heartShape(size) {
+            ctx.beginPath();
+            const s = size;
+            // 用贝塞尔曲线画心形
+            ctx.moveTo(0, s * 0.3);
+            ctx.bezierCurveTo(0, -s * 0.2,  -s * 0.6, -s * 0.2,  -s * 0.5, s * 0.2);
+            ctx.bezierCurveTo(-s * 0.4, s * 0.6, 0, s * 0.8, 0, s);
+            ctx.bezierCurveTo(0, s * 0.8,  s * 0.4, s * 0.6,  s * 0.5, s * 0.2);
+            ctx.bezierCurveTo(s * 0.6, -s * 0.2, 0, -s * 0.2, 0, s * 0.3);
+            ctx.closePath();
+        }
+
+        // 粒子：爱心向上飘 + 缩放 + 渐隐
+        function Particle(x, y) {
+            this.x = x;
+            this.y = y;
+            this.size = 14 + Math.random() * 14;     // 初始大小
+            this.vx = (Math.random() - 0.5) * 3;     // 横向轻微漂移
+            this.vy = -(2 + Math.random() * 2.5);    // 向上飘
+            this.life = 1;                            // 1 → 0
+            this.decay = 0.012 + Math.random() * 0.012;
+            this.angle = (Math.random() - 0.5) * 0.6;
+            this.spin = (Math.random() - 0.5) * 0.05;
+            // 蓝色系：浅蓝 → 深蓝
+            const blues = ['#42a5f5', '#1976d2', '#1565c0', '#64b5f6', '#90caf9'];
+            this.color = blues[Math.floor(Math.random() * blues.length)];
+        }
+
+        Particle.prototype.update = function () {
+            this.x += this.vx;
+            this.y += this.vy;
+            this.vy += 0.05;        // 轻微重力（向上飞慢）
+            this.vx *= 0.99;
+            this.angle += this.spin;
+            this.life -= this.decay;
+        };
+
+        Particle.prototype.draw = function () {
+            ctx.save();
+            ctx.globalAlpha = Math.max(this.life, 0);
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.angle);
+            ctx.fillStyle = this.color;
+            heartShape(this.size);
+            ctx.fill();
+            // 描边增加立体感
+            ctx.lineWidth = 1.2;
+            ctx.strokeStyle = 'rgba(21, 101, 192, 0.6)';
+            ctx.stroke();
+            ctx.restore();
+        };
+
+        function spawn(x, y) {
+            // 一次点击爆出 8~14 颗爱心
+            const count = 8 + Math.floor(Math.random() * 7);
+            for (let i = 0; i < count; i++) {
+                const a = (Math.PI * 2 * i) / count + Math.random() * 0.5;
+                const r = Math.random() * 10;
+                const p = new Particle(x + Math.cos(a) * r, y + Math.sin(a) * r);
+                p.vx = Math.cos(a) * (1.5 + Math.random() * 2);
+                p.vy = Math.sin(a) * (1.5 + Math.random() * 2) - 2;
+                particles.push(p);
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            particles = particles.filter(p => p.life > 0);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // 全局点击触发（不区分按钮/链接）
+        window.addEventListener('click', e => spawn(e.clientX, e.clientY));
+
+        // 触摸端也支持
+        window.addEventListener('touchstart', e => {
+            const t = e.touches[0];
+            spawn(t.clientX, t.clientY);
+        }, { passive: true });
+    })();
     </script>
 </body>
 </html>

@@ -1,0 +1,60 @@
+{
+    "_disabled": true,
+    "_comment": "本文件已停用。事件数据请直接编辑 pages/days.html 顶部 <script id='eventsData'> 的内嵌副本。脚本不会读取本文件，保留仅为历史备份。",
+    "events": [
+        {
+            "date": "2025-11-08",
+            "name": "初次相遇",
+            "tag": "纪念日",
+            "type": "anniversary"
+        },
+        {
+            "date": "2026-09-12",
+            "name": "在一起啦",
+            "tag": "在一起",
+            "type": "together"
+        },
+        {
+            "startDate": "2025-12-20",
+            "endDate": "2025-12-21",
+            "name": "南京",
+            "tag": "在一起",
+            "type": "together"
+        },
+        {
+            "startDate": "2026-07-11",
+            "endDate": "2026-07-21",
+            "name": "武汉-长沙-邵阳-武汉",
+            "tag": "在一起",
+            "type": "together"
+        },
+        {
+            "startDate": "2026-08-13",
+            "endDate": "2026-08-16",
+            "name": "武汉-南昌-武汉",
+            "tag": "在一起",
+            "type": "together"
+        },
+        {
+            "startDate": "2026-09-05",
+            "endDate": "2026-09-06",
+            "name": "广州",
+            "tag": "在一起",
+            "type": "together"
+        },
+        {
+            "startDate": "2026-09-12",
+            "endDate": "2026-09-14",
+            "name": "武汉",
+            "tag": "在一起",
+            "type": "together"
+        },
+        {
+            "startDate": "2026-10-04",
+            "endDate": "2026-10-11",
+            "name": "武汉",
+            "tag": "在一起",
+            "type": "together"
+        }
+    ]
+}
