@@ -595,9 +595,10 @@
         }
 
         /* ============================================
-           移动端性能降级：降低 backdrop-filter 模糊半径、关闭 hover 动画
+           移动端布局：日历居中、两个时间块在下方堆叠、返回按钮缩小让位
            ============================================ */
         @media (max-width: 768px) {
+            /* 关闭背景模糊（性能降级） */
             .navbar,
             .card,
             .calendar,
@@ -605,9 +606,50 @@
                 backdrop-filter: none;
                 -webkit-backdrop-filter: none;
             }
+            /* 关闭入场动画（性能降级） */
             .navbar,
             .calendar {
                 animation: none !important;
+            }
+
+            /* 主布局：竖向堆叠，全部居中 */
+            .main-layout {
+                flex-direction: column;
+                gap: 20px;
+                align-items: center;
+                padding-top: 16px;
+            }
+            /* 日历单独撑满宽度、居中 */
+            .calendar {
+                width: 100%;
+                max-width: 420px;
+                margin: 0 auto;
+            }
+            /* 右侧两卡片：横向并排（保持两栏更紧凑） */
+            .container {
+                width: 100%;
+                max-width: 420px;
+                flex-direction: row;
+                gap: 12px;
+            }
+            .card {
+                padding: 16px 12px;
+                flex: 1 1 0;
+            }
+            .card-title { font-size: 12px; letter-spacing: 2px; }
+            .card-date  { font-size: 11px; }
+            .main-count { font-size: 40px; }
+            .label      { font-size: 11px; }
+            .count      { font-size: 18px; }
+            .calendar-header h2 { font-size: 16px; }
+
+            /* 返回按钮：缩小 + 移到顶部更紧凑，避免遮挡 */
+            .back {
+                top: 12px;
+                left: 12px;
+                font-size: 12px;
+                padding: 6px 12px;
+                border-radius: 10px;
             }
         }
 
@@ -1178,11 +1220,18 @@
         animate();
 
         // 全局点击触发（不区分按钮/链接）
-        window.addEventListener('click', e => spawn(e.clientX, e.clientY));
+        // 用一个时间戳标志位避免 touchstart 与 click 重复触发
+        let lastTouchTime = 0;
+        window.addEventListener('click', e => {
+            // 如果 600ms 内刚处理过 touchstart，则忽略这次 click（防双触发）
+            if (Date.now() - lastTouchTime < 600) return;
+            spawn(e.clientX, e.clientY);
+        });
 
         // 触摸端也支持
         window.addEventListener('touchstart', e => {
             const t = e.touches[0];
+            lastTouchTime = Date.now();
             spawn(t.clientX, t.clientY);
         }, { passive: true });
     })();
