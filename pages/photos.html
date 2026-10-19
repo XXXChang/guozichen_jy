@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我们的相册</title>
+    <style>
+        :root {
+            --bg-top:    #fff8e7;
+            --bg-mid:    #ffeeba;
+            --bg-bot:    #ffd180;
+            --tree-bark: #8b5e3c;
+            --tree-leaf: #4caf50;
+            --tree-dark: #2e7d32;
+            --polaroid-border: #f5f5f5;
+            --polaroid-caption: #5d4037;
+            --heart-color: #ff7043;
+            --card-shadow: rgba(139, 94, 60, 0.35);
+            --overlay-bg: rgba(40, 20, 5, 0.88);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(180deg,
+                var(--bg-top) 0%,
+                var(--bg-mid) 45%,
+                var(--bg-bot) 100%);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ── 页面容器 ── */
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 80px;
+        }
+
+        /* ── 照片挂载区 ── */
+        .photo-hang {
+            position: relative;
+            width: 100%;
+            max-width: 860px;
+            margin: 0 auto;
+            /* 空占位，照片用 absolute 挂上去 */
+        }
+
+        /* ── Polaroid 照片卡 ── */
+        .photo-card {
+            position: absolute;
+            width: 130px;
+            background: var(--polaroid-border);
+            border-radius: 2px;
+            box-shadow: 0 6px 20px var(--card-shadow);
+            cursor: pointer;
+            transition: transform 0.35s cubic-bezier(.2,.8,.2,1),
+                        box-shadow 0.35s ease,
+                        z-index 0s;
+            z-index: 10;
+            padding-bottom: 28px;
+        }
+        .photo-card:hover {
+            transform: scale(1.08) rotate(0deg) !important;
+            box-shadow: 0 16px 48px var(--card-shadow);
+            z-index: 50;
+        }
+        .photo-card img {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+        }
+        .photo-caption {
+            position: absolute;
+            bottom: 6px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 10px;
+            color: var(--polaroid-caption);
+            font-family: Georgia, serif;
+            letter-spacing: 0.5px;
+            pointer-events: none;
+        }
+
+        /* ── 连接细线（照片→树枝） ── */
+        .string-line {
+            position: absolute;
+            width: 1px;
+            background: rgba(139, 94, 60, 0.5);
+            transform-origin: top center;
+            z-index: 5;
+        }
+
+        /* ── 放大查看 ── */
+        .lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: var(--overlay-bg);
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 0;
+        }
+        .lightbox.show {
+            display: flex;
+            animation: fadeIn 0.25s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+        .lightbox-img-wrap {
+            max-width: 90vw;
+            max-height: 75vh;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+        }
+        .lightbox-img-wrap img {
+            max-width: 100%;
+            max-height: 75vh;
+            display: block;
+            object-fit: contain;
+        }
+        .lightbox-date {
+            margin-top: 18px;
+            font-size: 16px;
+            color: rgba(255, 248, 220, 0.85);
+            letter-spacing: 2px;
+            font-family: Georgia, serif;
+            text-align: center;
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            font-size: 28px;
+            color: rgba(255, 248, 220, 0.8);
+            cursor: pointer;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(139, 94, 60, 0.25);
+            border-radius: 50%;
+            transition: background 0.2s, transform 0.2s;
+            user-select: none;
+        }
+        .lightbox-close:hover {
+            background: rgba(139, 94, 60, 0.45);
+            transform: scale(1.1);
+        }
+
+        /* ── 移动端适配 ── */
+        @media (max-width: 768px) {
+            .photo-card {
+                width: 90px;
+                padding-bottom: 20px;
+            }
+            .photo-caption { font-size: 8px; bottom: 4px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="photo-hang" id="photoHang">
+    </div>
+
+    <!-- 放大查看 -->
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-close" id="lightboxClose">✕</div>
+        <div class="lightbox-img-wrap">
+            <img id="lightboxImg" src="" alt="">
+        </div>
+        <div class="lightbox-date" id="lightboxDate"></div>
+    </div>
+
+    <script>
+    // ══════════════════════════════════════════════
+    //  📷 照片数据（修改这里即可添加/编辑/删除）
+    //  src      : 图片路径（相对于 assets/gzc_jy_Img/ 或绝对路径）
+    //  date     : 照片日期（放大时显示在图片下方）
+    //  label    : polaroid 底部小字
+    //  position : 挂在树上的位置（百分比，相对于 .photo-hang 的宽高）
+    //  rotate   : 初始倾斜角度（度）
+    // ══════════════════════════════════════════════
+    const PHOTOS = [
+        // ── 未来添加照片示例 ──
+        // {
+        //     src:    'assets/gzc_jy_Img/你的照片.jpg',
+        //     date:   '2026.09.12 · 武汉',
+        //     label:  'September',
+        //     x: 14,  // left  %
+        //     y: 28,  // top   %
+        //     rotate: -5,
+        // },
+        // {
+        //     src:    'assets/gzc_jy_Img/另一张.jpg',
+        //     date:   '2026.10.04 · 国庆',
+        //     label:  '国庆假期',
+        //     x: 78,
+        //     y: 35,
+        //     rotate: 6,
+        // },
+    ];
+
+    const hang = document.getElementById('photoHang');
+    const lightbox = document.getElementById('lightbox');
+    const lbImg  = document.getElementById('lightboxImg');
+    const lbDate = document.getElementById('lightboxDate');
+    const lbClose = document.getElementById('lightboxClose');
+
+    function renderPhotos() {
+        // 清理旧照片
+        hang.querySelectorAll('.photo-card, .string-line').forEach(el => el.remove());
+
+        if (!PHOTOS.length) return;
+
+        const W = hang.offsetWidth || 860;
+
+        PHOTOS.forEach((p, i) => {
+            // 连接细线
+            const line = document.createElement('div');
+            line.className = 'string-line';
+            // 线顶端在树枝附近（估算），底端在照片顶部
+            const cardW = window.innerWidth <= 768 ? 90 : 130;
+            const cardH  = cardW * 1.2 + 28;
+            const px = (p.x / 100) * W;
+            const py = (p.y / 100) * (W * 0.48);
+            const lineH = py - cardH * 0.4;
+            line.style.cssText = `
+                left: ${px - 0.5}px;
+                top:  ${py - lineH}px;
+                height: ${lineH}px;
+                transform-origin: top center;
+                transform: rotate(${(p.rotate || 0) * 0.3}deg);
+            `;
+            hang.appendChild(line);
+
+            // Polaroid 卡
+            const card = document.createElement('div');
+            card.className = 'photo-card';
+            card.style.cssText = `
+                left:    ${p.x - (cardW / W * 100) / 2}%;
+                top:     ${p.y}%;
+                transform: rotate(${p.rotate || 0}deg);
+            `;
+            card.innerHTML = `
+                <img src="${p.src}" alt="${p.label}" loading="lazy">
+                <div class="photo-caption">${p.label}</div>
+            `;
+            card.addEventListener('click', () => openLightbox(p));
+            hang.appendChild(card);
+        });
+    }
+
+    function openLightbox(p) {
+        lbImg.src = p.src;
+        lbDate.textContent = p.date || '';
+        lightbox.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+        lightbox.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+
+    lbClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', e => {
+        if (e.target === lightbox) closeLightbox();
+    });
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeLightbox();
+    });
+
+    // 渲染 & 自适应
+    renderPhotos();
+    window.addEventListener('resize', () => {
+        clearTimeout(window._photoResizeTimer);
+        window._photoResizeTimer = setTimeout(renderPhotos, 200);
+    });
+    </script>
+
+    <!-- 背景飘落爱心（金黄色，契合淡黄主题） -->
+    <script>
+    (function () {
+        const canvas = document.createElement('canvas');
+        canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;';
+        document.body.appendChild(canvas);
+        const ctx = canvas.getContext('2d');
+        const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+
+        function resize() {
+            canvas.width  = window.innerWidth  * dpr;
+            canvas.height = window.innerHeight * dpr;
+            canvas.style.width  = window.innerWidth + 'px';
+            canvas.style.height = window.innerHeight + 'px';
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        resize();
+        let resizeTimer = null;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(resize, 150);
+        });
+
+        // 暖黄色系，与淡黄背景和谐
+        const palette = ['#ffd700', '#ffca28', '#ffb300', '#ffc107', '#ff9800'];
+        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+        const COUNT = isMobile ? 18 : 36;
+
+        const particles = Array.from({ length: COUNT }, () => ({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            r: Math.random() * 2.5 + 1.5,
+            vx: (Math.random() - 0.5) * 0.35,
+            vy: Math.random() * 0.5 + 0.25,
+            alpha: Math.random() * 0.45 + 0.2,
+            color: palette[Math.floor(Math.random() * palette.length)]
+        }));
+
+        function drawHeart(x, y, size, color, alpha) {
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            const s = size;
+            ctx.moveTo(x, y + s * 0.3);
+            ctx.bezierCurveTo(x, y, x - s, y, x - s, y + s * 0.5);
+            ctx.bezierCurveTo(x - s, y + s, x, y + s * 1.3, x, y + s * 1.5);
+            ctx.bezierCurveTo(x, y + s * 1.3, x + s, y + s, x + s, y + s * 0.5);
+            ctx.bezierCurveTo(x + s, y, x, y, x, y + s * 0.3);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            particles.forEach(p => {
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < 0) p.x = window.innerWidth;
+                if (p.x > window.innerWidth) p.x = 0;
+                if (p.y > window.innerHeight) {
+                    p.y = -10;
+                    p.x = Math.random() * window.innerWidth;
+                }
+                drawHeart(p.x, p.y, p.r, p.color, p.alpha);
+            });
+            requestAnimationFrame(draw);
+        }
+        draw();
+    })();
+    </script>
+
+    <!-- 点击爱心特效（同样暖橘色） -->
+    <script>
+    (function () {
+        const canvas = document.createElement('canvas');
+        canvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:9999;pointer-events:none;';
+        document.body.appendChild(canvas);
+        const ctx = canvas.getContext('2d');
+        const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        let particles = [];
+
+        function resize() {
+            canvas.width  = window.innerWidth  * dpr;
+            canvas.height = window.innerHeight * dpr;
+            canvas.style.width  = window.innerWidth + 'px';
+            canvas.style.height = window.innerHeight + 'px';
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        resize();
+        let resizeTimer = null;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(resize, 150);
+        });
+
+        function heartShape(s) {
+            ctx.beginPath();
+            ctx.moveTo(0, s * 0.3);
+            ctx.bezierCurveTo(0, -s * 0.2, -s * 0.6, -s * 0.2, -s * 0.5, s * 0.2);
+            ctx.bezierCurveTo(-s * 0.4, s * 0.6, 0, s * 0.8, 0, s);
+            ctx.bezierCurveTo(0, s * 0.8, s * 0.4, s * 0.6, s * 0.5, s * 0.2);
+            ctx.bezierCurveTo(s * 0.6, -s * 0.2, 0, -s * 0.2, 0, s * 0.3);
+            ctx.closePath();
+        }
+
+        const yellows = ['#ffd700', '#ffca28', '#ffb300', '#ffc107', '#ff9800'];
+
+        function Particle(x, y) {
+            this.x = x; this.y = y;
+            this.size = 12 + Math.random() * 12;
+            this.vx = (Math.random() - 0.5) * 3;
+            this.vy = -(2 + Math.random() * 2.5);
+            this.life = 1;
+            this.decay = 0.01 + Math.random() * 0.012;
+            this.angle = (Math.random() - 0.5) * 0.6;
+            this.spin = (Math.random() - 0.5) * 0.05;
+            this.color = yellows[Math.floor(Math.random() * yellows.length)];
+        }
+        Particle.prototype.update = function () {
+            this.x += this.vx; this.y += this.vy;
+            this.vy += 0.05; this.vx *= 0.99;
+            this.angle += this.spin; this.life -= this.decay;
+        };
+        Particle.prototype.draw = function () {
+            ctx.save();
+            ctx.globalAlpha = Math.max(this.life, 0);
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.angle);
+            ctx.fillStyle = this.color;
+            heartShape(this.size);
+            ctx.fill();
+            ctx.lineWidth = 1.2;
+            ctx.strokeStyle = 'rgba(200, 50, 10, 0.5)';
+            ctx.stroke();
+            ctx.restore();
+        };
+
+        function spawn(x, y) {
+            const n = 3 + Math.floor(Math.random() * 3);
+            for (let i = 0; i < n; i++) {
+                const a = (Math.PI * 2 * i) / n + Math.random() * 0.5;
+                const r = Math.random() * 8;
+                const p = new Particle(x + Math.cos(a) * r, y + Math.sin(a) * r);
+                p.vx = Math.cos(a) * (1.2 + Math.random() * 1.5);
+                p.vy = Math.sin(a) * (1.2 + Math.random() * 1.5) - 1.5;
+                particles.push(p);
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            particles = particles.filter(p => p.life > 0);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+        window.addEventListener('click', e => spawn(e.clientX, e.clientY));
+    })();
+    </script>
+
+</body>
+</html>

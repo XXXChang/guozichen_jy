@@ -270,6 +270,24 @@
             letter-spacing: 1px;
         }
 
+        /* 左上角：相册入口（结构和右上角 memory-card 一致，靠 left 定位） */
+        .memory-card.photo-card {
+            right: auto;
+            left: 30px;
+            min-width: 0;
+            padding: 10px 22px;
+        }
+        .photo-label {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--c-700);
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, var(--c-800), var(--c-600), var(--c-500));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
         /* 链接卡片 */
         .links {
             display: flex;
@@ -332,6 +350,10 @@
         <div class="memory-label">在一起已经</div>
         <div class="memory-count" id="daysCount">--</div>
         <div class="memory-unit">天</div>
+    </a>
+
+    <a href="pages/photos.html" class="memory-card photo-card">
+        <div class="photo-label">Memories</div>
     </a>
 
     <div class="content">
