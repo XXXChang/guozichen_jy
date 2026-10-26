@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f2f5f4">
+    <title>我们的故事 | JY_GZC</title>
+    <script>document.documentElement.classList.add('js');</script>
+    <style>
+        :root {
+            --ink: #26343b;
+            --muted: #64757a;
+            --line: #c9d5d5;
+            --rose: #c65673;
+            --teal: #378a83;
+            --gold: #b58232;
+        }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            color: var(--ink);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background:
+                linear-gradient(180deg, #f2f5f4 0%, #f6f4f7 48%, #f4f7f6 78%, #f9f1ee 100%);
+        }
+        a { color: inherit; }
+        a:focus-visible { outline: 2px solid var(--rose); outline-offset: 5px; }
+        .page-nav {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            width: min(100% - 40px, 1080px);
+            height: 72px;
+            margin: auto;
+            border-bottom: 1px solid rgba(38, 52, 59, 0.13);
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .page-nav a { text-decoration: none; }
+        .page-nav a:hover { color: var(--rose); }
+        .brand { letter-spacing: 1px; white-space: nowrap; }
+        .nav-actions { display: flex; align-items: center; gap: 26px; }
+        .nav-actions a { white-space: nowrap; }
+        .intro {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: min(590px, 64vh);
+            padding: 52px 24px 55px;
+            text-align: center;
+        }
+        .portrait-pair {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 28px;
+        }
+        .portrait-pair img {
+            width: 92px;
+            height: 92px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 5px solid #fff;
+            box-shadow: 0 10px 28px rgba(38, 52, 59, 0.14);
+        }
+        .portrait-pair img + img { margin-left: -14px; }
+        .portrait-pair img:first-child { rotate: -7deg; }
+        .portrait-pair img:last-child { rotate: 7deg; }
+        .eyebrow {
+            margin: 0 0 13px;
+            color: var(--teal);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 3px;
+        }
+        h1 {
+            margin: 0;
+            font-size: 48px;
+            font-weight: 650;
+            line-height: 1.2;
+        }
+        .intro-copy {
+            max-width: 450px;
+            margin: 16px auto 0;
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.8;
+        }
+        .scroll-cue {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 45px;
+            color: var(--muted);
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+        .scroll-cue span {
+            display: grid;
+            place-items: center;
+            width: 28px;
+            height: 28px;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            font-size: 15px;
+            animation: cueDown 2.4s ease-in-out infinite;
+        }
+        @keyframes cueDown {
+            50% { transform: translateY(5px); }
+        }
+        .chapter-heading {
+            width: min(100% - 40px, 1080px);
+            margin: 0 auto 58px;
+            padding-top: 26px;
+            border-top: 1px solid rgba(38, 52, 59, 0.13);
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .storyline {
+            position: relative;
+            width: min(100%, 1080px);
+            margin: auto;
+            padding: 0 32px 90px;
+        }
+        .storyline::before,
+        .timeline-progress {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 2px;
+            transform: translateX(-50%);
+        }
+        .storyline::before {
+            content: "";
+            bottom: 90px;
+            background: var(--line);
+        }
+        .timeline-progress {
+            z-index: 1;
+            height: 0;
+            max-height: calc(100% - 90px);
+            background: var(--rose);
+            transition: height 0.12s linear;
+            pointer-events: none;
+        }
+        .story-event {
+            position: relative;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 52px minmax(0, 1fr);
+            min-height: 215px;
+        }
+        .event-pin {
+            z-index: 2;
+            grid-column: 2;
+            grid-row: 1;
+            justify-self: center;
+            width: 19px;
+            height: 19px;
+            border: 5px solid #f4f5f5;
+            border-radius: 50%;
+            background: var(--teal);
+            box-shadow: 0 0 0 1px var(--teal);
+            transition: transform 0.35s ease, background 0.35s ease, box-shadow 0.35s ease;
+        }
+        .story-event.is-current .event-pin {
+            transform: scale(1.3);
+            background: var(--rose);
+            box-shadow: 0 0 0 1px var(--rose), 0 0 0 8px rgba(198, 86, 115, 0.12);
+        }
+        .event-copy {
+            grid-row: 1;
+            max-width: 390px;
+            padding-bottom: 52px;
+            border-top: 1px solid rgba(38, 52, 59, 0.18);
+        }
+        .story-event:nth-of-type(odd) .event-copy {
+            grid-column: 1;
+            justify-self: end;
+            width: 100%;
+            margin-right: 30px;
+            text-align: right;
+        }
+        .story-event:nth-of-type(even) .event-copy {
+            grid-column: 3;
+            width: 100%;
+            margin-left: 30px;
+        }
+        .js .event-copy {
+            opacity: 0;
+            transform: translateY(22px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .js .story-event.is-visible .event-copy {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .event-meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding-top: 14px;
+            color: var(--teal);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .story-event:nth-of-type(even) .event-meta { flex-direction: row-reverse; }
+        .event-no { color: var(--gold); font-size: 11px; }
+        .event-copy h2 {
+            margin: 21px 0 9px;
+            font-size: 27px;
+            font-weight: 650;
+            line-height: 1.35;
+        }
+        .event-place {
+            margin: 0 0 8px;
+            color: var(--rose);
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .event-description {
+            margin: 0;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.75;
+        }
+        .ending {
+            position: relative;
+            max-width: 660px;
+            margin: 0 auto;
+            padding: 36px 24px 105px;
+            text-align: center;
+        }
+        .ending::before {
+            content: "♡";
+            display: block;
+            margin-bottom: 22px;
+            color: var(--rose);
+            font-size: 32px;
+        }
+        .ending h2 { margin: 0 0 14px; font-size: 27px; }
+        .ending p { margin: 0 0 25px; color: var(--muted); font-size: 14px; }
+        .ending a {
+            display: inline-block;
+            padding: 10px 18px;
+            border: 1px solid var(--ink);
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+        .ending a:hover { background: var(--ink); color: #fff; }
+        @media (max-width: 700px) {
+            .page-nav { height: 64px; }
+            .nav-actions { gap: 14px; }
+            .intro { min-height: min(510px, 62vh); padding: 38px 20px 48px; }
+            .portrait-pair img { width: 76px; height: 76px; }
+            h1 { font-size: 38px; }
+            .scroll-cue { margin-top: 30px; }
+            .chapter-heading { margin-bottom: 38px; }
+            .storyline { padding: 0 20px 50px; }
+            .storyline::before,
+            .timeline-progress { left: 34px; }
+            .storyline::before { bottom: 50px; }
+            .timeline-progress { max-height: calc(100% - 50px); }
+            .story-event {
+                grid-template-columns: 28px minmax(0, 1fr);
+                column-gap: 22px;
+                min-height: 195px;
+            }
+            .event-pin { grid-column: 1; }
+            .story-event:nth-of-type(n) .event-copy {
+                grid-column: 2;
+                width: 100%;
+                max-width: none;
+                margin: 0;
+                text-align: left;
+            }
+            .story-event:nth-of-type(n) .event-meta { flex-direction: row; }
+            .event-copy h2 { font-size: 23px; margin-top: 16px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            .scroll-cue span { animation: none; }
+            .js .event-copy { opacity: 1; transform: none; transition: none; }
+            .event-pin, .timeline-progress, .ending a { transition: none; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="page-nav" aria-label="页面导航">
+        <a class="brand" href="../index.html">← JY_GZC</a>
+        <div class="nav-actions">
+            <span id="storyPosition" aria-label="当前故事进度">01 / 08</span>
+            <a href="days.html">日历 ↗</a>
+        </div>
+    </nav>
+
+    <main>
+        <section class="intro" aria-labelledby="story-title">
+            <div class="portrait-pair">
+                <img src="../assets/gzc_jy_Img/HeadIcon1.jpg" alt="JY 的头像">
+                <img src="../assets/gzc_jy_Img/HeadIcon2.jpg" alt="GZC 的头像">
+            </div>
+            <p class="eyebrow">JY & GZC · OUR STORY</p>
+            <h1 id="story-title">我们的故事</h1>
+            <p class="intro-copy">从相识的那一天起，沿着时间，重新走过每一个值得记住的瞬间。</p>
+            <div class="scroll-cue" aria-hidden="true"><span>↓</span> 向下翻阅</div>
+        </section>
+
+        <div class="chapter-heading">THE TIMELINE / 故事时间线</div>
+        <section class="storyline" aria-label="关键时间节点">
+            <div class="timeline-progress" aria-hidden="true"></div>
+
+            <article class="story-event">
+                <span class="event-pin" aria-hidden="true"></span>
+                <div class="event-copy">
+                    <div class="event-meta"><time datetime="2025-11-08">2025.11.08</time><span class="event-no">01 / 相识</span></div>
+                    <h2>初次相遇</h2>
+                    <p class="event-description">故事从十一月的这一天开始。</p>
+                </div>
+            </article>
+
+            <article class="story-event">
+                <span class="event-pin" aria-hidden="true"></span>
+                <div class="event-copy">
+                    <div class="event-meta"><time datetime="2025-12-20">2025.12.20 - 12.21</time><span class="event-no">02 / 演唱会</span></div>
+                    <h2>南京</h2>
+                    <p class="event-description">一起记下的演唱会时光。</p>
+                </div>
+            </article>
+
+            <article class="story-event">
+                <span class="event-pin" aria-hidden="true"></span>
+                <div class="event-copy">
+                    <div class="event-meta"><time datetime="2026-07-11">2026.07.11 - 07.21</time><span class="event-no">03 / 出行</span></div>
+                    <h2>一路向前</h2>
+                    <p class="event-place">武汉 · 长沙 · 邵阳 · 武汉</p>
+                    <p class="event-description">和小铮去武汉玩，从一座城市走向下一座。</p>
+                </div>
+            </article>
+
+            <article class="story-event">
+                <span class="event-pin" aria-hidden="true"></span>
+                <div class="event-copy">
+                    <div class="event-meta"><time datetime="2026-08-13">2026.08.13 - 08.16</time><span class="event-no">04 / 演唱会</span></div>
+                    <h2>南昌的夏天</h2>
+                    <p class="event-place">武汉 · 南昌 · 武汉</p>
+                    <p class="event-description">王赫野南昌演唱会。</p>
+                </div>
+            </article>
+
+            <article class="story-event">
+                <span class="event-pin" aria-hidden="true"></span>
+                <div class="event-copy">
+                    <div class="event-meta"><time datetime="2026-09-05">2026.09.05 - 09.06</time><span class="event-no">05 / 演唱会</span></div>
+                    <h2>广州</h2>
+                    <p class="event-description">姚晓棠广州演唱会。</p>
+                </div>
+            </article>
+
+            <article class="story-event">
+                <span class="event-pin" aria-hidden="true"></span>
+                <div class="event-copy">
+                    <div class="event-meta"><time datetime="2026-09-12">2026.09.12</time><span class="event-no">06 / 相爱</span></div>
+                    <h2>在一起啦</h2>
+                    <p class="event-description">从这一天起，我们在一起了。</p>
+                </div>
+            </article>
+
+            <article class="story-event">
+                <span class="event-pin" aria-hidden="true"></span>
+                <div class="event-copy">
+                    <div class="event-meta"><time datetime="2026-09-12">2026.09.12 - 09.14</time><span class="event-no">07 / 约会</span></div>
+                    <h2>武汉的几天</h2>
+                    <p class="event-description">在武汉度过的约会时光。</p>
+                </div>
+            </article>
+
+            <article class="story-event">
+                <span class="event-pin" aria-hidden="true"></span>
+                <div class="event-copy">
+                    <div class="event-meta"><time datetime="2026-10-04">2026.10.04 - 10.11</time><span class="event-no">08 / 相伴</span></div>
+                    <h2>甜蜜国庆</h2>
+                    <p class="event-place">武汉</p>
+                    <p class="event-description">十月的武汉，又多了一段共同的回忆。</p>
+                </div>
+            </article>
+        </section>
+
+        <section class="ending" aria-label="故事继续">
+            <h2>故事未完待续</h2>
+            <p>下一段时间，继续一起记录。</p>
+            <a href="days.html">查看我们的日历 ↗</a>
+        </section>
+    </main>
+
+    <script>
+    (function () {
+        const timeline = document.querySelector('.storyline');
+        const progress = document.querySelector('.timeline-progress');
+        const events = [...document.querySelectorAll('.story-event')];
+        const position = document.getElementById('storyPosition');
+
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+            events.forEach(event => observer.observe(event));
+        } else {
+            events.forEach(event => event.classList.add('is-visible'));
+        }
+
+        let scheduled = false;
+        function updateTimeline() {
+            const rect = timeline.getBoundingClientRect();
+            const lineLength = timeline.clientHeight - (window.innerWidth <= 700 ? 50 : 90);
+            const atEnd = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+            const revealPoint = atEnd ? window.innerHeight : window.innerHeight * 0.52;
+            progress.style.height = Math.max(0, Math.min(lineLength, revealPoint - rect.top)) + 'px';
+
+            let current = -1;
+            events.forEach((event, index) => {
+                if (event.querySelector('.event-pin').getBoundingClientRect().top <= revealPoint) {
+                    current = index;
+                }
+                event.classList.toggle('is-current', index === current);
+            });
+            position.textContent = String(Math.max(1, current + 1)).padStart(2, '0') + ' / ' +
+                String(events.length).padStart(2, '0');
+            scheduled = false;
+        }
+        function scheduleUpdate() {
+            if (!scheduled) {
+                scheduled = true;
+                requestAnimationFrame(updateTimeline);
+            }
+        }
+        window.addEventListener('scroll', scheduleUpdate, { passive: true });
+        window.addEventListener('resize', scheduleUpdate);
+        updateTimeline();
+    })();
+    </script>
+</body>
+</html>

@@ -202,7 +202,7 @@
             font-weight: 500;
         }
 
-        /* 页面内浮动的两个入口 */
+        /* 页面内浮动的入口 */
         .bubble-links {
             position: absolute;
             top: 0;
@@ -310,6 +310,13 @@
             top: calc(50% - 48px);
             animation-delay: -3s;
         }
+        .memory-card.story-card {
+            left: calc(50% - 62px);
+            top: calc(50% + 143px);
+            width: 124px;
+            height: 124px;
+            animation-delay: -1.5s;
+        }
         .photo-label {
             font-size: 15px;
             font-weight: 600;
@@ -320,10 +327,21 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
+        .story-label {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--c-700);
+        }
+        .story-caption {
+            margin-top: 5px;
+            font-size: 11px;
+            color: var(--c-600);
+        }
         @media (max-width: 900px) {
             .bubble-links {
                 position: static;
                 display: flex;
+                flex-wrap: wrap;
                 justify-content: center;
                 align-items: center;
                 gap: 22px;
@@ -333,7 +351,8 @@
             }
             .memory-card,
             .memory-card.days-card,
-            .memory-card.photo-card {
+            .memory-card.photo-card,
+            .memory-card.story-card {
                 position: relative;
                 top: auto;
                 right: auto;
@@ -465,7 +484,8 @@
             .bubble-links { gap: 18px; }
             .memory-card,
             .memory-card.days-card,
-            .memory-card.photo-card { width: 124px; height: 124px; }
+            .memory-card.photo-card,
+            .memory-card.story-card { width: 124px; height: 124px; }
             .memory-date { font-size: 10px; }
             .memory-label { font-size: 10px; letter-spacing: 1px; }
             .memory-count { font-size: 34px; }
@@ -505,6 +525,10 @@
             </a>
             <a href="pages/photos.html" class="memory-card photo-card" aria-label="打开相册 Memories">
                 <span class="photo-label">Memories</span>
+            </a>
+            <a href="pages/story.html" class="memory-card story-card" aria-label="打开我们的故事时间线">
+                <span class="story-label">Story</span>
+                <span class="story-caption">我们的故事</span>
             </a>
         </nav>
     </div>
