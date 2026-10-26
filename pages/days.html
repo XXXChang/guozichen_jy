@@ -24,6 +24,7 @@
     </script>
 
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>纪念日详情</title>
     <style>
         body {
@@ -73,22 +74,22 @@
             z-index: 9999;
         }
 
-        /* 主布局：左右高度对齐（日历多高，右侧就多高） */
+        /* 日历独占上方一行，时间块在下方 */
         .main-layout {
-            display: flex;
-            gap: 32px;
-            align-items: stretch;          /* 关键：拉伸等高 */
-            width: 100%;
-            max-width: 1100px;
-        }
-
-        /* 右侧：两卡片等分撑满，高度与左边日历一致 */
-        .container {
             display: flex;
             flex-direction: column;
             gap: 24px;
-            flex: 1;
-            min-height: 0;                 /* 允许 flex 子项压缩 */
+            width: 100%;
+            max-width: 720px;
+            margin-top: 58px;
+        }
+
+        /* 两个关键时间块 */
+        .container {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 24px;
+            width: 100%;
         }
         .card {
             background: rgba(255, 255, 255, 0.75);
@@ -100,8 +101,8 @@
             border: 1px solid rgba(100, 181, 246, 0.4);
             text-align: center;
             transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
-            flex: 1 1 0;
-            min-height: 0;
+            min-width: 0;
+            min-height: 260px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -176,8 +177,7 @@
             box-shadow:
                 0 10px 40px rgba(100, 181, 246, 0.3),
                 inset 0 1px 0 rgba(255, 255, 255, 0.65);
-            width: 500px;
-            flex-shrink: 0;
+            width: 100%;
             box-sizing: border-box;
             transition: transform 0.5s cubic-bezier(.2,.8,.2,1), box-shadow 0.5s ease;
         }
@@ -594,56 +594,44 @@
             color: #0d47a1;
         }
 
-        /* ============================================
-           移动端布局：日历居中、两个时间块在下方堆叠、返回按钮缩小让位
-           ============================================ */
+        /* 手机端：日历占满可用宽度，两个时间块纵向排列 */
         @media (max-width: 768px) {
+            body { padding: 16px 12px 48px; }
             /* 关闭背景模糊（性能降级） */
-            .navbar,
             .card,
             .calendar,
             .back {
                 backdrop-filter: none;
                 -webkit-backdrop-filter: none;
             }
-            /* 关闭入场动画（性能降级） */
-            .navbar,
-            .calendar {
-                animation: none !important;
-            }
-
-            /* 主布局：竖向堆叠，全部居中 */
             .main-layout {
-                flex-direction: column;
-                gap: 20px;
-                align-items: center;
-                padding-top: 16px;
+                gap: 16px;
+                margin-top: 44px;
             }
-            /* 日历单独撑满宽度、居中 */
             .calendar {
                 width: 100%;
-                max-width: 420px;
-                margin: 0 auto;
+                padding: 14px;
             }
-            /* 右侧两卡片：横向并排（保持两栏更紧凑） */
+            .cal-header { margin-bottom: 18px; }
+            .cal-title { font-size: 18px; }
+            .cal-weekdays, .cal-grid { gap: 4px; }
+            .cal-day { min-width: 0; border-radius: 8px; font-size: 12px; }
+            .legend { gap: 8px; margin-top: 14px; padding: 8px; }
+            .events { margin-top: 18px; padding-top: 18px; }
             .container {
-                width: 100%;
-                max-width: 420px;
-                flex-direction: row;
-                gap: 12px;
+                grid-template-columns: 1fr;
+                gap: 14px;
             }
             .card {
-                padding: 16px 12px;
-                flex: 1 1 0;
+                min-height: 0;
+                padding: 20px;
             }
-            .card-title { font-size: 12px; letter-spacing: 2px; }
-            .card-date  { font-size: 11px; }
-            .main-count { font-size: 40px; }
-            .label      { font-size: 11px; }
-            .count      { font-size: 18px; }
-            .calendar-header h2 { font-size: 16px; }
+            .card-title { font-size: 14px; letter-spacing: 2px; }
+            .card-date  { font-size: 12px; }
+            .main-count { font-size: 48px; }
+            .modal-event-row { flex-wrap: wrap; }
+            .modal-event-row .event-name { flex-basis: 100%; }
 
-            /* 返回按钮：缩小 + 移到顶部更紧凑，避免遮挡 */
             .back {
                 top: 12px;
                 left: 12px;
@@ -671,7 +659,7 @@
     <canvas id="flowCanvas"></canvas>
 
     <div class="main-layout">
-        <!-- 日历靠左 -->
+        <!-- 日历独占上方 -->
         <div class="calendar">
             <div class="cal-header">
                 <div class="cal-title" id="calTitle"></div>
@@ -705,7 +693,7 @@
             </div>
         </div>
 
-        <!-- 右侧：两卡片上下排列 -->
+        <!-- 关键时间块在日历下方 -->
         <div class="container">
             <div class="card">
                 <div class="card-title">在一起</div>
