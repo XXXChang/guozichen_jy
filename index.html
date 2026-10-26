@@ -19,17 +19,23 @@
             --c-600: #7c3aed;
             --c-700: #6d28d9;
             --c-800: #5b21b6;
+            --c-100-rgb: 237, 233, 254;
+            --c-300-rgb: 196, 181, 253;
+            --c-400-rgb: 167, 139, 250;
+            --c-500-rgb: 139, 92, 246;
+            --c-600-rgb: 124, 58, 237;
+            --c-700-rgb: 109, 40, 217;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background:
                 /* 柔光斑 1：左上角紫色光 */
-                radial-gradient(ellipse 600px 500px at 15% 20%, rgba(196, 181, 253, 0.55), transparent 60%),
+                radial-gradient(ellipse 600px 500px at 15% 20%, rgba(var(--c-300-rgb), 0.55), transparent 60%),
                 /* 柔光斑 2：右下角深紫光 */
-                radial-gradient(ellipse 700px 600px at 85% 80%, rgba(124, 58, 237, 0.35), transparent 60%),
+                radial-gradient(ellipse 700px 600px at 85% 80%, rgba(var(--c-600-rgb), 0.35), transparent 60%),
                 /* 柔光斑 3：底部点缀 */
-                radial-gradient(circle 400px at 50% 100%, rgba(167, 139, 250, 0.25), transparent 70%),
+                radial-gradient(circle 400px at 50% 100%, rgba(var(--c-400-rgb), 0.25), transparent 70%),
                 linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 30%, var(--bg-3) 60%, var(--bg-4) 100%);
             background-attachment: fixed;
             min-height: 100vh;
@@ -87,7 +93,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 30px;
+            margin-bottom: 12px;
             position: relative;
         }
         .avatar {
@@ -104,8 +110,8 @@
             font-size: 48px;
             color: white;
             box-shadow:
-                0 8px 32px rgba(139, 92, 246, 0.45),
-                0 0 60px rgba(139, 92, 246, 0.25),
+                0 8px 32px rgba(var(--c-500-rgb), 0.45),
+                0 0 60px rgba(var(--c-500-rgb), 0.25),
                 inset 0 0 0 6px rgba(255, 255, 255, 0.85);
             cursor: pointer;
             transition: transform 0.4s cubic-bezier(.2,.8,.2,1), box-shadow 0.4s ease;
@@ -117,7 +123,7 @@
             position: absolute;
             inset: -4px;
             border-radius: 50%;
-            background: conic-gradient(from 0deg, transparent 0%, rgba(255,255,255,0.7) 25%, transparent 50%, rgba(196,181,253,0.7) 75%, transparent 100%);
+            background: conic-gradient(from 0deg, transparent 0%, rgba(255,255,255,0.7) 25%, transparent 50%, rgba(var(--c-300-rgb), 0.7) 75%, transparent 100%);
             animation: spin 5s linear infinite;
             z-index: -1;
             filter: blur(2px);
@@ -134,8 +140,8 @@
         .avatar:hover {
             transform: scale(1.1) translateY(-2px);
             box-shadow:
-                0 16px 48px rgba(139, 92, 246, 0.55),
-                0 0 100px rgba(139, 92, 246, 0.4),
+                0 16px 48px rgba(var(--c-500-rgb), 0.55),
+                0 0 100px rgba(var(--c-500-rgb), 0.4),
                 inset 0 0 0 6px rgba(255, 255, 255, 0.95);
         }
         .avatar-left {
@@ -166,7 +172,7 @@
             color: var(--c-800);
             margin-bottom: 10px;
             letter-spacing: 4px;
-            text-shadow: 0 0 24px rgba(167, 139, 250, 0.45), 2px 2px 8px rgba(124, 58, 237, 0.15);
+            text-shadow: 0 0 24px rgba(var(--c-400-rgb), 0.45), 2px 2px 8px rgba(var(--c-600-rgb), 0.15);
             background: linear-gradient(120deg, var(--c-700), var(--c-500), var(--c-300), var(--c-500), var(--c-700));
             background-size: 300% 100%;
             -webkit-background-clip: text;
@@ -209,13 +215,13 @@
             z-index: 10;
             background:
                 linear-gradient(135deg, rgba(255,255,255,0.55), rgba(255,255,255,0.25)) padding-box,
-                linear-gradient(135deg, rgba(196,181,253,0.6), rgba(124,58,237,0.4)) border-box;
+                linear-gradient(135deg, rgba(var(--c-300-rgb), 0.6), rgba(var(--c-600-rgb), 0.4)) border-box;
             backdrop-filter: blur(24px) saturate(180%);
             -webkit-backdrop-filter: blur(24px) saturate(180%);
             border-radius: 20px;
             padding: 18px 28px;
             box-shadow:
-                0 10px 40px rgba(139, 92, 246, 0.28),
+                0 10px 40px rgba(var(--c-500-rgb), 0.28),
                 inset 0 1px 0 rgba(255,255,255,0.6);
             border: 1.5px solid transparent;
             text-align: center;
@@ -237,7 +243,7 @@
         .memory-card:hover {
             transform: translateY(-4px) scale(1.02);
             box-shadow:
-                0 16px 48px rgba(139, 92, 246, 0.4),
+                0 16px 48px rgba(var(--c-500-rgb), 0.4),
                 inset 0 1px 0 rgba(255,255,255,0.7);
         }
         .memory-label {
@@ -306,11 +312,11 @@
             font-size: 16px;
             font-weight: 500;
             transition: transform 0.4s cubic-bezier(.2,.8,.2,1), box-shadow 0.4s ease, color 0.3s, background 0.3s;
-            border: 1px solid rgba(139, 92, 246, 0.35);
-            background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(243,232,255,0.5));
+            border: 1px solid rgba(var(--c-500-rgb), 0.35);
+            background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(var(--c-100-rgb), 0.5));
             backdrop-filter: blur(14px) saturate(160%);
             -webkit-backdrop-filter: blur(14px) saturate(160%);
-            box-shadow: 0 4px 16px rgba(139, 92, 246, 0.18), inset 0 1px 0 rgba(255,255,255,0.6);
+            box-shadow: 0 4px 16px rgba(var(--c-500-rgb), 0.18), inset 0 1px 0 rgba(255,255,255,0.6);
             overflow: hidden;
         }
         /* 高光扫过 */
@@ -326,18 +332,103 @@
         .link-card:hover {
             transform: translateY(-5px) scale(1.04);
             border-color: var(--c-500);
-            box-shadow: 0 12px 30px rgba(139, 92, 246, 0.35), inset 0 1px 0 rgba(255,255,255,0.7);
+            box-shadow: 0 12px 30px rgba(var(--c-500-rgb), 0.35), inset 0 1px 0 rgba(255,255,255,0.7);
             color: var(--c-800);
-            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(233,213,255,0.7));
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(var(--c-100-rgb), 0.7));
         }
         .link-card:hover::before { left: 130%; }
+
+        /* 头像下方的彩虹色相滑条 */
+        .theme-hue-slider {
+            appearance: none;
+            -webkit-appearance: none;
+            --heart-outline: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 38 36'%3E%3Cpath d='M19 32 C15 28 3 21 3 13 C3 7 7 3 13 3 C16 3 18 5 19 7 C20 5 22 3 25 3 C31 3 35 7 35 13 C35 21 23 28 19 32 Z' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            --hue-ramp: linear-gradient(90deg,
+                hsl(0 76% 58%), hsl(30 76% 58%), hsl(60 76% 58%),
+                hsl(90 76% 58%), hsl(120 76% 58%), hsl(150 76% 58%),
+                hsl(180 76% 58%), hsl(210 76% 58%), hsl(240 76% 58%),
+                hsl(270 76% 58%), hsl(300 76% 58%), hsl(330 76% 58%),
+                hsl(360 76% 58%));
+            display: block;
+            width: min(230px, calc(100vw - 48px));
+            height: 44px;
+            margin: 0 0 20px;
+            background: transparent;
+            cursor: pointer;
+            touch-action: none;
+        }
+        .theme-hue-slider:focus-visible {
+            outline: 2px solid var(--c-700);
+            outline-offset: 3px;
+            border-radius: 22px;
+        }
+        .theme-hue-slider::-webkit-slider-runnable-track {
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.95);
+            border-radius: 999px;
+            background: var(--hue-ramp);
+            box-shadow: 0 0 0 2px rgba(var(--c-700-rgb), 0.45), 0 3px 13px rgba(var(--c-700-rgb), 0.22), inset 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .theme-hue-slider::-moz-range-track {
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.95);
+            border-radius: 999px;
+            background: var(--hue-ramp);
+            box-shadow: 0 0 0 2px rgba(var(--c-700-rgb), 0.45), 0 3px 13px rgba(var(--c-700-rgb), 0.22), inset 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .theme-hue-slider::-webkit-slider-thumb {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 38px;
+            height: 36px;
+            margin-top: -8px;
+            border: 0;
+            background: var(--c-700);
+            -webkit-mask: var(--heart-outline) center / contain no-repeat;
+            mask: var(--heart-outline) center / contain no-repeat;
+            filter: drop-shadow(0 0 2px white) drop-shadow(0 3px 5px rgba(var(--c-700-rgb), 0.4));
+        }
+        .theme-hue-slider::-moz-range-thumb {
+            width: 38px;
+            height: 36px;
+            border: 0;
+            background: var(--c-700);
+            -webkit-mask: var(--heart-outline) center / contain no-repeat;
+            mask: var(--heart-outline) center / contain no-repeat;
+            filter: drop-shadow(0 0 2px white) drop-shadow(0 3px 5px rgba(var(--c-700-rgb), 0.4));
+        }
 
         /* 底部 */
         .footer {
             position: fixed;
             bottom: 20px;
-            color: rgba(139, 92, 246, 0.5);
+            color: rgba(var(--c-500-rgb), 0.5);
             font-size: 13px;
+        }
+
+        @media (max-width: 480px) {
+            .memory-card {
+                top: 16px;
+                right: 16px;
+                min-width: 140px;
+                padding: 12px 16px;
+                border-radius: 16px;
+            }
+            .memory-card.photo-card {
+                left: 16px;
+                padding: 9px 14px;
+            }
+            .photo-label {
+                font-size: 12px;
+                letter-spacing: 1px;
+            }
+            .memory-date { font-size: 10px; }
+            .memory-label { font-size: 10px; letter-spacing: 1px; }
+            .memory-count { font-size: 34px; }
+            .memory-unit { font-size: 11px; }
+            .content { padding: 116px 16px 64px; }
+            .avatar { width: 96px; height: 96px; }
+            h1 { font-size: 40px; }
         }
     </style>
 </head>
@@ -366,10 +457,140 @@
                 <img src="assets/gzc_jy_Img/HeadIcon2.jpg" alt="头像2">
             </div>
         </div>
+        <input class="theme-hue-slider" id="themeHue" type="range" min="0" max="359" value="258" aria-label="调整主页主题颜色" title="拖动调整主题颜色">
         <h1>JY_GZC</h1>
         <div class="subtitle" id="subtitle"></div>
     </div>
 
+    <script>
+    (function () {
+        const DEFAULT_COLOR = '#8b5cf6';
+        const STORAGE_KEY = 'gzc-home-theme-color';
+        const hueSlider = document.getElementById('themeHue');
+        const root = document.documentElement;
+
+        function hexToRgb(hex) {
+            const value = hex.replace('#', '');
+            return {
+                r: parseInt(value.slice(0, 2), 16),
+                g: parseInt(value.slice(2, 4), 16),
+                b: parseInt(value.slice(4, 6), 16)
+            };
+        }
+
+        function rgbToHex({ r, g, b }) {
+            return '#' + [r, g, b]
+                .map(value => Math.round(value).toString(16).padStart(2, '0'))
+                .join('');
+        }
+
+        function hueToHex(hue) {
+            const lightness = 0.58;
+            const chroma = 0.76 * Math.min(lightness, 1 - lightness);
+            const channel = offset => {
+                const position = (offset + hue / 30) % 12;
+                return 255 * (lightness - chroma * Math.max(-1, Math.min(position - 3, 9 - position, 1)));
+            };
+            return rgbToHex({ r: channel(0), g: channel(8), b: channel(4) });
+        }
+
+        function hexToHue(hex) {
+            const { r, g, b } = hexToRgb(hex);
+            const high = Math.max(r, g, b);
+            const low = Math.min(r, g, b);
+            const delta = high - low;
+            if (delta === 0) return 258;
+            let hue = high === r ? ((g - b) / delta) % 6
+                : high === g ? (b - r) / delta + 2
+                : (r - g) / delta + 4;
+            return Math.round((hue * 60 + 360) % 360);
+        }
+
+        function mix(color, target, amount) {
+            const from = hexToRgb(color);
+            const to = hexToRgb(target);
+            return rgbToHex({
+                r: from.r + (to.r - from.r) * amount,
+                g: from.g + (to.g - from.g) * amount,
+                b: from.b + (to.b - from.b) * amount
+            });
+        }
+
+        function toRgbValue(hex) {
+            const { r, g, b } = hexToRgb(hex);
+            return `${r}, ${g}, ${b}`;
+        }
+
+        function createTheme(base) {
+            const colors = {
+                c50: mix(base, '#ffffff', 0.9),
+                c100: mix(base, '#ffffff', 0.78),
+                c300: mix(base, '#ffffff', 0.48),
+                c400: mix(base, '#ffffff', 0.24),
+                c500: base,
+                c600: mix(base, '#000000', 0.14),
+                c700: mix(base, '#000000', 0.25),
+                c800: mix(base, '#000000', 0.36)
+            };
+
+            return {
+                base,
+                colors,
+                backgrounds: [
+                    mix(base, '#ffffff', 0.88),
+                    mix(base, '#ffffff', 0.68),
+                    mix(base, '#ffffff', 0.42),
+                    mix(base, '#000000', 0.03)
+                ],
+                particlePalette: [colors.c300, colors.c400, colors.c500, colors.c600, colors.c700],
+                trailColor: `rgba(${toRgbValue(colors.c100)}, 0.15)`,
+                heartStroke: `rgba(${toRgbValue(colors.c700)}, 0.6)`
+            };
+        }
+
+        function applyTheme(value, persist) {
+            const normalized = /^#[0-9a-f]{6}$/i.test(value) ? value.toLowerCase() : DEFAULT_COLOR;
+            const theme = createTheme(normalized);
+            const { colors, backgrounds } = theme;
+
+            root.style.setProperty('--bg-1', backgrounds[0]);
+            root.style.setProperty('--bg-2', backgrounds[1]);
+            root.style.setProperty('--bg-3', backgrounds[2]);
+            root.style.setProperty('--bg-4', backgrounds[3]);
+
+            Object.entries(colors).forEach(([name, color]) => {
+                root.style.setProperty(`--${name.replace('c', 'c-')}`, color);
+            });
+
+            ['c100', 'c300', 'c400', 'c500', 'c600', 'c700'].forEach(name => {
+                root.style.setProperty(`--${name.replace('c', 'c-')}-rgb`, toRgbValue(colors[name]));
+            });
+
+            window.homeTheme = theme;
+
+            if (persist) {
+                try {
+                    localStorage.setItem(STORAGE_KEY, normalized);
+                } catch (error) {
+                    // 部分隐私模式会禁用本地存储，颜色仍在当前页面生效。
+                }
+            }
+
+            window.dispatchEvent(new CustomEvent('themechange', { detail: theme }));
+        }
+
+        let initialColor = DEFAULT_COLOR;
+        try {
+            initialColor = localStorage.getItem(STORAGE_KEY) || DEFAULT_COLOR;
+        } catch (error) {
+            initialColor = DEFAULT_COLOR;
+        }
+
+        applyTheme(initialColor, false);
+        hueSlider.value = hexToHue(window.homeTheme.base);
+        hueSlider.addEventListener('input', event => applyTheme(hueToHex(Number(event.target.value)), true));
+    })();
+    </script>
 
     <script src="assets/js/utils.js"></script>
     <script>
@@ -449,15 +670,29 @@
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        const particles = Array.from({ length: 50 }, () => ({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            r: Math.random() * 3 + 2,
-            vx: (Math.random() - 0.5) * 0.4,
-            vy: Math.random() * 0.6 + 0.3,
-            alpha: Math.random() * 0.5 + 0.3,
-            color: ['#7c3aed', '#8b5cf6', '#a78bfa', '#c4b5fd', '#ddd6fe'][Math.floor(Math.random() * 5)]
-        }));
+        let backgroundPalette = window.homeTheme?.particlePalette || ['#c4b5fd', '#a78bfa', '#8b5cf6', '#7c3aed', '#6d28d9'];
+        let trailColor = window.homeTheme?.trailColor || 'rgba(237, 233, 254, 0.15)';
+        const particles = Array.from({ length: 50 }, () => {
+            const tone = Math.floor(Math.random() * backgroundPalette.length);
+            return {
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                r: Math.random() * 3 + 2,
+                vx: (Math.random() - 0.5) * 0.4,
+                vy: Math.random() * 0.6 + 0.3,
+                alpha: Math.random() * 0.5 + 0.3,
+                tone,
+                color: backgroundPalette[tone]
+            };
+        });
+
+        window.addEventListener('themechange', event => {
+            backgroundPalette = event.detail.particlePalette;
+            trailColor = event.detail.trailColor;
+            particles.forEach(particle => {
+                particle.color = backgroundPalette[particle.tone % backgroundPalette.length];
+            });
+        });
 
         function drawHeart(x, y, size, color, alpha) {
             ctx.save();
@@ -475,8 +710,8 @@
         }
 
         function draw() {
-            // 拖影色：和背景同色系（淡紫），不冲淡 body 渐变
-            ctx.fillStyle = 'rgba(232, 213, 252, 0.15)';
+            // 拖影色跟随当前主题色，不遮盖用户选择的背景。
+            ctx.fillStyle = trailColor;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             particles.forEach(p => {
                 p.x += p.vx; p.y += p.vy;
@@ -504,6 +739,17 @@
         const ctx = canvas.getContext('2d');
         let dpr = window.devicePixelRatio || 1;
         let particles = [];
+        let heartPalette = window.homeTheme?.particlePalette || ['#c4b5fd', '#a78bfa', '#8b5cf6', '#7c3aed', '#6d28d9'];
+        let heartStroke = window.homeTheme?.heartStroke || 'rgba(109, 40, 217, 0.6)';
+
+        window.addEventListener('themechange', event => {
+            heartPalette = event.detail.particlePalette;
+            heartStroke = event.detail.heartStroke;
+            particles.forEach((particle, index) => {
+                particle.color = heartPalette[index % heartPalette.length];
+                particle.stroke = heartStroke;
+            });
+        });
 
         function resize() {
             dpr = window.devicePixelRatio || 1;
@@ -539,9 +785,8 @@
             this.decay = 0.012 + Math.random() * 0.012;
             this.angle = (Math.random() - 0.5) * 0.6;
             this.spin = (Math.random() - 0.5) * 0.05;
-            // 紫色系：与主界面 --c-400~--c-800 主题一致
-            const purples = ['#c4b5fd', '#a78bfa', '#8b5cf6', '#7c3aed', '#6d28d9'];
-            this.color = purples[Math.floor(Math.random() * purples.length)];
+            this.color = heartPalette[Math.floor(Math.random() * heartPalette.length)];
+            this.stroke = heartStroke;
         }
 
         Particle.prototype.update = function () {
@@ -563,7 +808,7 @@
             ctx.fill();
             // 描边增加立体感
             ctx.lineWidth = 1.2;
-            ctx.strokeStyle = 'rgba(109, 40, 217, 0.6)';
+            ctx.strokeStyle = this.stroke;
             ctx.stroke();
             ctx.restore();
         };
