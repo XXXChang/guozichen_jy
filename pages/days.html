@@ -1230,7 +1230,7 @@
     (function () {
         const canvas = document.getElementById('flowCanvas');
         const ctx = canvas.getContext('2d');
-        // 移动端性能：限制 DPR 最多 1.5，避免超高分辨率导致卡顿
+        // 与主页保持相同的画布缩放
         const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
 
         function resize() {
@@ -1251,7 +1251,7 @@
         // 蓝色系：与淡蓝底板和谐
         const palette = ['#1976d2', '#2196f3', '#42a5f5', '#64b5f6', '#90caf9'];
 
-        // 移动端粒子数减半（屏幕小 + 弱 GPU）
+        // 与主页保持相同的粒子数量和运动参数
         const isMobile = window.matchMedia('(max-width: 768px)').matches;
         const PARTICLE_COUNT = isMobile ? 22 : 50;
 
@@ -1281,8 +1281,10 @@
         }
 
         function draw() {
-            // 底板是纯色淡蓝，无需拖影；直接清屏 + 叠加爱心，规避"一闪一闪"
-            ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+            ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+            ctx.globalCompositeOperation = 'source-over';
             particles.forEach(p => {
                 p.x += p.vx; p.y += p.vy;
                 if (p.x < 0) p.x = window.innerWidth;

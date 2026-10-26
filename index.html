@@ -711,19 +711,33 @@
         const daysElement = document.getElementById('daysCount');
         animateNumber(daysElement, daysSince);
 
-        // 粒子背景 - 蓝色爱心飘落
+        // 背景爱心飘落
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+
+        function resizeBackground() {
+            canvas.width = window.innerWidth * dpr;
+            canvas.height = window.innerHeight * dpr;
+            canvas.style.width = window.innerWidth + 'px';
+            canvas.style.height = window.innerHeight + 'px';
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        resizeBackground();
+        let backgroundResizeTimer = null;
+        window.addEventListener('resize', () => {
+            clearTimeout(backgroundResizeTimer);
+            backgroundResizeTimer = setTimeout(resizeBackground, 150);
+        });
 
         let backgroundPalette = window.homeTheme?.particlePalette || ['#c4b5fd', '#a78bfa', '#8b5cf6', '#7c3aed', '#6d28d9'];
-        let trailColor = window.homeTheme?.trailColor || 'rgba(237, 233, 254, 0.15)';
-        const particles = Array.from({ length: 50 }, () => {
+        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+        const PARTICLE_COUNT = isMobile ? 22 : 50;
+        const particles = Array.from({ length: PARTICLE_COUNT }, () => {
             const tone = Math.floor(Math.random() * backgroundPalette.length);
             return {
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
                 r: Math.random() * 3 + 2,
                 vx: (Math.random() - 0.5) * 0.4,
                 vy: Math.random() * 0.6 + 0.3,
@@ -735,7 +749,6 @@
 
         window.addEventListener('themechange', event => {
             backgroundPalette = event.detail.particlePalette;
-            trailColor = event.detail.trailColor;
             particles.forEach(particle => {
                 particle.color = backgroundPalette[particle.tone % backgroundPalette.length];
             });
@@ -757,26 +770,24 @@
         }
 
         function draw() {
-            // 拖影色跟随当前主题色，不遮盖用户选择的背景。
-            ctx.fillStyle = trailColor;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // 透明衰减保留拖影，同时不改变各页面的背景色。
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+            ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+            ctx.globalCompositeOperation = 'source-over';
             particles.forEach(p => {
                 p.x += p.vx; p.y += p.vy;
-                if (p.x < 0) p.x = canvas.width;
-                if (p.x > canvas.width) p.x = 0;
-                if (p.y > canvas.height) {
+                if (p.x < 0) p.x = window.innerWidth;
+                if (p.x > window.innerWidth) p.x = 0;
+                if (p.y > window.innerHeight) {
                     p.y = -10;
-                    p.x = Math.random() * canvas.width;
+                    p.x = Math.random() * window.innerWidth;
                 }
                 drawHeart(p.x, p.y, p.r, p.color, p.alpha);
             });
             requestAnimationFrame(draw);
         }
         draw();
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
     </script>
 
     <!-- 全局点击爱心特效（紫色系，与主界面主题一致） -->
