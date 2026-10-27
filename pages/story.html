@@ -105,13 +105,6 @@
             line-height: 1.2;
             text-shadow: 0 3px 18px rgba(167, 116, 68, 0.13);
         }
-        .intro-copy {
-            max-width: 450px;
-            margin: 16px auto 0;
-            color: var(--muted);
-            font-size: 15px;
-            line-height: 1.8;
-        }
         .scroll-cue {
             display: inline-flex;
             align-items: center;
@@ -179,7 +172,7 @@
             position: relative;
             display: grid;
             grid-template-columns: minmax(0, 1fr) 52px minmax(0, 1fr);
-            min-height: 215px;
+            min-height: 150px;
         }
         .event-pin {
             z-index: 2;
@@ -202,7 +195,8 @@
         .event-copy {
             grid-row: 1;
             max-width: 390px;
-            padding: 20px 23px 24px;
+            min-height: 86px;
+            padding: 23px 25px;
             border: 1px solid rgba(168, 115, 53, 0.25);
             border-top: 2px solid var(--gold);
             border-radius: 6px;
@@ -237,37 +231,10 @@
             transform: translateY(0);
         }
         .event-meta {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            padding-top: 14px;
-            color: var(--teal);
-            font-size: 12px;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-        .story-event:nth-of-type(odd) .event-meta { flex-direction: row-reverse; }
-        .event-no { color: var(--gold); font-size: 11px; }
-        .event-copy h2 {
-            margin: 19px 0 9px;
-            font-size: 27px;
-            font-family: "Songti SC", "Noto Serif CJK SC", "SimSun", serif;
+            color: var(--ink);
+            font-size: 18px;
             font-weight: 600;
-            line-height: 1.35;
-        }
-        .event-place {
-            margin: 0 0 8px;
-            color: var(--rose);
-            font-size: 12px;
-            font-weight: 700;
-        }
-        .event-description {
-            margin: 0;
-            color: var(--muted);
-            font-size: 14px;
-            line-height: 1.75;
+            font-variant-numeric: tabular-nums;
         }
         .ending {
             position: relative;
@@ -286,7 +253,6 @@
             font-size: 32px;
         }
         .ending h2 { margin: 0 0 14px; font-size: 27px; }
-        .ending p { margin: 0 auto 25px; max-width: 620px; color: var(--muted); font-size: 14px; }
         .ending a {
             display: inline-block;
             padding: 10px 18px;
@@ -314,7 +280,7 @@
             .story-event {
                 grid-template-columns: 28px minmax(0, 1fr);
                 column-gap: 22px;
-                min-height: 195px;
+                min-height: 130px;
             }
             .event-pin { grid-column: 1; }
             .story-event:nth-of-type(n) .event-copy {
@@ -324,9 +290,8 @@
                 margin: 0;
                 text-align: left;
             }
-            .story-event:nth-of-type(n) .event-meta { flex-direction: row; }
-            .event-copy { padding: 17px 17px 20px; }
-            .event-copy h2 { font-size: 23px; margin-top: 16px; }
+            .event-copy { min-height: 76px; padding: 21px 18px; }
+            .event-meta { font-size: 15px; }
         }
         @media (prefers-reduced-motion: reduce) {
             html { scroll-behavior: auto; }
@@ -355,7 +320,6 @@
             </div>
             <p class="eyebrow">JY & GZC · OUR STORY</p>
             <h1 id="story-title">我们的故事</h1>
-            <p class="intro-copy">从相识的那一天起，沿着时间，重新走过每一个值得记住的瞬间。</p>
             <div class="scroll-cue" aria-hidden="true"><span>↓</span> 向下翻阅</div>
         </section>
 
@@ -366,91 +330,69 @@
             <article class="story-event">
                 <span class="event-pin" aria-hidden="true"></span>
                 <div class="event-copy">
-                    <div class="event-meta"><time datetime="2025-11-08">2025.11.08</time><span class="event-no">01 / 相识</span></div>
-                    <h2>初次相遇</h2>
-                    <p class="event-description">故事从十一月的这一天开始。</p>
+                    <div class="event-meta"><time datetime="2025-11-08">2025.11.08</time></div>
                 </div>
             </article>
 
             <article class="story-event">
                 <span class="event-pin" aria-hidden="true"></span>
                 <div class="event-copy">
-                    <div class="event-meta"><time datetime="2025-12-20">2025.12.20 - 12.21</time><span class="event-no">02 / 演唱会</span></div>
-                    <h2>南京</h2>
-                    <p class="event-description">姚晓棠南京演唱会。</p>
+                    <div class="event-meta"><time datetime="2025-12-20">2025.12.20 - 12.21</time></div>
                 </div>
             </article>
 
             <article class="story-event">
                 <span class="event-pin" aria-hidden="true"></span>
                 <div class="event-copy">
-                    <div class="event-meta"><time datetime="2026-07-11">2026.07.11 - 07.21</time><span class="event-no">03 / 出行</span></div>
-                    <h2>一路向前</h2>
-                    <p class="event-place">武汉 · 长沙 · 邵阳 · 武汉</p>
-                    <p class="event-description">和小铮去武汉玩，从一座城市走向下一座。</p>
+                    <div class="event-meta"><time datetime="2026-07-11">2026.07.11 - 07.21</time></div>
                 </div>
             </article>
 
             <article class="story-event">
                 <span class="event-pin" aria-hidden="true"></span>
                 <div class="event-copy">
-                    <div class="event-meta"><time datetime="2026-08-13">2026.08.13 - 08.16</time><span class="event-no">04 / 演唱会</span></div>
-                    <h2>南昌的夏天</h2>
-                    <p class="event-place">武汉 · 南昌 · 武汉</p>
-                    <p class="event-description">王赫野南昌演唱会。</p>
+                    <div class="event-meta"><time datetime="2026-08-13">2026.08.13 - 08.16</time></div>
                 </div>
             </article>
 
             <article class="story-event">
                 <span class="event-pin" aria-hidden="true"></span>
                 <div class="event-copy">
-                    <div class="event-meta"><time datetime="2026-09-05">2026.09.05 - 09.06</time><span class="event-no">05 / 演唱会</span></div>
-                    <h2>广州</h2>
-                    <p class="event-description">姚晓棠广州演唱会。</p>
+                    <div class="event-meta"><time datetime="2026-09-05">2026.09.05 - 09.06</time></div>
                 </div>
             </article>
 
             <article class="story-event highlight">
                 <span class="event-pin" aria-hidden="true"></span>
                 <div class="event-copy">
-                    <div class="event-meta"><time datetime="2026-09-12">2026.09.12</time><span class="event-no">06 / 相爱</span></div>
-                    <h2>在一起啦</h2>
-                    <p class="event-description">从这一天起，我们在一起了。</p>
+                    <div class="event-meta"><time datetime="2026-09-12">2026.09.12</time></div>
                 </div>
             </article>
 
             <article class="story-event">
                 <span class="event-pin" aria-hidden="true"></span>
                 <div class="event-copy">
-                    <div class="event-meta"><time datetime="2026-09-12">2026.09.12 - 09.14</time><span class="event-no">07 / 见面</span></div>
-                    <h2>武汉的几天</h2>
-                    <p class="event-description">在武汉见面的几天。</p>
+                    <div class="event-meta"><time datetime="2026-09-12">2026.09.12 - 09.14</time></div>
                 </div>
             </article>
 
             <article class="story-event">
                 <span class="event-pin" aria-hidden="true"></span>
                 <div class="event-copy">
-                    <div class="event-meta"><time datetime="2026-10-04">2026.10.04 - 10.11</time><span class="event-no">08 / 相伴</span></div>
-                    <h2>甜蜜国庆</h2>
-                    <p class="event-place">武汉</p>
-                    <p class="event-description">十月的武汉，又多了一段共同的回忆。</p>
+                    <div class="event-meta"><time datetime="2026-10-04">2026.10.04 - 10.11</time></div>
                 </div>
             </article>
 
             <article class="story-event">
                 <span class="event-pin" aria-hidden="true"></span>
                 <div class="event-copy">
-                    <div class="event-meta"><time datetime="2026-10-24">2026.10.24 - 10.25</time><span class="event-no">09 / 见面</span></div>
-                    <h2>又见武汉</h2>
-                    <p class="event-description">在武汉见面，继续写下十月的故事。</p>
+                    <div class="event-meta"><time datetime="2026-10-24">2026.10.24 - 10.25</time></div>
                 </div>
             </article>
         </section>
 
         <section class="ending" aria-label="故事继续">
             <h2>故事未完待续</h2>
-            <p>下一段时间，继续一起记录。</p>
             <a href="days.html">查看我们的日历 ↗</a>
         </section>
     </main>
