@@ -3,41 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#f2f5f4">
+    <meta name="theme-color" content="#fff7e9">
     <title>我们的故事 | JY_GZC</title>
     <script>document.documentElement.classList.add('js');</script>
     <style>
         :root {
-            --ink: #26343b;
-            --muted: #64757a;
-            --line: #c9d5d5;
-            --rose: #c65673;
-            --teal: #378a83;
-            --gold: #b58232;
+            --ink: #493b37;
+            --muted: #806f67;
+            --line: #ddcbb3;
+            --rose: #b96772;
+            --teal: #557e77;
+            --gold: #a87335;
+            --paper: #fffaf1;
         }
         * { box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body {
             margin: 0;
             overflow-x: hidden;
+            min-height: 100vh;
             color: var(--ink);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background:
-                linear-gradient(180deg, #f2f5f4 0%, #f6f4f7 48%, #f4f7f6 78%, #f9f1ee 100%);
+            background: linear-gradient(180deg, #fffaf0 0%, #f9ead5 42%, #fff5e6 74%, #f6e5d5 100%);
         }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background-image: radial-gradient(rgba(116, 85, 60, 0.09) 0.7px, transparent 0.7px);
+            background-size: 4px 4px;
+            opacity: 0.5;
+        }
+        main { position: relative; z-index: 2; }
         a { color: inherit; }
         a:focus-visible { outline: 2px solid var(--rose); outline-offset: 5px; }
         .page-nav {
-            position: relative;
-            z-index: 1;
+            position: sticky;
+            top: 0;
+            z-index: 20;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 16px;
-            width: min(100% - 40px, 1080px);
-            height: 72px;
-            margin: auto;
-            border-bottom: 1px solid rgba(38, 52, 59, 0.13);
+            width: 100%;
+            height: 68px;
+            padding: 0 max(20px, calc((100% - 1080px) / 2));
+            border-bottom: 1px solid rgba(130, 97, 67, 0.17);
+            background: rgba(255, 249, 238, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             font-size: 13px;
             font-weight: 600;
         }
@@ -46,30 +62,32 @@
         .brand { letter-spacing: 1px; white-space: nowrap; }
         .nav-actions { display: flex; align-items: center; gap: 26px; }
         .nav-actions a { white-space: nowrap; }
+        #storyPosition { color: var(--gold); font-variant-numeric: tabular-nums; }
         .intro {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: min(590px, 64vh);
-            padding: 52px 24px 55px;
+            min-height: min(550px, 62vh);
+            padding: 46px 24px 54px;
             text-align: center;
         }
         .portrait-pair {
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 28px;
+            margin-bottom: 30px;
         }
         .portrait-pair img {
-            width: 92px;
-            height: 92px;
+            width: 104px;
+            height: 104px;
             object-fit: cover;
             border-radius: 50%;
-            border: 5px solid #fff;
-            box-shadow: 0 10px 28px rgba(38, 52, 59, 0.14);
+            border: 6px solid var(--paper);
+            outline: 1px solid rgba(168, 115, 53, 0.27);
+            box-shadow: 0 12px 28px rgba(99, 68, 47, 0.18);
         }
-        .portrait-pair img + img { margin-left: -14px; }
+        .portrait-pair img + img { margin-left: -17px; }
         .portrait-pair img:first-child { rotate: -7deg; }
         .portrait-pair img:last-child { rotate: 7deg; }
         .eyebrow {
@@ -82,8 +100,10 @@
         h1 {
             margin: 0;
             font-size: 48px;
-            font-weight: 650;
+            font-family: "Songti SC", "Noto Serif CJK SC", "SimSun", serif;
+            font-weight: 600;
             line-height: 1.2;
+            text-shadow: 0 3px 18px rgba(167, 116, 68, 0.13);
         }
         .intro-copy {
             max-width: 450px;
@@ -106,7 +126,7 @@
             place-items: center;
             width: 28px;
             height: 28px;
-            border: 1px solid var(--line);
+            border: 1px solid var(--gold);
             border-radius: 50%;
             font-size: 15px;
             animation: cueDown 2.4s ease-in-out infinite;
@@ -115,10 +135,13 @@
             50% { transform: translateY(5px); }
         }
         .chapter-heading {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
             width: min(100% - 40px, 1080px);
             margin: 0 auto 58px;
             padding-top: 26px;
-            border-top: 1px solid rgba(38, 52, 59, 0.13);
+            border-top: 1px solid rgba(130, 97, 67, 0.22);
             color: var(--muted);
             font-size: 11px;
             font-weight: 700;
@@ -163,24 +186,34 @@
             grid-column: 2;
             grid-row: 1;
             justify-self: center;
-            width: 19px;
-            height: 19px;
-            border: 5px solid #f4f5f5;
+            width: 22px;
+            height: 22px;
+            border: 6px solid var(--paper);
             border-radius: 50%;
-            background: var(--teal);
-            box-shadow: 0 0 0 1px var(--teal);
+            background: var(--gold);
+            box-shadow: 0 0 0 1px var(--gold), 0 3px 10px rgba(99, 68, 47, 0.14);
             transition: transform 0.35s ease, background 0.35s ease, box-shadow 0.35s ease;
         }
         .story-event.is-current .event-pin {
             transform: scale(1.3);
             background: var(--rose);
-            box-shadow: 0 0 0 1px var(--rose), 0 0 0 8px rgba(198, 86, 115, 0.12);
+            box-shadow: 0 0 0 1px var(--rose), 0 0 0 8px rgba(185, 103, 114, 0.13);
         }
         .event-copy {
             grid-row: 1;
             max-width: 390px;
-            padding-bottom: 52px;
-            border-top: 1px solid rgba(38, 52, 59, 0.18);
+            padding: 20px 23px 24px;
+            border: 1px solid rgba(168, 115, 53, 0.25);
+            border-top: 2px solid var(--gold);
+            border-radius: 6px;
+            background: rgba(255, 253, 248, 0.84);
+            box-shadow: 0 12px 30px rgba(108, 72, 45, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        }
+        .story-event.highlight .event-copy {
+            border-color: rgba(185, 103, 114, 0.38);
+            border-top-color: var(--rose);
+            background: rgba(255, 243, 230, 0.96);
+            box-shadow: 0 14px 34px rgba(144, 79, 75, 0.12);
         }
         .story-event:nth-of-type(odd) .event-copy {
             grid-column: 1;
@@ -215,12 +248,13 @@
             font-weight: 700;
             letter-spacing: 1px;
         }
-        .story-event:nth-of-type(even) .event-meta { flex-direction: row-reverse; }
+        .story-event:nth-of-type(odd) .event-meta { flex-direction: row-reverse; }
         .event-no { color: var(--gold); font-size: 11px; }
         .event-copy h2 {
-            margin: 21px 0 9px;
+            margin: 19px 0 9px;
             font-size: 27px;
-            font-weight: 650;
+            font-family: "Songti SC", "Noto Serif CJK SC", "SimSun", serif;
+            font-weight: 600;
             line-height: 1.35;
         }
         .event-place {
@@ -237,9 +271,11 @@
         }
         .ending {
             position: relative;
-            max-width: 660px;
-            margin: 0 auto;
-            padding: 36px 24px 105px;
+            width: 100%;
+            margin: 0;
+            padding: 54px 24px 105px;
+            border-top: 1px solid rgba(168, 115, 53, 0.2);
+            background: rgba(255, 247, 232, 0.68);
             text-align: center;
         }
         .ending::before {
@@ -250,23 +286,23 @@
             font-size: 32px;
         }
         .ending h2 { margin: 0 0 14px; font-size: 27px; }
-        .ending p { margin: 0 0 25px; color: var(--muted); font-size: 14px; }
+        .ending p { margin: 0 auto 25px; max-width: 620px; color: var(--muted); font-size: 14px; }
         .ending a {
             display: inline-block;
             padding: 10px 18px;
-            border: 1px solid var(--ink);
+            border: 1px solid var(--gold);
             border-radius: 4px;
             font-size: 13px;
             font-weight: 600;
             text-decoration: none;
             transition: background 0.2s ease, color 0.2s ease;
         }
-        .ending a:hover { background: var(--ink); color: #fff; }
+        .ending a:hover { background: var(--ink); border-color: var(--ink); color: #fff; }
         @media (max-width: 700px) {
             .page-nav { height: 64px; }
             .nav-actions { gap: 14px; }
-            .intro { min-height: min(510px, 62vh); padding: 38px 20px 48px; }
-            .portrait-pair img { width: 76px; height: 76px; }
+            .intro { min-height: min(490px, 62vh); padding: 38px 20px 48px; }
+            .portrait-pair img { width: 82px; height: 82px; }
             h1 { font-size: 38px; }
             .scroll-cue { margin-top: 30px; }
             .chapter-heading { margin-bottom: 38px; }
@@ -289,6 +325,7 @@
                 text-align: left;
             }
             .story-event:nth-of-type(n) .event-meta { flex-direction: row; }
+            .event-copy { padding: 17px 17px 20px; }
             .event-copy h2 { font-size: 23px; margin-top: 16px; }
         }
         @media (prefers-reduced-motion: reduce) {
@@ -300,10 +337,12 @@
     </style>
 </head>
 <body>
+    <canvas id="fallingHearts" aria-hidden="true" style="position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;"></canvas>
+    <canvas id="clickHearts" aria-hidden="true" style="position:fixed;inset:0;width:100%;height:100%;z-index:9999;pointer-events:none;"></canvas>
     <nav class="page-nav" aria-label="页面导航">
         <a class="brand" href="../index.html">← JY_GZC</a>
         <div class="nav-actions">
-            <span id="storyPosition" aria-label="当前故事进度">01 / 08</span>
+            <span id="storyPosition" aria-label="当前故事进度">01 / 09</span>
             <a href="days.html">日历 ↗</a>
         </div>
     </nav>
@@ -320,7 +359,7 @@
             <div class="scroll-cue" aria-hidden="true"><span>↓</span> 向下翻阅</div>
         </section>
 
-        <div class="chapter-heading">THE TIMELINE / 故事时间线</div>
+        <div class="chapter-heading"><span>THE TIMELINE / 故事时间线</span><span>2025 - 2026</span></div>
         <section class="storyline" aria-label="关键时间节点">
             <div class="timeline-progress" aria-hidden="true"></div>
 
@@ -338,7 +377,7 @@
                 <div class="event-copy">
                     <div class="event-meta"><time datetime="2025-12-20">2025.12.20 - 12.21</time><span class="event-no">02 / 演唱会</span></div>
                     <h2>南京</h2>
-                    <p class="event-description">一起记下的演唱会时光。</p>
+                    <p class="event-description">姚晓棠南京演唱会。</p>
                 </div>
             </article>
 
@@ -371,7 +410,7 @@
                 </div>
             </article>
 
-            <article class="story-event">
+            <article class="story-event highlight">
                 <span class="event-pin" aria-hidden="true"></span>
                 <div class="event-copy">
                     <div class="event-meta"><time datetime="2026-09-12">2026.09.12</time><span class="event-no">06 / 相爱</span></div>
@@ -383,9 +422,9 @@
             <article class="story-event">
                 <span class="event-pin" aria-hidden="true"></span>
                 <div class="event-copy">
-                    <div class="event-meta"><time datetime="2026-09-12">2026.09.12 - 09.14</time><span class="event-no">07 / 约会</span></div>
+                    <div class="event-meta"><time datetime="2026-09-12">2026.09.12 - 09.14</time><span class="event-no">07 / 见面</span></div>
                     <h2>武汉的几天</h2>
-                    <p class="event-description">在武汉度过的约会时光。</p>
+                    <p class="event-description">在武汉见面的几天。</p>
                 </div>
             </article>
 
@@ -396,6 +435,15 @@
                     <h2>甜蜜国庆</h2>
                     <p class="event-place">武汉</p>
                     <p class="event-description">十月的武汉，又多了一段共同的回忆。</p>
+                </div>
+            </article>
+
+            <article class="story-event">
+                <span class="event-pin" aria-hidden="true"></span>
+                <div class="event-copy">
+                    <div class="event-meta"><time datetime="2026-10-24">2026.10.24 - 10.25</time><span class="event-no">09 / 见面</span></div>
+                    <h2>又见武汉</h2>
+                    <p class="event-description">在武汉见面，继续写下十月的故事。</p>
                 </div>
             </article>
         </section>
@@ -456,6 +504,170 @@
         window.addEventListener('scroll', scheduleUpdate, { passive: true });
         window.addEventListener('resize', scheduleUpdate);
         updateTimeline();
+    })();
+    </script>
+
+    <script>
+    (function () {
+        const canvas = document.getElementById('fallingHearts');
+        const ctx = canvas.getContext('2d');
+        const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+
+        function resize() {
+            canvas.width = window.innerWidth * dpr;
+            canvas.height = window.innerHeight * dpr;
+            canvas.style.width = window.innerWidth + 'px';
+            canvas.style.height = window.innerHeight + 'px';
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        resize();
+        let resizeTimer = null;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(resize, 150);
+        });
+
+        const palette = ['#d9a267', '#c17d72', '#a88457', '#b86e78', '#cb9567'];
+        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+        const PARTICLE_COUNT = isMobile ? 22 : 50;
+        const particles = Array.from({ length: PARTICLE_COUNT }, () => ({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            r: Math.random() * 3 + 2,
+            vx: (Math.random() - 0.5) * 0.4,
+            vy: Math.random() * 0.6 + 0.3,
+            alpha: Math.random() * 0.5 + 0.3,
+            color: palette[Math.floor(Math.random() * palette.length)]
+        }));
+
+        function drawHeart(x, y, size, color, alpha) {
+            ctx.save();
+            ctx.globalAlpha = alpha;
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            const s = size;
+            ctx.moveTo(x, y + s * 0.3);
+            ctx.bezierCurveTo(x, y, x - s, y, x - s, y + s * 0.5);
+            ctx.bezierCurveTo(x - s, y + s, x, y + s * 1.3, x, y + s * 1.5);
+            ctx.bezierCurveTo(x, y + s * 1.3, x + s, y + s, x + s, y + s * 0.5);
+            ctx.bezierCurveTo(x + s, y, x, y, x, y + s * 0.3);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function draw() {
+            ctx.globalCompositeOperation = 'destination-out';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+            ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+            ctx.globalCompositeOperation = 'source-over';
+            particles.forEach(p => {
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < 0) p.x = window.innerWidth;
+                if (p.x > window.innerWidth) p.x = 0;
+                if (p.y > window.innerHeight) {
+                    p.y = -10;
+                    p.x = Math.random() * window.innerWidth;
+                }
+                drawHeart(p.x, p.y, p.r, p.color, p.alpha);
+            });
+            requestAnimationFrame(draw);
+        }
+        draw();
+    })();
+    </script>
+
+    <script>
+    (function () {
+        const canvas = document.getElementById('clickHearts');
+        const ctx = canvas.getContext('2d');
+        const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        let particles = [];
+
+        function resize() {
+            canvas.width = window.innerWidth * dpr;
+            canvas.height = window.innerHeight * dpr;
+            canvas.style.width = window.innerWidth + 'px';
+            canvas.style.height = window.innerHeight + 'px';
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        resize();
+        let resizeTimer = null;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(resize, 150);
+        });
+
+        function heartShape(s) {
+            ctx.beginPath();
+            ctx.moveTo(0, s * 0.3);
+            ctx.bezierCurveTo(0, -s * 0.2, -s * 0.6, -s * 0.2, -s * 0.5, s * 0.2);
+            ctx.bezierCurveTo(-s * 0.4, s * 0.6, 0, s * 0.8, 0, s);
+            ctx.bezierCurveTo(0, s * 0.8, s * 0.4, s * 0.6, s * 0.5, s * 0.2);
+            ctx.bezierCurveTo(s * 0.6, -s * 0.2, 0, -s * 0.2, 0, s * 0.3);
+            ctx.closePath();
+        }
+
+        const palette = ['#d9a267', '#c17d72', '#a88457', '#b86e78', '#cb9567'];
+        function Particle(x, y) {
+            this.x = x; this.y = y;
+            this.size = 12 + Math.random() * 12;
+            this.vx = (Math.random() - 0.5) * 3;
+            this.vy = -(2 + Math.random() * 2.5);
+            this.life = 1;
+            this.decay = 0.01 + Math.random() * 0.012;
+            this.angle = (Math.random() - 0.5) * 0.6;
+            this.spin = (Math.random() - 0.5) * 0.05;
+            this.color = palette[Math.floor(Math.random() * palette.length)];
+        }
+        Particle.prototype.update = function () {
+            this.x += this.vx; this.y += this.vy;
+            this.vy += 0.05; this.vx *= 0.99;
+            this.angle += this.spin; this.life -= this.decay;
+        };
+        Particle.prototype.draw = function () {
+            ctx.save();
+            ctx.globalAlpha = Math.max(this.life, 0);
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.angle);
+            ctx.fillStyle = this.color;
+            heartShape(this.size);
+            ctx.fill();
+            ctx.lineWidth = 1.2;
+            ctx.strokeStyle = 'rgba(121, 71, 62, 0.58)';
+            ctx.stroke();
+            ctx.restore();
+        };
+
+        function spawn(x, y) {
+            const count = 3 + Math.floor(Math.random() * 3);
+            for (let i = 0; i < count; i++) {
+                const a = (Math.PI * 2 * i) / count + Math.random() * 0.5;
+                const r = Math.random() * 8;
+                const p = new Particle(x + Math.cos(a) * r, y + Math.sin(a) * r);
+                p.vx = Math.cos(a) * (1.2 + Math.random() * 1.5);
+                p.vy = Math.sin(a) * (1.2 + Math.random() * 1.5) - 1.5;
+                particles.push(p);
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            particles = particles.filter(p => p.life > 0);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        let lastTouchTime = 0;
+        window.addEventListener('click', event => {
+            if (Date.now() - lastTouchTime < 600) return;
+            spawn(event.clientX, event.clientY);
+        });
+        window.addEventListener('touchstart', event => {
+            lastTouchTime = Date.now();
+            const touch = event.touches[0];
+            spawn(touch.clientX, touch.clientY);
+        }, { passive: true });
     })();
     </script>
 </body>
