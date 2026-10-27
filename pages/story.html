@@ -1,6 +1,30 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+    <!-- ============================================
+         📖 故事时间线数据（统一数据源）
+         ✏️ 添加/修改节点：编辑下方 id="storyData" 块即可
+         字段说明：
+           date      : 单日节点，如 "2026-09-12"
+           start/end : 区间节点，如 "2026-10-04" ~ "2026-10-11"
+           highlight : true 会高亮该节点（可选）
+           label     : 自定义显示文字，不填则自动生成（可选）
+         ============================================ -->
+    <script type="application/json" id="storyData">
+    {
+        "events": [
+            { "date": "2025-11-08" },
+            { "start": "2025-12-20", "end": "2025-12-21" },
+            { "start": "2026-07-11", "end": "2026-07-21" },
+            { "start": "2026-08-13", "end": "2026-08-16" },
+            { "start": "2026-09-05", "end": "2026-09-06" },
+            { "start": "2026-09-12", "end": "2026-09-14", "highlight": true },
+            { "start": "2026-10-04", "end": "2026-10-11" },
+            { "start": "2026-10-24", "end": "2026-10-25" }
+        ]
+    }
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#fff7e9">
@@ -307,7 +331,7 @@
     <nav class="page-nav" aria-label="页面导航">
         <a class="brand" href="../index.html">← JY_GZC</a>
         <div class="nav-actions">
-            <span id="storyPosition" aria-label="当前故事进度">01 / 09</span>
+            <span id="storyPosition" aria-label="当前故事进度">01 / --</span>
             <a href="days.html">日历 ↗</a>
         </div>
     </nav>
@@ -324,71 +348,8 @@
         </section>
 
         <div class="chapter-heading"><span>THE TIMELINE / 故事时间线</span><span>2025 - 2026</span></div>
-        <section class="storyline" aria-label="关键时间节点">
+        <section class="storyline" id="storyline" aria-label="关键时间节点">
             <div class="timeline-progress" aria-hidden="true"></div>
-
-            <article class="story-event">
-                <span class="event-pin" aria-hidden="true"></span>
-                <div class="event-copy">
-                    <div class="event-meta"><time datetime="2025-11-08">2025.11.08</time></div>
-                </div>
-            </article>
-
-            <article class="story-event">
-                <span class="event-pin" aria-hidden="true"></span>
-                <div class="event-copy">
-                    <div class="event-meta"><time datetime="2025-12-20">2025.12.20 - 12.21</time></div>
-                </div>
-            </article>
-
-            <article class="story-event">
-                <span class="event-pin" aria-hidden="true"></span>
-                <div class="event-copy">
-                    <div class="event-meta"><time datetime="2026-07-11">2026.07.11 - 07.21</time></div>
-                </div>
-            </article>
-
-            <article class="story-event">
-                <span class="event-pin" aria-hidden="true"></span>
-                <div class="event-copy">
-                    <div class="event-meta"><time datetime="2026-08-13">2026.08.13 - 08.16</time></div>
-                </div>
-            </article>
-
-            <article class="story-event">
-                <span class="event-pin" aria-hidden="true"></span>
-                <div class="event-copy">
-                    <div class="event-meta"><time datetime="2026-09-05">2026.09.05 - 09.06</time></div>
-                </div>
-            </article>
-
-            <article class="story-event highlight">
-                <span class="event-pin" aria-hidden="true"></span>
-                <div class="event-copy">
-                    <div class="event-meta"><time datetime="2026-09-12">2026.09.12</time></div>
-                </div>
-            </article>
-
-            <article class="story-event">
-                <span class="event-pin" aria-hidden="true"></span>
-                <div class="event-copy">
-                    <div class="event-meta"><time datetime="2026-09-12">2026.09.12 - 09.14</time></div>
-                </div>
-            </article>
-
-            <article class="story-event">
-                <span class="event-pin" aria-hidden="true"></span>
-                <div class="event-copy">
-                    <div class="event-meta"><time datetime="2026-10-04">2026.10.04 - 10.11</time></div>
-                </div>
-            </article>
-
-            <article class="story-event">
-                <span class="event-pin" aria-hidden="true"></span>
-                <div class="event-copy">
-                    <div class="event-meta"><time datetime="2026-10-24">2026.10.24 - 10.25</time></div>
-                </div>
-            </article>
         </section>
 
         <section class="ending" aria-label="故事继续">
@@ -396,6 +357,53 @@
             <a href="days.html">查看我们的日历 ↗</a>
         </section>
     </main>
+
+    <script>
+    // ============== 故事节点渲染（数据源：顶部 #storyData） ==============
+    (function () {
+        const dataEl = document.getElementById('storyData');
+        const timeline = document.getElementById('storyline');
+        const progress = timeline.querySelector('.timeline-progress');
+        let events = [];
+        try {
+            events = JSON.parse(dataEl.textContent).events || [];
+        } catch (e) {
+            console.error('故事数据解析失败', e);
+        }
+
+        // "2026-09-12" -> "2026.09.12"；区间同年同月简写为 "2026.10.04 - 10.11"
+        function fmtDate(iso) {
+            const [y, m, d] = iso.split('-');
+            return { full: `${y}.${m}.${d}`, short: `${m}.${d}` };
+        }
+        function fmtLabel(ev) {
+            if (ev.label) return { text: ev.label, datetime: ev.date || ev.start };
+            if (ev.date) {
+                return { text: fmtDate(ev.date).full, datetime: ev.date };
+            }
+            const s = fmtDate(ev.start), e = fmtDate(ev.end);
+            const [sy, sm] = ev.start.split('-');
+            const [ey, em] = ev.end.split('-');
+            const text = (sy === ey && sm === em)
+                ? `${s.full} - ${e.short}`
+                : (sy === ey ? `${s.full} - ${e.short}` : `${s.full} - ${e.full}`);
+            return { text, datetime: ev.start };
+        }
+
+        events.forEach(ev => {
+            const { text, datetime } = fmtLabel(ev);
+            const article = document.createElement('article');
+            article.className = 'story-event' + (ev.highlight ? ' highlight' : '');
+            article.innerHTML =
+                '<span class="event-pin" aria-hidden="true"></span>' +
+                '<div class="event-copy">' +
+                    `<div class="event-meta"><time datetime="${datetime}">${text}</time></div>` +
+                '</div>';
+            // progress 是第一个子元素，直接追加即可保持数据顺序
+            timeline.appendChild(article);
+        });
+    })();
+    </script>
 
     <script>
     (function () {
