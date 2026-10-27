@@ -27,18 +27,17 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#fff7e9">
+    <meta name="theme-color" content="#e7ecef">
     <title>我们的故事 | JY_GZC</title>
     <script>document.documentElement.classList.add('js');</script>
     <style>
         :root {
-            --ink: #493b37;
-            --muted: #806f67;
-            --line: #ddcbb3;
-            --rose: #b96772;
-            --teal: #557e77;
-            --gold: #a87335;
-            --paper: #fffaf1;
+            --ink: #283741;
+            --muted: #5d6d77;
+            --line: #b5c1c8;
+            --accent: #536f80;
+            --silver: #788b98;
+            --paper: #f8fafb;
         }
         * { box-sizing: border-box; }
         html { scroll-behavior: smooth; }
@@ -48,7 +47,9 @@
             min-height: 100vh;
             color: var(--ink);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: linear-gradient(180deg, #fffaf0 0%, #f9ead5 42%, #fff5e6 74%, #f6e5d5 100%);
+            background:
+                linear-gradient(112deg, rgba(255, 255, 255, 0.72) 0%, transparent 27%, rgba(255, 255, 255, 0.32) 48%, transparent 72%),
+                linear-gradient(180deg, #f5f7f8 0%, #d5dde2 32%, #eef2f4 62%, #cbd4da 100%);
         }
         body::before {
             content: "";
@@ -56,13 +57,12 @@
             inset: 0;
             z-index: 0;
             pointer-events: none;
-            background-image: radial-gradient(rgba(116, 85, 60, 0.09) 0.7px, transparent 0.7px);
-            background-size: 4px 4px;
-            opacity: 0.5;
+            background-image: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.2) 0 1px, rgba(62, 78, 89, 0.035) 1px 2px, transparent 2px 5px);
+            opacity: 0.6;
         }
         main { position: relative; z-index: 2; }
         a { color: inherit; }
-        a:focus-visible { outline: 2px solid var(--rose); outline-offset: 5px; }
+        a:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
         .page-nav {
             position: sticky;
             top: 0;
@@ -74,19 +74,19 @@
             width: 100%;
             height: 68px;
             padding: 0 max(20px, calc((100% - 1080px) / 2));
-            border-bottom: 1px solid rgba(130, 97, 67, 0.17);
-            background: rgba(255, 249, 238, 0.88);
+            border-bottom: 1px solid rgba(80, 102, 115, 0.22);
+            background: rgba(241, 245, 247, 0.88);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             font-size: 13px;
             font-weight: 600;
         }
         .page-nav a { text-decoration: none; }
-        .page-nav a:hover { color: var(--rose); }
+        .page-nav a:hover { color: var(--accent); }
         .brand { letter-spacing: 1px; white-space: nowrap; }
         .nav-actions { display: flex; align-items: center; gap: 26px; }
         .nav-actions a { white-space: nowrap; }
-        #storyPosition { color: var(--gold); font-variant-numeric: tabular-nums; }
+        #storyPosition { color: var(--accent); font-variant-numeric: tabular-nums; }
         .intro {
             display: flex;
             flex-direction: column;
@@ -108,15 +108,15 @@
             object-fit: cover;
             border-radius: 50%;
             border: 6px solid var(--paper);
-            outline: 1px solid rgba(168, 115, 53, 0.27);
-            box-shadow: 0 12px 28px rgba(99, 68, 47, 0.18);
+            outline: 1px solid rgba(77, 100, 113, 0.34);
+            box-shadow: 0 12px 28px rgba(52, 71, 82, 0.2);
         }
         .portrait-pair img + img { margin-left: -17px; }
         .portrait-pair img:first-child { rotate: -7deg; }
         .portrait-pair img:last-child { rotate: 7deg; }
         .eyebrow {
             margin: 0 0 13px;
-            color: var(--teal);
+            color: var(--accent);
             font-size: 12px;
             font-weight: 700;
             letter-spacing: 3px;
@@ -127,7 +127,7 @@
             font-family: "Songti SC", "Noto Serif CJK SC", "SimSun", serif;
             font-weight: 600;
             line-height: 1.2;
-            text-shadow: 0 3px 18px rgba(167, 116, 68, 0.13);
+            text-shadow: 0 3px 18px rgba(71, 91, 102, 0.15);
         }
         .scroll-cue {
             display: inline-flex;
@@ -143,7 +143,7 @@
             place-items: center;
             width: 28px;
             height: 28px;
-            border: 1px solid var(--gold);
+            border: 1px solid var(--silver);
             border-radius: 50%;
             font-size: 15px;
             animation: cueDown 2.4s ease-in-out infinite;
@@ -158,7 +158,7 @@
             width: min(100% - 40px, 1080px);
             margin: 0 auto 58px;
             padding-top: 26px;
-            border-top: 1px solid rgba(130, 97, 67, 0.22);
+            border-top: 1px solid rgba(80, 102, 115, 0.3);
             color: var(--muted);
             font-size: 11px;
             font-weight: 700;
@@ -188,7 +188,7 @@
             z-index: 1;
             height: 0;
             max-height: calc(100% - 90px);
-            background: var(--rose);
+            background: linear-gradient(90deg, #5d707d, #f7fafb 52%, #6f8390);
             transition: height 0.12s linear;
             pointer-events: none;
         }
@@ -207,31 +207,31 @@
             height: 22px;
             border: 6px solid var(--paper);
             border-radius: 50%;
-            background: var(--gold);
-            box-shadow: 0 0 0 1px var(--gold), 0 3px 10px rgba(99, 68, 47, 0.14);
+            background: linear-gradient(135deg, #f8fbfc, #778b98 62%, #435764);
+            box-shadow: 0 0 0 1px var(--silver), 0 3px 10px rgba(52, 71, 82, 0.2);
             transition: transform 0.35s ease, background 0.35s ease, box-shadow 0.35s ease;
         }
         .story-event.is-current .event-pin {
             transform: scale(1.3);
-            background: var(--rose);
-            box-shadow: 0 0 0 1px var(--rose), 0 0 0 8px rgba(185, 103, 114, 0.13);
+            background: linear-gradient(135deg, #fff, #89a0ae 50%, #385363);
+            box-shadow: 0 0 0 1px var(--accent), 0 0 0 8px rgba(83, 111, 128, 0.15);
         }
         .event-copy {
             grid-row: 1;
             max-width: 390px;
             min-height: 86px;
             padding: 23px 25px;
-            border: 1px solid rgba(168, 115, 53, 0.25);
-            border-top: 2px solid var(--gold);
+            border: 1px solid rgba(91, 113, 126, 0.3);
+            border-top: 2px solid var(--silver);
             border-radius: 6px;
-            background: rgba(255, 253, 248, 0.84);
-            box-shadow: 0 12px 30px rgba(108, 72, 45, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            background: linear-gradient(120deg, rgba(255, 255, 255, 0.94), rgba(224, 232, 236, 0.9) 60%, rgba(250, 252, 253, 0.95));
+            box-shadow: 0 12px 30px rgba(51, 71, 83, 0.11), inset 0 1px 0 rgba(255, 255, 255, 0.95);
         }
         .story-event.highlight .event-copy {
-            border-color: rgba(185, 103, 114, 0.38);
-            border-top-color: var(--rose);
-            background: rgba(255, 243, 230, 0.96);
-            box-shadow: 0 14px 34px rgba(144, 79, 75, 0.12);
+            border-color: rgba(83, 111, 128, 0.42);
+            border-top-color: var(--accent);
+            background: linear-gradient(120deg, #f9fbfc, #d9e3e9 65%, #f5f8fa);
+            box-shadow: 0 14px 34px rgba(53, 75, 89, 0.17);
         }
         .story-event:nth-of-type(odd) .event-copy {
             grid-column: 1;
@@ -265,22 +265,22 @@
             width: 100%;
             margin: 0;
             padding: 54px 24px 105px;
-            border-top: 1px solid rgba(168, 115, 53, 0.2);
-            background: rgba(255, 247, 232, 0.68);
+            border-top: 1px solid rgba(91, 113, 126, 0.26);
+            background: rgba(227, 234, 238, 0.7);
             text-align: center;
         }
         .ending::before {
             content: "♡";
             display: block;
             margin-bottom: 22px;
-            color: var(--rose);
+            color: var(--accent);
             font-size: 32px;
         }
         .ending h2 { margin: 0 0 14px; font-size: 27px; }
         .ending a {
             display: inline-block;
             padding: 10px 18px;
-            border: 1px solid var(--gold);
+            border: 1px solid var(--silver);
             border-radius: 4px;
             font-size: 13px;
             font-weight: 600;
@@ -477,7 +477,7 @@
             resizeTimer = setTimeout(resize, 150);
         });
 
-        const palette = ['#d9a267', '#c17d72', '#a88457', '#b86e78', '#cb9567'];
+        const palette = ['#677d8a', '#91a2ac', '#b3c0c8', '#758b99', '#a1b2bc'];
         const isMobile = window.matchMedia('(max-width: 768px)').matches;
         const PARTICLE_COUNT = isMobile ? 22 : 50;
         const particles = Array.from({ length: PARTICLE_COUNT }, () => ({
@@ -502,6 +502,9 @@
             ctx.bezierCurveTo(x, y + s * 1.3, x + s, y + s, x + s, y + s * 0.5);
             ctx.bezierCurveTo(x + s, y, x, y, x, y + s * 0.3);
             ctx.fill();
+            ctx.lineWidth = 0.6;
+            ctx.strokeStyle = 'rgba(51, 68, 79, 0.45)';
+            ctx.stroke();
             ctx.restore();
         }
 
@@ -557,7 +560,7 @@
             ctx.closePath();
         }
 
-        const palette = ['#d9a267', '#c17d72', '#a88457', '#b86e78', '#cb9567'];
+        const palette = ['#8fa3af', '#b7c5cd', '#728996', '#a6b8c2', '#7c919e'];
         function Particle(x, y) {
             this.x = x; this.y = y;
             this.size = 12 + Math.random() * 12;
@@ -579,11 +582,16 @@
             ctx.globalAlpha = Math.max(this.life, 0);
             ctx.translate(this.x, this.y);
             ctx.rotate(this.angle);
-            ctx.fillStyle = this.color;
+            const shine = ctx.createLinearGradient(-this.size * 0.6, 0, this.size * 0.6, this.size);
+            shine.addColorStop(0, '#f8fcfd');
+            shine.addColorStop(0.28, this.color);
+            shine.addColorStop(0.55, '#e5edf1');
+            shine.addColorStop(1, '#526773');
+            ctx.fillStyle = shine;
             heartShape(this.size);
             ctx.fill();
             ctx.lineWidth = 1.2;
-            ctx.strokeStyle = 'rgba(121, 71, 62, 0.58)';
+            ctx.strokeStyle = 'rgba(46, 65, 76, 0.7)';
             ctx.stroke();
             ctx.restore();
         };
