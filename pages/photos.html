@@ -311,13 +311,30 @@
             object-fit: contain;
             border: 8px solid var(--paper);
             border-radius: 3px;
-            background: var(--paper);
+            background: #202629;
             box-shadow: 0 22px 60px rgba(0, 0, 0, 0.24);
         }
         .intro-photo.flash { animation: photoFlash 0.13s cubic-bezier(.2,.75,.25,1); }
         @keyframes photoFlash {
             from { opacity: 0.42; transform: scale(1.14); }
             to { opacity: 1; transform: scale(1); }
+        }
+        .intro-overlay.is-loading .intro-photo {
+            opacity: 0.5;
+            transform: scale(0.97);
+            animation: introLoading 1.15s ease-in-out infinite alternate;
+        }
+        .intro-overlay.is-loading .intro-progress span {
+            width: 100% !important;
+            animation: introLoadingBar 1.15s ease-in-out infinite;
+        }
+        @keyframes introLoading {
+            to { opacity: 0.72; transform: scale(1); }
+        }
+        @keyframes introLoadingBar {
+            0% { transform: scaleX(0.16); transform-origin: left; opacity: 0.45; }
+            50% { transform: scaleX(0.72); transform-origin: center; opacity: 1; }
+            100% { transform: scaleX(0.16); transform-origin: right; opacity: 0.45; }
         }
         .intro-progress {
             width: var(--intro-size);
@@ -675,9 +692,13 @@
         let activeAlbumId = null;
         let frameIndex = 0;
         let introTimer = null;
+        let introRunId = 0;
+        let playableIntroPhotos = introPhotos;
+        let introReadyPromise = Promise.resolve(introPhotos);
         let photoIndex = 0;
         let lastFocused = null;
         let touchStart = null;
+        const imageCache = new Map();
 
         const pad = value => String(value).padStart(2, '0');
 
@@ -697,15 +718,52 @@
             return `${formatDate(dates[0])} - ${formatDate(dates[dates.length - 1])}`;
         }
 
-        function preloadPhotos(photos) {
-            photos.forEach(photo => {
-                const image = new Image();
-                image.src = resolvePhotoSrc(photo.src);
+        function cachePhoto(photo) {
+            const src = resolvePhotoSrc(photo.src);
+            if (imageCache.has(src)) return imageCache.get(src);
+
+            const image = new Image();
+            image.decoding = 'async';
+            const ready = new Promise(resolve => {
+                let settled = false;
+                const finish = async loaded => {
+                    if (settled) return;
+                    settled = true;
+                    if (loaded && typeof image.decode === 'function') {
+                        try { await image.decode(); } catch (error) { /* load 状态仍可继续使用 */ }
+                    }
+                    resolve(Boolean(loaded && image.naturalWidth));
+                };
+                image.addEventListener('load', () => finish(true), { once: true });
+                image.addEventListener('error', () => finish(false), { once: true });
+                image.src = src;
+                if (image.complete) queueMicrotask(() => finish(image.naturalWidth > 0));
             });
+            const cached = { image, ready, src };
+            imageCache.set(src, cached);
+            return cached;
+        }
+
+        function preloadPhotos(photos) {
+            return Promise.all(photos.map(photo => cachePhoto(photo).ready));
         }
 
         function preloadAlbum(album) {
-            preloadPhotos(album.photos);
+            return preloadPhotos(album.photos);
+        }
+
+        async function waitForDisplayedImage(image) {
+            if (!image.complete) {
+                await new Promise(resolve => {
+                    image.addEventListener('load', resolve, { once: true });
+                    image.addEventListener('error', resolve, { once: true });
+                });
+            }
+            if (!image.naturalWidth) return false;
+            if (typeof image.decode === 'function') {
+                try { await image.decode(); } catch (error) { /* 已加载图片仍可显示 */ }
+            }
+            return image.naturalWidth > 0;
         }
 
         function renderCategories() {
@@ -787,17 +845,21 @@
         }
 
         function finishIntro() {
+            introRunId++;
             clearTimeout(introTimer);
             introTimer = null;
+            introOverlay.classList.remove('is-loading');
+            introPhoto.classList.remove('flash');
             introOverlay.hidden = true;
             document.body.classList.remove('modal-open');
             albumShell.inert = false;
             renderGallery();
         }
 
-        function showFrame() {
+        async function showFrame(runId) {
+            if (runId !== introRunId) return;
             const album = albumById.get(activeAlbumId);
-            const framePhotos = introPhotos.length ? introPhotos : album?.photos || [];
+            const framePhotos = playableIntroPhotos.length ? playableIntroPhotos : album?.photos || [];
             if (!framePhotos.length) {
                 finishIntro();
                 return;
@@ -805,6 +867,14 @@
             const photo = framePhotos[frameIndex % framePhotos.length];
             introPhoto.src = resolvePhotoSrc(photo.src);
             introPhoto.alt = photo.alt;
+            const decoded = await waitForDisplayedImage(introPhoto);
+            if (runId !== introRunId) return;
+            if (!decoded) {
+                frameIndex++;
+                if (frameIndex === frameCount) finishIntro();
+                else void showFrame(runId);
+                return;
+            }
             introCounter.textContent = `${pad(frameIndex + 1)} / ${pad(frameCount)}`;
             introProgress.style.width = ((frameIndex + 1) / frameCount * 100) + '%';
             introPhoto.classList.remove('flash');
@@ -813,16 +883,16 @@
             introTimer = setTimeout(() => {
                 frameIndex++;
                 if (frameIndex === frameCount) finishIntro();
-                else showFrame();
+                else void showFrame(runId);
             }, frameDuration);
         }
 
-        function openCategory(id, { playIntro = true, focus = true } = {}) {
+        async function openCategory(id, { playIntro = true, focus = true } = {}) {
             const album = albumById.get(id);
             if (!album) return;
             activeAlbumId = id;
-            preloadAlbum(album);
             if (!playIntro || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                void preloadAlbum(album);
                 renderGallery({ focus });
                 return;
             }
@@ -831,14 +901,25 @@
                 renderGallery();
                 return;
             }
+            const runId = ++introRunId;
             frameIndex = 0;
             introProgress.style.width = '0%';
             introTitle.textContent = album.title;
+            introCounter.textContent = '动画加载中…';
+            introPhoto.removeAttribute('src');
+            introPhoto.alt = '';
+            introPhoto.classList.remove('flash');
+            introOverlay.classList.add('is-loading');
             introOverlay.hidden = false;
             document.body.classList.add('modal-open');
             albumShell.inert = true;
             document.getElementById('skipIntro').focus();
-            showFrame();
+            const loaded = await introReadyPromise;
+            if (runId !== introRunId || introOverlay.hidden) return;
+            playableIntroPhotos = loaded;
+            introOverlay.classList.remove('is-loading');
+            void preloadAlbum(album);
+            void showFrame(runId);
         }
 
         function showLightbox() {
@@ -960,8 +1041,10 @@
         }
 
         renderCategories();
-        albums.forEach(preloadAlbum);
-        preloadPhotos(introPhotos);
+        introReadyPromise = preloadPhotos(introPhotos).then(results => {
+            const readyPhotos = introPhotos.filter((photo, index) => results[index]);
+            return readyPhotos.length ? readyPhotos : introPhotos;
+        });
         openFromUrl();
     })();
     </script>
