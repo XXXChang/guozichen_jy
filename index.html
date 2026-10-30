@@ -245,20 +245,15 @@
             align-items: center;
             justify-content: center;
             pointer-events: auto;
-            --cloud-fill: linear-gradient(145deg, rgba(255,255,255,0.96), rgba(var(--c-100-rgb), 0.86) 56%, rgba(var(--c-300-rgb), 0.66));
-            background: var(--cloud-fill);
-            backdrop-filter: blur(24px) saturate(180%);
-            -webkit-backdrop-filter: blur(24px) saturate(180%);
-            border: 1px solid rgba(255,255,255,0.9);
-            border-radius: 47% 53% 58% 42% / 56% 43% 57% 44%;
-            padding: 24px 28px 18px;
-            box-shadow:
-                0 18px 38px rgba(var(--c-700-rgb), 0.18),
-                inset 10px 12px 20px rgba(255,255,255,0.78),
-                inset -12px -14px 24px rgba(var(--c-500-rgb), 0.12);
+            --cloud-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 150'%3E%3Cpath fill='white' d='M35 134C15 134 2 120 6 100C9 83 22 71 40 69C39 49 54 32 74 30C86 14 110 12 127 26C143 16 165 22 173 42C196 37 216 53 219 75C235 81 243 97 238 114C234 127 222 134 205 134Z'/%3E%3C/svg%3E");
+            --cloud-shape-transform: rotate(0deg);
+            background: transparent;
+            border: 0;
+            border-radius: 0;
+            padding: 27px 30px 20px;
             text-align: center;
             transform: translate3d(var(--parallax-x, 0px), var(--parallax-y, 0px), 0);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease;
             animation: cloudFloat 7.2s ease-in-out infinite;
             will-change: transform, translate;
         }
@@ -271,52 +266,62 @@
         .memory-card::after {
             content: "";
             position: absolute;
-            z-index: -1;
-            background: var(--cloud-fill);
-            border: 1px solid rgba(255,255,255,0.72);
-            border-radius: 50%;
+            inset: 0;
+            z-index: 0;
+            -webkit-mask: var(--cloud-mask) center / 100% 100% no-repeat;
+            mask: var(--cloud-mask) center / 100% 100% no-repeat;
+            transform: var(--cloud-shape-transform);
+            transform-origin: center;
             pointer-events: none;
+            transition: filter 0.3s ease, opacity 0.3s ease;
         }
         .memory-card::before {
-            top: -26%;
-            left: 17%;
-            width: 52%;
-            height: 72%;
-            box-shadow: inset 7px 8px 15px rgba(255,255,255,0.52);
+            background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(var(--c-300-rgb), 0.58));
+            filter: drop-shadow(0 14px 22px rgba(var(--c-700-rgb), 0.17));
         }
         .memory-card::after {
-            top: -10%;
-            right: 5%;
-            width: 43%;
-            height: 64%;
+            inset: 2px;
+            background:
+                radial-gradient(circle at 34% 22%, rgba(255,255,255,0.8), transparent 30%),
+                linear-gradient(150deg, rgba(255,255,255,0.9), rgba(var(--c-100-rgb),0.76) 66%, rgba(var(--c-300-rgb),0.52));
+            backdrop-filter: blur(15px) saturate(135%);
+            -webkit-backdrop-filter: blur(15px) saturate(135%);
         }
         .memory-card:hover {
-            transform: translate3d(var(--parallax-x, 0px), var(--parallax-y, 0px), 0) scale(1.055) rotate(-1deg);
-            box-shadow:
-                0 24px 48px rgba(var(--c-700-rgb), 0.27),
-                inset 10px 12px 20px rgba(255,255,255,0.9),
-                inset -12px -14px 24px rgba(var(--c-500-rgb), 0.15);
+            transform: translate3d(var(--parallax-x, 0px), var(--parallax-y, 0px), 0) scale(1.028);
+        }
+        .memory-card:hover::before {
+            filter: drop-shadow(0 18px 27px rgba(var(--c-700-rgb), 0.23));
         }
         .memory-card:focus-visible {
-            outline: 3px solid var(--c-700);
-            outline-offset: 5px;
+            outline: none;
         }
-        .memory-label {
-            font-size: 11px;
+        .memory-card:focus-visible::before {
+            filter:
+                drop-shadow(0 0 3px rgba(255,255,255,0.95))
+                drop-shadow(0 0 7px rgba(var(--c-700-rgb),0.82))
+                drop-shadow(0 15px 23px rgba(var(--c-700-rgb),0.2));
+        }
+        .cloud-eyebrow {
+            margin-bottom: 6px;
+            font-size: 9px;
             color: var(--c-600);
-            letter-spacing: 2px;
+            letter-spacing: 2.2px;
             text-transform: uppercase;
-            margin-bottom: 4px;
-            font-weight: 600;
+            font-weight: 750;
         }
-        .memory-date {
-            font-size: 12px;
-            color: var(--c-400);
-            margin-bottom: 8px;
+        .cloud-main {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 5px;
+            min-height: 35px;
+            color: var(--c-800);
+            line-height: 1;
         }
         .memory-count {
-            font-size: 42px;
-            font-weight: 700;
+            font-size: 36px;
+            font-weight: 760;
             background: linear-gradient(135deg, var(--c-800), var(--c-600), var(--c-500));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -325,35 +330,46 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", monospace;
         }
         .memory-unit {
-            font-size: 13px;
-            color: var(--c-400);
-            margin-top: 2px;
+            font-size: 11px;
+            color: var(--c-600);
             letter-spacing: 1px;
+        }
+        .cloud-title {
+            font-size: 20px;
+            font-weight: 720;
+            letter-spacing: 1.2px;
+        }
+        .cloud-meta {
+            margin-top: 7px;
+            color: var(--c-600);
+            font-size: 10px;
+            line-height: 1.3;
         }
         .memory-reminder {
             display: none;
-            margin-top: 7px;
-            padding: 4px 9px;
-            border: 1px solid rgba(var(--c-700-rgb), 0.22);
-            border-radius: 999px;
-            background: rgba(255,255,255,0.58);
+            margin-top: 5px;
             color: var(--c-700);
             font-size: 10px;
             font-weight: 700;
             letter-spacing: 0;
             white-space: nowrap;
         }
+        .memory-reminder::before { content: "·"; margin-right: 4px; }
         .memory-card.days-card.is-upcoming {
-            border-color: rgba(var(--c-700-rgb), 0.52);
-            filter: drop-shadow(0 0 14px rgba(var(--c-400-rgb), 0.52));
+            filter: none;
+        }
+        .memory-card.days-card.is-upcoming::before {
+            filter:
+                drop-shadow(0 0 9px rgba(var(--c-400-rgb), 0.55))
+                drop-shadow(0 14px 22px rgba(var(--c-700-rgb), 0.18));
         }
         .memory-card.days-card.is-upcoming .memory-reminder { display: inline-block; }
 
         .memory-card.days-card {
             top: 11%;
             right: 4%;
-            width: 222px;
-            min-height: 128px;
+            width: 218px;
+            height: 142px;
             --float-x: 8px;
             --float-x-reverse: -5px;
             animation-duration: 7.8s;
@@ -361,22 +377,22 @@
         .memory-card.photo-card {
             top: 51%;
             left: 3%;
-            width: 184px;
-            min-height: 108px;
+            width: 178px;
+            height: 108px;
             --float-x: -7px;
             --float-x-reverse: 4px;
-            border-radius: 57% 43% 46% 54% / 48% 57% 43% 52%;
+            --cloud-shape-transform: scaleX(-1) rotate(-1deg);
             animation-delay: -2.6s;
             animation-duration: 6.8s;
         }
         .memory-card.story-card {
             right: 9%;
             bottom: 8%;
-            width: 174px;
-            min-height: 106px;
+            width: 170px;
+            height: 106px;
             --float-x: 6px;
             --float-x-reverse: -4px;
-            border-radius: 43% 57% 55% 45% / 56% 46% 54% 44%;
+            --cloud-shape-transform: rotate(1.5deg);
             animation-delay: -4.1s;
             animation-duration: 7.4s;
         }
@@ -385,41 +401,13 @@
             z-index: 1;
         }
         .cloud-arrow {
-            position: absolute !important;
-            top: 15px;
-            right: 21px;
+            margin-left: 7px;
             color: var(--c-600);
-            font-size: 15px;
+            font-size: 14px;
             transition: translate 0.25s ease;
         }
         .memory-card:hover .cloud-arrow {
             translate: 3px -3px;
-        }
-        .photo-label {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--c-700);
-            letter-spacing: 2px;
-            background: linear-gradient(135deg, var(--c-800), var(--c-600), var(--c-500));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .story-label {
-            font-size: 17px;
-            font-weight: 700;
-            color: var(--c-700);
-        }
-        .story-caption {
-            margin-top: 5px;
-            font-size: 11px;
-            color: var(--c-600);
-        }
-        .photo-caption {
-            margin-top: 6px;
-            color: var(--c-500);
-            font-size: 11px;
-            letter-spacing: 1px;
         }
         @media (max-width: 900px) {
             .home-stage { min-height: max(780px, calc(100svh - 48px)); }
@@ -427,10 +415,7 @@
             .memory-card.days-card { top: 1%; right: 1%; }
             .memory-card.photo-card { top: auto; bottom: 16%; left: 2%; }
             .memory-card.story-card { right: 3%; bottom: 2%; }
-            .memory-date { font-size: 11px; }
-            .memory-label { font-size: 10px; }
-            .memory-count { font-size: 38px; }
-            .memory-unit { font-size: 12px; }
+            .memory-count { font-size: 34px; }
         }
 
         /* 链接卡片 */
@@ -481,7 +466,7 @@
         .theme-hue-slider {
             appearance: none;
             -webkit-appearance: none;
-            --heart-partial: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 38 36'%3E%3Cdefs%3E%3ClinearGradient id='partial' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0%25' stop-color='white' stop-opacity='0'/%3E%3Cstop offset='62%25' stop-color='white' stop-opacity='0'/%3E%3Cstop offset='63%25' stop-color='white' stop-opacity='1'/%3E%3Cstop offset='100%25' stop-color='white' stop-opacity='1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M19 32 C15 28 3 21 3 13 C3 7 7 3 13 3 C16 3 18 5 19 7 C20 5 22 3 25 3 C31 3 35 7 35 13 C35 21 23 28 19 32 Z' fill='url(%23partial)' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            --heart-center: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 38 36'%3E%3Cpath d='M19 32 C15 28 3 21 3 13 C3 7 7 3 13 3 C16 3 18 5 19 7 C20 5 22 3 25 3 C31 3 35 7 35 13 C35 21 23 28 19 32 Z' fill='none' stroke='white' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M19 25 C17.6 23.6 13.5 21 13.5 17.8 C13.5 15.5 15.2 14 17.2 14 C18.2 14 18.8 14.6 19 15.3 C19.2 14.6 19.8 14 20.8 14 C22.8 14 24.5 15.5 24.5 17.8 C24.5 21 20.4 23.6 19 25 Z' fill='white'/%3E%3C/svg%3E");
             --hue-ramp: linear-gradient(90deg,
                 hsl(0 76% 58%), hsl(30 76% 58%), hsl(60 76% 58%),
                 hsl(90 76% 58%), hsl(120 76% 58%), hsl(150 76% 58%),
@@ -523,8 +508,8 @@
             margin-top: -8px;
             border: 0;
             background: var(--c-700);
-            -webkit-mask: var(--heart-partial) center / contain no-repeat;
-            mask: var(--heart-partial) center / contain no-repeat;
+            -webkit-mask: var(--heart-center) center / contain no-repeat;
+            mask: var(--heart-center) center / contain no-repeat;
             filter: drop-shadow(0 0 2px white) drop-shadow(0 3px 5px rgba(var(--c-700-rgb), 0.4));
         }
         .theme-hue-slider::-moz-range-thumb {
@@ -532,8 +517,8 @@
             height: 36px;
             border: 0;
             background: var(--c-700);
-            -webkit-mask: var(--heart-partial) center / contain no-repeat;
-            mask: var(--heart-partial) center / contain no-repeat;
+            -webkit-mask: var(--heart-center) center / contain no-repeat;
+            mask: var(--heart-center) center / contain no-repeat;
             filter: drop-shadow(0 0 2px white) drop-shadow(0 3px 5px rgba(var(--c-700-rgb), 0.4));
         }
 
@@ -554,36 +539,35 @@
                 transform: translateX(-50%);
             }
             .hero-kicker { margin-bottom: 10px; font-size: 10px; }
-            .memory-card { padding: 21px 22px 16px; }
+            .memory-card { padding: 23px 22px 16px; }
             .memory-card.days-card {
                 top: 355px;
                 right: 1%;
-                width: 172px;
-                min-height: 106px;
+                width: 174px;
+                height: 126px;
             }
             .memory-card.photo-card {
                 top: 535px;
                 bottom: auto;
                 left: 0;
-                width: 150px;
-                min-height: 94px;
+                width: 154px;
+                height: 100px;
             }
             .memory-card.story-card {
                 top: 690px;
                 right: 3%;
                 bottom: auto;
-                width: 156px;
-                min-height: 96px;
+                width: 158px;
+                height: 100px;
             }
-            .memory-date { font-size: 10px; }
-            .memory-label { font-size: 10px; letter-spacing: 1px; }
-            .memory-count { font-size: 32px; }
-            .memory-unit { font-size: 11px; }
+            .memory-count { font-size: 30px; }
+            .cloud-title { font-size: 18px; }
+            .cloud-meta, .memory-reminder { font-size: 9px; }
             .avatar { width: 92px; height: 92px; }
             .theme-hue-slider { margin-bottom: 16px; }
             h1 { font-size: 42px; letter-spacing: 4px; }
             .subtitle { font-size: 13px; }
-            .cloud-arrow { top: 12px; right: 17px; }
+            .cloud-arrow { font-size: 12px; }
         }
         @media (prefers-reduced-motion: reduce) {
             .memory-card { animation: none; }
@@ -614,22 +598,30 @@
 
             <nav class="bubble-links" aria-label="页面入口">
                 <a href="pages/days.html" class="memory-card days-card">
-                    <span class="cloud-arrow" aria-hidden="true">↗</span>
-                    <span class="memory-date" id="relationshipDate">2026.09.12</span>
-                    <span class="memory-label">在一起已经</span>
-                    <span class="memory-count" id="daysCount">--</span>
-                    <span class="memory-unit">天</span>
+                    <span class="cloud-eyebrow">Calendar</span>
+                    <span class="cloud-main">
+                        <strong class="memory-count" id="daysCount">--</strong>
+                        <span class="memory-unit">天</span>
+                        <span class="cloud-arrow" aria-hidden="true">↗</span>
+                    </span>
+                    <span class="cloud-meta">在一起 · <span id="relationshipDate">2026.09.12</span></span>
                     <span class="memory-reminder" id="anniversaryReminder"></span>
                 </a>
                 <a href="pages/photos.html" class="memory-card photo-card" aria-label="打开相册 Memories">
-                    <span class="cloud-arrow" aria-hidden="true">↗</span>
-                    <span class="photo-label">Memories</span>
-                    <span class="photo-caption">相册收藏</span>
+                    <span class="cloud-eyebrow">Album</span>
+                    <span class="cloud-main">
+                        <strong class="cloud-title">Memories</strong>
+                        <span class="cloud-arrow" aria-hidden="true">↗</span>
+                    </span>
+                    <span class="cloud-meta">相册收藏</span>
                 </a>
                 <a href="pages/story.html" class="memory-card story-card" aria-label="打开我们的故事时间线">
-                    <span class="cloud-arrow" aria-hidden="true">↗</span>
-                    <span class="story-label">Story</span>
-                    <span class="story-caption">我们的故事</span>
+                    <span class="cloud-eyebrow">Timeline</span>
+                    <span class="cloud-main">
+                        <strong class="cloud-title">Story</strong>
+                        <span class="cloud-arrow" aria-hidden="true">↗</span>
+                    </span>
+                    <span class="cloud-meta">我们的故事</span>
                 </a>
             </nav>
         </main>
