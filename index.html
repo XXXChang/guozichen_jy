@@ -224,7 +224,7 @@
             letter-spacing: 1px;
         }
 
-        /* 分散漂浮的云朵入口 */
+        /* 分散漂浮的信笺入口 */
         .bubble-links {
             position: absolute;
             inset: 0;
@@ -239,88 +239,111 @@
         .memory-card {
             position: absolute;
             isolation: isolate;
-            width: 190px;
-            min-height: 112px;
+            width: 210px;
+            min-height: 120px;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
             pointer-events: auto;
-            --cloud-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 150'%3E%3Cpath fill='white' d='M35 134C15 134 2 120 6 100C9 83 22 71 40 69C39 49 54 32 74 30C86 14 110 12 127 26C143 16 165 22 173 42C196 37 216 53 219 75C235 81 243 97 238 114C234 127 222 134 205 134Z'/%3E%3C/svg%3E");
-            --cloud-shape-transform: rotate(0deg);
-            background: transparent;
-            border: 0;
-            border-radius: 0;
-            padding: 27px 30px 20px;
-            text-align: center;
-            transform: translate3d(var(--parallax-x, 0px), var(--parallax-y, 0px), 0);
-            transition: transform 0.3s ease;
-            animation: cloudFloat 7.2s ease-in-out infinite;
+            --entry-rotate: 0deg;
+            --entry-shape: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px));
+            padding: 24px 27px 21px 30px;
+            border: 1px solid rgba(255,255,255,0.72);
+            border-radius: 5px;
+            background:
+                linear-gradient(138deg, rgba(255,255,255,0.9), rgba(var(--c-100-rgb),0.68) 70%),
+                rgba(255,255,255,0.64);
+            backdrop-filter: blur(18px) saturate(135%);
+            -webkit-backdrop-filter: blur(18px) saturate(135%);
+            clip-path: var(--entry-shape);
+            filter: drop-shadow(0 14px 22px rgba(var(--c-700-rgb),0.15));
+            color: var(--c-800);
+            text-align: left;
+            transform: translate3d(var(--parallax-x, 0px), var(--parallax-y, 0px), 0) rotate(var(--entry-rotate));
+            transition: transform 0.3s ease, filter 0.3s ease, background 0.3s ease;
+            animation: entryFloat 7.2s ease-in-out infinite;
             will-change: transform, translate;
+            overflow: hidden;
         }
-        @keyframes cloudFloat {
+        @keyframes entryFloat {
             0%, 100% { translate: 0 0; }
-            35% { translate: var(--float-x, 5px) -12px; }
-            70% { translate: var(--float-x-reverse, -3px) 5px; }
+            35% { translate: var(--float-x, 4px) -8px; }
+            70% { translate: var(--float-x-reverse, -3px) 3px; }
         }
         .memory-card::before,
         .memory-card::after {
             content: "";
             position: absolute;
-            inset: 0;
             z-index: 0;
-            -webkit-mask: var(--cloud-mask) center / 100% 100% no-repeat;
-            mask: var(--cloud-mask) center / 100% 100% no-repeat;
-            transform: var(--cloud-shape-transform);
-            transform-origin: center;
             pointer-events: none;
-            transition: filter 0.3s ease, opacity 0.3s ease;
         }
         .memory-card::before {
-            background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(var(--c-300-rgb), 0.58));
-            filter: drop-shadow(0 14px 22px rgba(var(--c-700-rgb), 0.17));
+            top: 18px;
+            bottom: 18px;
+            left: 0;
+            width: 3px;
+            background: linear-gradient(180deg, var(--c-400), var(--c-700));
+            box-shadow: 0 0 12px rgba(var(--c-500-rgb),0.32);
+            transition: width 0.25s ease, box-shadow 0.25s ease;
         }
         .memory-card::after {
-            inset: 2px;
-            background:
-                radial-gradient(circle at 34% 22%, rgba(255,255,255,0.8), transparent 30%),
-                linear-gradient(150deg, rgba(255,255,255,0.9), rgba(var(--c-100-rgb),0.76) 66%, rgba(var(--c-300-rgb),0.52));
-            backdrop-filter: blur(15px) saturate(135%);
-            -webkit-backdrop-filter: blur(15px) saturate(135%);
+            inset: 0;
+            background: linear-gradient(112deg, transparent 30%, rgba(255,255,255,0.52) 48%, transparent 66%);
+            transform: translateX(-125%);
+            transition: transform 0.7s ease;
         }
         .memory-card:hover {
-            transform: translate3d(var(--parallax-x, 0px), var(--parallax-y, 0px), 0) scale(1.028);
+            transform: translate3d(var(--parallax-x, 0px), var(--parallax-y, 0px), 0) rotate(var(--entry-rotate)) scale(1.025);
+            filter: drop-shadow(0 18px 28px rgba(var(--c-700-rgb),0.22));
+            background:
+                linear-gradient(138deg, rgba(255,255,255,0.96), rgba(var(--c-100-rgb),0.78) 70%),
+                rgba(255,255,255,0.72);
         }
-        .memory-card:hover::before {
-            filter: drop-shadow(0 18px 27px rgba(var(--c-700-rgb), 0.23));
-        }
+        .memory-card:hover::before { width: 5px; box-shadow: 0 0 16px rgba(var(--c-500-rgb),0.46); }
+        .memory-card:hover::after { transform: translateX(125%); }
         .memory-card:focus-visible {
             outline: none;
-        }
-        .memory-card:focus-visible::before {
             filter:
-                drop-shadow(0 0 3px rgba(255,255,255,0.95))
-                drop-shadow(0 0 7px rgba(var(--c-700-rgb),0.82))
-                drop-shadow(0 15px 23px rgba(var(--c-700-rgb),0.2));
+                drop-shadow(0 0 2px rgba(255,255,255,0.95))
+                drop-shadow(0 0 7px rgba(var(--c-700-rgb),0.8))
+                drop-shadow(0 14px 22px rgba(var(--c-700-rgb),0.16));
         }
-        .cloud-eyebrow {
-            margin-bottom: 6px;
+        .entry-head {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            margin-bottom: 12px;
+        }
+        .entry-index {
+            color: var(--c-500);
+            font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .entry-eyebrow {
             font-size: 9px;
             color: var(--c-600);
             letter-spacing: 2.2px;
             text-transform: uppercase;
             font-weight: 750;
         }
-        .cloud-main {
+        .entry-arrow {
+            margin-left: auto;
+            color: var(--c-600);
+            font-size: 15px;
+            transition: translate 0.25s ease;
+        }
+        .memory-card:hover .entry-arrow { translate: 3px -3px; }
+        .entry-title-row {
             display: flex;
             align-items: baseline;
-            justify-content: center;
-            gap: 5px;
-            min-height: 35px;
-            color: var(--c-800);
+            gap: 6px;
             line-height: 1;
         }
         .memory-count {
-            font-size: 36px;
+            font-size: 38px;
             font-weight: 760;
             background: linear-gradient(135deg, var(--c-800), var(--c-600), var(--c-500));
             -webkit-background-clip: text;
@@ -330,20 +353,24 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", monospace;
         }
         .memory-unit {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--c-600);
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
         }
-        .cloud-title {
-            font-size: 20px;
+        .entry-title {
+            display: block;
+            font-family: "Songti SC", "Noto Serif CJK SC", "SimSun", serif;
+            font-size: 24px;
             font-weight: 720;
-            letter-spacing: 1.2px;
+            line-height: 1.05;
         }
-        .cloud-meta {
-            margin-top: 7px;
+        .entry-meta {
+            display: block;
+            margin-top: 9px;
             color: var(--c-600);
             font-size: 10px;
-            line-height: 1.3;
+            line-height: 1.4;
         }
         .memory-reminder {
             display: none;
@@ -356,20 +383,18 @@
         }
         .memory-reminder::before { content: "·"; margin-right: 4px; }
         .memory-card.days-card.is-upcoming {
-            filter: none;
-        }
-        .memory-card.days-card.is-upcoming::before {
             filter:
-                drop-shadow(0 0 9px rgba(var(--c-400-rgb), 0.55))
-                drop-shadow(0 14px 22px rgba(var(--c-700-rgb), 0.18));
+                drop-shadow(0 0 8px rgba(var(--c-400-rgb),0.42))
+                drop-shadow(0 14px 22px rgba(var(--c-700-rgb),0.15));
         }
         .memory-card.days-card.is-upcoming .memory-reminder { display: inline-block; }
 
         .memory-card.days-card {
             top: 11%;
             right: 4%;
-            width: 218px;
-            height: 142px;
+            width: 232px;
+            min-height: 148px;
+            --entry-rotate: 1.2deg;
             --float-x: 8px;
             --float-x-reverse: -5px;
             animation-duration: 7.8s;
@@ -377,37 +402,83 @@
         .memory-card.photo-card {
             top: 51%;
             left: 3%;
-            width: 178px;
-            height: 108px;
+            width: 214px;
+            min-height: 126px;
+            padding-right: 90px;
+            --entry-rotate: -1.6deg;
+            --entry-shape: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
             --float-x: -7px;
             --float-x-reverse: 4px;
-            --cloud-shape-transform: scaleX(-1) rotate(-1deg);
             animation-delay: -2.6s;
             animation-duration: 6.8s;
         }
         .memory-card.story-card {
             right: 9%;
             bottom: 8%;
-            width: 170px;
-            height: 106px;
+            width: 198px;
+            min-height: 120px;
+            padding-right: 72px;
+            --entry-rotate: 1.4deg;
+            --entry-shape: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 15px 100%, 0 calc(100% - 15px));
             --float-x: 6px;
             --float-x-reverse: -4px;
-            --cloud-shape-transform: rotate(1.5deg);
             animation-delay: -4.1s;
             animation-duration: 7.4s;
         }
-        .memory-card > span {
+        .memory-card.story-card .entry-head { width: calc(100% + 42px); }
+        .memory-card > span,
+        .memory-card > strong {
             position: relative;
             z-index: 1;
         }
-        .cloud-arrow {
-            margin-left: 7px;
-            color: var(--c-600);
-            font-size: 14px;
-            transition: translate 0.25s ease;
+        .entry-thumbnails {
+            position: absolute !important;
+            right: 20px;
+            bottom: 18px;
+            width: 58px;
+            height: 54px;
         }
-        .memory-card:hover .cloud-arrow {
-            translate: 3px -3px;
+        .entry-thumbnails img {
+            position: absolute;
+            display: block;
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border: 3px solid rgba(255,255,255,0.9);
+            border-radius: 3px;
+            box-shadow: 0 5px 12px rgba(var(--c-700-rgb),0.16);
+        }
+        .entry-thumbnails img:first-child { left: 0; top: 0; rotate: -7deg; }
+        .entry-thumbnails img:last-child { right: 0; bottom: 0; rotate: 7deg; }
+        .mini-timeline {
+            position: absolute !important;
+            right: 27px;
+            bottom: 22px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            width: 18px;
+            height: 52px;
+        }
+        .mini-timeline::before {
+            content: "";
+            position: absolute;
+            top: 4px;
+            bottom: 4px;
+            left: 50%;
+            width: 1px;
+            background: rgba(var(--c-600-rgb),0.42);
+        }
+        .mini-timeline i {
+            position: relative;
+            z-index: 1;
+            width: 7px;
+            height: 7px;
+            border: 2px solid rgba(255,255,255,0.9);
+            border-radius: 50%;
+            background: var(--c-500);
+            box-shadow: 0 0 0 1px rgba(var(--c-700-rgb),0.24);
         }
         @media (max-width: 900px) {
             .home-stage { min-height: max(780px, calc(100svh - 48px)); }
@@ -532,42 +603,47 @@
 
         @media (max-width: 480px) {
             .content { padding: 16px; }
-            .home-stage { min-height: max(820px, calc(100svh - 32px)); }
+            .home-stage { min-height: max(840px, calc(100svh - 32px)); }
             .hero-core {
                 top: 46px;
                 width: calc(100% - 16px);
                 transform: translateX(-50%);
             }
             .hero-kicker { margin-bottom: 10px; font-size: 10px; }
-            .memory-card { padding: 23px 22px 16px; }
+            .memory-card { padding: 20px 20px 17px 23px; }
             .memory-card.days-card {
                 top: 355px;
-                right: 1%;
-                width: 174px;
-                height: 126px;
+                right: 0;
+                width: 188px;
+                min-height: 140px;
             }
             .memory-card.photo-card {
-                top: 535px;
+                top: 540px;
                 bottom: auto;
                 left: 0;
-                width: 154px;
-                height: 100px;
+                width: 180px;
+                min-height: 114px;
+                padding-right: 73px;
             }
             .memory-card.story-card {
                 top: 690px;
-                right: 3%;
+                right: 2%;
                 bottom: auto;
-                width: 158px;
-                height: 100px;
+                width: 174px;
+                min-height: 110px;
+                padding-right: 62px;
             }
             .memory-count { font-size: 30px; }
-            .cloud-title { font-size: 18px; }
-            .cloud-meta, .memory-reminder { font-size: 9px; }
+            .entry-head { margin-bottom: 9px; }
+            .entry-title { font-size: 20px; }
+            .entry-meta, .memory-reminder { font-size: 9px; }
+            .entry-arrow { font-size: 12px; }
+            .entry-thumbnails { right: 13px; bottom: 13px; scale: 0.88; }
+            .mini-timeline { right: 21px; bottom: 18px; scale: 0.9; }
             .avatar { width: 92px; height: 92px; }
             .theme-hue-slider { margin-bottom: 16px; }
             h1 { font-size: 42px; letter-spacing: 4px; }
             .subtitle { font-size: 13px; }
-            .cloud-arrow { font-size: 12px; }
         }
         @media (prefers-reduced-motion: reduce) {
             .memory-card { animation: none; }
@@ -598,30 +674,40 @@
 
             <nav class="bubble-links" aria-label="页面入口">
                 <a href="pages/days.html" class="memory-card days-card">
-                    <span class="cloud-eyebrow">Calendar</span>
-                    <span class="cloud-main">
-                        <strong class="memory-count" id="daysCount">--</strong>
-                        <span class="memory-unit">天</span>
-                        <span class="cloud-arrow" aria-hidden="true">↗</span>
+                    <span class="entry-head">
+                        <span class="entry-index">01</span>
+                        <span class="entry-eyebrow">Calendar</span>
+                        <span class="entry-arrow" aria-hidden="true">↗</span>
                     </span>
-                    <span class="cloud-meta">在一起 · <span id="relationshipDate">2026.09.12</span></span>
+                    <span class="entry-title-row">
+                        <strong class="memory-count" id="daysCount">--</strong>
+                        <span class="memory-unit">Days</span>
+                    </span>
+                    <span class="entry-meta">在一起 · <span id="relationshipDate">2026.09.12</span></span>
                     <span class="memory-reminder" id="anniversaryReminder"></span>
                 </a>
                 <a href="pages/photos.html" class="memory-card photo-card" aria-label="打开相册 Memories">
-                    <span class="cloud-eyebrow">Album</span>
-                    <span class="cloud-main">
-                        <strong class="cloud-title">Memories</strong>
-                        <span class="cloud-arrow" aria-hidden="true">↗</span>
+                    <span class="entry-head">
+                        <span class="entry-index">02</span>
+                        <span class="entry-eyebrow">Album</span>
+                        <span class="entry-arrow" aria-hidden="true">↗</span>
                     </span>
-                    <span class="cloud-meta">相册收藏</span>
+                    <strong class="entry-title">Memories</strong>
+                    <span class="entry-meta" id="albumEntryMeta">相册收藏</span>
+                    <span class="entry-thumbnails" aria-hidden="true">
+                        <img src="assets/gzc_jy_Img/HeadIcon1.jpg" alt="">
+                        <img src="assets/gzc_jy_Img/HeadIcon2.jpg" alt="">
+                    </span>
                 </a>
                 <a href="pages/story.html" class="memory-card story-card" aria-label="打开我们的故事时间线">
-                    <span class="cloud-eyebrow">Timeline</span>
-                    <span class="cloud-main">
-                        <strong class="cloud-title">Story</strong>
-                        <span class="cloud-arrow" aria-hidden="true">↗</span>
+                    <span class="entry-head">
+                        <span class="entry-index">03</span>
+                        <span class="entry-eyebrow">Timeline</span>
+                        <span class="entry-arrow" aria-hidden="true">↗</span>
                     </span>
-                    <span class="cloud-meta">我们的故事</span>
+                    <strong class="entry-title">Story</strong>
+                    <span class="entry-meta" id="storyEntryMeta">我们的故事</span>
+                    <span class="mini-timeline" aria-hidden="true"><i></i><i></i><i></i></span>
                 </a>
             </nav>
         </main>
@@ -831,6 +917,10 @@
         const daysSince = calculateDaysSince(relationshipStart);
         const daysElement = document.getElementById('daysCount');
         document.getElementById('relationshipDate').textContent = relationshipStart.replaceAll('-', '.');
+        document.getElementById('albumEntryMeta').textContent =
+            `${memoryData.albums?.length || 0} 个分类 · ${memoryData.photos?.length || 0} 张照片`;
+        document.getElementById('storyEntryMeta').textContent =
+            `${(memoryData.events || []).filter(event => event.story).length} 个时间节点`;
         animateNumber(daysElement, daysSince);
 
         const reminderWindow = memoryData.meta?.reminderWindowDays ?? 30;
@@ -852,9 +942,9 @@
                 : `${upcoming.remaining} 天后 · ${upcoming.event.title}`;
         }
 
-        // 云朵轻微视差：桌面跟随鼠标，支持时在手机上跟随设备倾斜。
+        // 漂浮入口轻微视差：桌面跟随鼠标，支持时在手机上跟随设备倾斜。
         const homeStage = document.querySelector('.home-stage');
-        const cloudCards = [
+        const entryCards = [
             { element: document.querySelector('.days-card'), depth: 10 },
             { element: document.querySelector('.photo-card'), depth: -13 },
             { element: document.querySelector('.story-card'), depth: 8 }
@@ -866,7 +956,7 @@
             if (reduceMotion.matches) return;
             cancelAnimationFrame(parallaxFrame);
             parallaxFrame = requestAnimationFrame(() => {
-                cloudCards.forEach(({ element, depth }) => {
+                entryCards.forEach(({ element, depth }) => {
                     element.style.setProperty('--parallax-x', `${(normalizedX * depth).toFixed(2)}px`);
                     element.style.setProperty('--parallax-y', `${(normalizedY * depth * 0.72).toFixed(2)}px`);
                 });
@@ -874,7 +964,7 @@
         }
 
         function resetParallax() {
-            cloudCards.forEach(({ element }) => {
+            entryCards.forEach(({ element }) => {
                 element.style.setProperty('--parallax-x', '0px');
                 element.style.setProperty('--parallax-y', '0px');
             });
