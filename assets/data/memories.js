@@ -5,6 +5,18 @@ window.MEMORY_DATA = Object.freeze({
         firstMet: '2025-11-08',
         reminderWindowDays: 30
     },
+    introPhotoIds: [
+        'meal-20260914-1',
+        'meal-20261005-1',
+        'meal-20261006-1',
+        'meal-20261006-2',
+        'meal-20261010-1',
+        'meal-20261010-2',
+        'meal-20261024-1',
+        'meal-20261024-2',
+        'meal-20261024-3',
+        'meal-20261025-1'
+    ],
     events: [
         {
             id: 'first-met',
@@ -95,8 +107,8 @@ window.MEMORY_DATA = Object.freeze({
             highlight: true,
             description: '',
             location: '武汉',
-            photoIds: ['head-icon-1'],
-            albumIds: ['moments']
+            photoIds: ['head-icon-1', 'meal-20260914-1'],
+            albumIds: ['moments', 'scenery']
         },
         {
             id: 'birthday-october',
@@ -121,8 +133,14 @@ window.MEMORY_DATA = Object.freeze({
             story: true,
             description: '',
             location: '武汉',
-            photoIds: [],
-            albumIds: ['moments']
+            photoIds: [
+                'meal-20261005-1',
+                'meal-20261006-1',
+                'meal-20261006-2',
+                'meal-20261010-1',
+                'meal-20261010-2'
+            ],
+            albumIds: ['scenery']
         },
         {
             id: 'wuhan-october-2026',
@@ -134,7 +152,13 @@ window.MEMORY_DATA = Object.freeze({
             story: true,
             description: '',
             location: '武汉',
-            photoIds: ['head-icon-2'],
+            photoIds: [
+                'head-icon-2',
+                'meal-20261024-1',
+                'meal-20261024-2',
+                'meal-20261024-3',
+                'meal-20261025-1'
+            ],
             albumIds: ['moments', 'scenery']
         },
         {
@@ -174,10 +198,21 @@ window.MEMORY_DATA = Object.freeze({
         },
         {
             id: 'scenery',
-            title: '沿途风景',
-            subtitle: '一起看过的风景',
-            coverPhotoId: 'head-icon-2',
-            photoIds: ['head-icon-2', 'head-icon-1']
+            title: '一起吃过的饭',
+            subtitle: '一起分享过的味道',
+            coverPhotoId: 'meal-20261006-1',
+            photoIds: [
+                'meal-20260914-1',
+                'meal-20261005-1',
+                'meal-20261006-1',
+                'meal-20261006-2',
+                'meal-20261010-1',
+                'meal-20261010-2',
+                'meal-20261024-1',
+                'meal-20261024-2',
+                'meal-20261024-3',
+                'meal-20261025-1'
+            ]
         }
     ],
     photos: [
@@ -187,7 +222,7 @@ window.MEMORY_DATA = Object.freeze({
             alt: '拥抱皮卡丘的插画',
             date: '2026-09-12',
             eventId: 'wuhan-september-2026',
-            albumIds: ['moments', 'scenery']
+            albumIds: ['moments']
         },
         {
             id: 'head-icon-2',
@@ -195,7 +230,87 @@ window.MEMORY_DATA = Object.freeze({
             alt: '海边的照片',
             date: '2026-10-24',
             eventId: 'wuhan-october-2026',
-            albumIds: ['moments', 'scenery']
+            albumIds: ['moments']
+        },
+        {
+            id: 'meal-20260914-1',
+            src: 'assets/gzc_jy_Img/EatTog/AnimotionImg/20260914.1.jpg',
+            alt: '一起吃过的饭 · 2026.09.14',
+            date: '2026-09-14',
+            eventId: 'wuhan-september-2026',
+            albumIds: ['scenery']
+        },
+        {
+            id: 'meal-20261005-1',
+            src: 'assets/gzc_jy_Img/EatTog/AnimotionImg/20261005.1.jpg',
+            alt: '一起吃过的饭 · 2026.10.05',
+            date: '2026-10-05',
+            eventId: 'national-day-2026',
+            albumIds: ['scenery']
+        },
+        {
+            id: 'meal-20261006-1',
+            src: 'assets/gzc_jy_Img/EatTog/AnimotionImg/20261006.1.jpg',
+            alt: '一起吃过的饭 · 2026.10.06（1）',
+            date: '2026-10-06',
+            eventId: 'national-day-2026',
+            albumIds: ['scenery']
+        },
+        {
+            id: 'meal-20261006-2',
+            src: 'assets/gzc_jy_Img/EatTog/AnimotionImg/20261006.2.jpg',
+            alt: '一起吃过的饭 · 2026.10.06（2）',
+            date: '2026-10-06',
+            eventId: 'national-day-2026',
+            albumIds: ['scenery']
+        },
+        {
+            id: 'meal-20261010-1',
+            src: 'assets/gzc_jy_Img/EatTog/AnimotionImg/20261010.1.jpg',
+            alt: '一起吃过的饭 · 2026.10.10（1）',
+            date: '2026-10-10',
+            eventId: 'national-day-2026',
+            albumIds: ['scenery']
+        },
+        {
+            id: 'meal-20261010-2',
+            src: 'assets/gzc_jy_Img/EatTog/AnimotionImg/20261010.2.jpg',
+            alt: '一起吃过的饭 · 2026.10.10（2）',
+            date: '2026-10-10',
+            eventId: 'national-day-2026',
+            albumIds: ['scenery']
+        },
+        {
+            id: 'meal-20261024-1',
+            src: 'assets/gzc_jy_Img/EatTog/AnimotionImg/20261024.1.jpg',
+            alt: '一起吃过的饭 · 2026.10.24（1）',
+            date: '2026-10-24',
+            eventId: 'wuhan-october-2026',
+            albumIds: ['scenery']
+        },
+        {
+            id: 'meal-20261024-2',
+            src: 'assets/gzc_jy_Img/EatTog/AnimotionImg/20261024.2.jpg',
+            alt: '一起吃过的饭 · 2026.10.24（2）',
+            date: '2026-10-24',
+            eventId: 'wuhan-october-2026',
+            albumIds: ['scenery']
+        },
+        {
+            id: 'meal-20261024-3',
+            src: 'assets/gzc_jy_Img/EatTog/AnimotionImg/20261024.3.jpg',
+            alt: '一起吃过的饭 · 2026.10.24（3）',
+            date: '2026-10-24',
+            eventId: 'wuhan-october-2026',
+            albumIds: ['scenery']
+        },
+        {
+            id: 'meal-20261025-1',
+            src: 'assets/gzc_jy_Img/EatTog/AnimotionImg/20261025.1.jpg',
+            alt: '一起吃过的饭 · 2026.10.25',
+            date: '2026-10-25',
+            eventId: 'wuhan-october-2026',
+            albumIds: ['scenery']
         }
     ]
 });

@@ -314,9 +314,9 @@
             background: var(--paper);
             box-shadow: 0 22px 60px rgba(0, 0, 0, 0.24);
         }
-        .intro-photo.flash { animation: photoFlash 0.13s ease-out; }
+        .intro-photo.flash { animation: photoFlash 0.13s cubic-bezier(.2,.75,.25,1); }
         @keyframes photoFlash {
-            from { opacity: 0.55; transform: scale(0.985); }
+            from { opacity: 0.42; transform: scale(1.14); }
             to { opacity: 1; transform: scale(1); }
         }
         .intro-progress {
@@ -642,6 +642,9 @@
             ...album,
             photos: album.photoIds.map(id => photoById.get(id)).filter(Boolean)
         }));
+        const introPhotos = (data.introPhotoIds || [])
+            .map(id => photoById.get(id))
+            .filter(Boolean);
         const albumById = new Map(albums.map(album => [album.id, album]));
         const albumShell = document.querySelector('.album-shell');
         const categoriesView = document.getElementById('categoriesView');
@@ -689,11 +692,15 @@
             return `${formatDate(dates[0])} - ${formatDate(dates[dates.length - 1])}`;
         }
 
-        function preloadAlbum(album) {
-            album.photos.forEach(photo => {
+        function preloadPhotos(photos) {
+            photos.forEach(photo => {
                 const image = new Image();
                 image.src = resolvePhotoSrc(photo.src);
             });
+        }
+
+        function preloadAlbum(album) {
+            preloadPhotos(album.photos);
         }
 
         function renderCategories() {
@@ -785,11 +792,12 @@
 
         function showFrame() {
             const album = albumById.get(activeAlbumId);
-            if (!album?.photos.length) {
+            const framePhotos = introPhotos.length ? introPhotos : album?.photos || [];
+            if (!framePhotos.length) {
                 finishIntro();
                 return;
             }
-            const photo = album.photos[frameIndex % album.photos.length];
+            const photo = framePhotos[frameIndex % framePhotos.length];
             introPhoto.src = resolvePhotoSrc(photo.src);
             introPhoto.alt = photo.alt;
             introCounter.textContent = `${pad(frameIndex + 1)} / ${pad(frameCount)}`;
@@ -814,7 +822,7 @@
                 return;
             }
             clearTimeout(introTimer);
-            if (!album.photos.length) {
+            if (!(introPhotos.length || album.photos.length)) {
                 renderGallery();
                 return;
             }
@@ -948,6 +956,7 @@
 
         renderCategories();
         albums.forEach(preloadAlbum);
+        preloadPhotos(introPhotos);
         openFromUrl();
     })();
     </script>
