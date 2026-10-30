@@ -44,7 +44,7 @@ const albumPhotos = imageFiles.map(createPhoto);
 const album = {
     id: albumId,
     title: '一起吃过的饭',
-    subtitle: '一起分享过的味道',
+    subtitle: '爱就是一起吃好多顿饭',
     coverPhotoId: albumPhotos.at(-1)?.id || '',
     photoIds: albumPhotos.map(photo => photo.id)
 };

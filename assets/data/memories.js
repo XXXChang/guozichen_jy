@@ -210,7 +210,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "eat-together",
             "title": "一起吃过的饭",
-            "subtitle": "一起分享过的味道",
+            "subtitle": "爱就是一起吃好多顿饭",
             "coverPhotoId": "meal-20261025-1",
             "photoIds": [
                 "meal-20251220-1",
