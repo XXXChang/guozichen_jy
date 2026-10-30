@@ -183,6 +183,19 @@
             color: var(--muted);
             font-size: 12px;
         }
+        .category-subtitle {
+            display: block;
+            margin-top: 7px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+        .category-meta {
+            display: block;
+            margin-top: 5px;
+            color: var(--gold);
+            font-size: 11px;
+            font-variant-numeric: tabular-nums;
+        }
         .category-arrow {
             display: grid;
             place-items: center;
@@ -325,6 +338,7 @@
             grid-template-columns: 48px minmax(0, 1fr) 48px;
             gap: 18px;
         }
+        .lightbox-back { position: absolute; top: 22px; left: 22px; }
         .lightbox-close { position: absolute; top: 22px; right: 22px; }
         .lightbox figure {
             grid-column: 2;
@@ -344,10 +358,21 @@
             box-shadow: 0 22px 60px rgba(0, 0, 0, 0.24);
         }
         .lightbox figcaption {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 9px;
             margin-top: 15px;
             font-size: 13px;
             font-variant-numeric: tabular-nums;
         }
+        .lightbox-story-link {
+            color: #ffe0a5;
+            font-size: 12px;
+            font-weight: 650;
+            text-decoration: none;
+        }
+        .lightbox-story-link:hover { color: #fff; }
         .lightbox-prev { grid-column: 1; grid-row: 1; justify-self: end; }
         .lightbox-next { grid-column: 3; grid-row: 1; justify-self: start; }
         @media (max-width: 700px) {
@@ -388,34 +413,11 @@
                     <div>
                         <span class="section-kicker">JY × GZC / COLLECTION</span>
                         <h1 id="albumTitle">我们的相册</h1>
-                        <p>2 个分类 · 2 张照片</p>
+                        <p id="albumSummary"></p>
                     </div>
-                    <span class="section-index">01 / 02</span>
+                    <span id="albumIndex" class="section-index"></span>
                 </header>
-                <div class="category-grid">
-                    <button class="category-card" type="button" data-category="moments">
-                        <span class="category-preview">
-                            <img src="../assets/gzc_jy_Img/HeadIcon1.jpg" alt="拥抱皮卡丘的插画">
-                            <img src="../assets/gzc_jy_Img/HeadIcon2.jpg" alt="海边的照片">
-                            <span class="category-number" aria-hidden="true">NO. 01</span>
-                        </span>
-                        <span class="category-info">
-                            <span><strong>心动片段</strong><small>02 张照片</small></span>
-                            <span class="category-arrow" aria-hidden="true">→</span>
-                        </span>
-                    </button>
-                    <button class="category-card" type="button" data-category="scenery">
-                        <span class="category-preview">
-                            <img src="../assets/gzc_jy_Img/HeadIcon2.jpg" alt="海边的照片">
-                            <img src="../assets/gzc_jy_Img/HeadIcon1.jpg" alt="拥抱皮卡丘的插画">
-                            <span class="category-number" aria-hidden="true">NO. 02</span>
-                        </span>
-                        <span class="category-info">
-                            <span><strong>沿途风景</strong><small>02 张照片</small></span>
-                            <span class="category-arrow" aria-hidden="true">→</span>
-                        </span>
-                    </button>
-                </div>
+                <div id="categoryGrid" class="category-grid"></div>
             </section>
 
             <section id="galleryView" hidden aria-labelledby="galleryTitle">
@@ -425,9 +427,9 @@
                         <div>
                             <span class="section-kicker">JY × GZC / COLLECTION</span>
                             <h1 id="galleryTitle" tabindex="-1"></h1>
-                            <p>02 张照片</p>
+                            <p id="gallerySummary"></p>
                         </div>
-                        <span class="section-index">01 / 02</span>
+                        <span id="galleryIndex" class="section-index"></span>
                     </div>
                 </header>
                 <div id="photoGrid" class="photo-grid"></div>
@@ -446,16 +448,21 @@
     </div>
 
     <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="查看照片" hidden>
+        <button id="backFromLightbox" class="icon-button lightbox-back" type="button" aria-label="返回相册分类" title="返回相册分类">←</button>
         <button id="closeLightbox" class="icon-button lightbox-close" type="button" aria-label="关闭照片" title="关闭照片">×</button>
         <button id="prevPhoto" class="icon-button lightbox-prev" type="button" aria-label="上一张照片" title="上一张照片">‹</button>
         <figure>
             <img id="lightboxPhoto" alt="">
-            <figcaption id="lightboxCaption"></figcaption>
+            <figcaption>
+                <span id="lightboxCaption"></span>
+                <a id="lightboxStoryLink" class="lightbox-story-link" href="story.html" hidden>查看故事节点 ↗</a>
+            </figcaption>
         </figure>
         <button id="nextPhoto" class="icon-button lightbox-next" type="button" aria-label="下一张照片" title="下一张照片">›</button>
     </div>
 
     <!-- 背景飘落爱心 -->
+    <script src="../assets/data/memories.js"></script>
     <script>
     (function () {
         const canvas = document.createElement('canvas');
@@ -628,18 +635,23 @@
 
     <script>
     (function () {
-        const photos = [
-            { src: '../assets/gzc_jy_Img/HeadIcon1.jpg', alt: '拥抱皮卡丘的插画' },
-            { src: '../assets/gzc_jy_Img/HeadIcon2.jpg', alt: '海边的照片' }
-        ];
-        const categories = {
-            moments: { title: '心动片段', photos },
-            scenery: { title: '沿途风景', photos: [photos[1], photos[0]] }
-        };
+        const data = window.MEMORY_DATA || { albums: [], photos: [], events: [] };
+        const photoById = new Map(data.photos.map(photo => [photo.id, photo]));
+        const eventById = new Map(data.events.map(event => [event.id, event]));
+        const albums = data.albums.map(album => ({
+            ...album,
+            photos: album.photoIds.map(id => photoById.get(id)).filter(Boolean)
+        }));
+        const albumById = new Map(albums.map(album => [album.id, album]));
         const albumShell = document.querySelector('.album-shell');
         const categoriesView = document.getElementById('categoriesView');
+        const categoryGrid = document.getElementById('categoryGrid');
+        const albumSummary = document.getElementById('albumSummary');
+        const albumIndex = document.getElementById('albumIndex');
         const galleryView = document.getElementById('galleryView');
         const galleryTitle = document.getElementById('galleryTitle');
+        const gallerySummary = document.getElementById('gallerySummary');
+        const galleryIndex = document.getElementById('galleryIndex');
         const photoGrid = document.getElementById('photoGrid');
         const introOverlay = document.getElementById('introOverlay');
         const introTitle = document.getElementById('introTitle');
@@ -649,18 +661,98 @@
         const lightbox = document.getElementById('lightbox');
         const lightboxPhoto = document.getElementById('lightboxPhoto');
         const lightboxCaption = document.getElementById('lightboxCaption');
+        const lightboxStoryLink = document.getElementById('lightboxStoryLink');
         const frameCount = 15;
         const frameDuration = 130;
-        let activeCategory = null;
+        let activeAlbumId = null;
         let frameIndex = 0;
         let introTimer = null;
         let photoIndex = 0;
         let lastFocused = null;
+        let touchStart = null;
 
-        function renderGallery() {
-            const category = categories[activeCategory];
-            galleryTitle.textContent = category.title;
-            photoGrid.replaceChildren(...category.photos.map((photo, index) => {
+        const pad = value => String(value).padStart(2, '0');
+
+        function resolvePhotoSrc(src) {
+            if (/^(?:[a-z]+:|\/)/i.test(src) || src.startsWith('../')) return src;
+            return '../' + src;
+        }
+
+        function formatDate(date) {
+            return date ? date.replaceAll('-', '.') : '';
+        }
+
+        function getAlbumRange(album) {
+            const dates = album.photos.map(photo => photo.date).filter(Boolean).sort();
+            if (!dates.length) return '日期待补充';
+            if (dates[0] === dates[dates.length - 1]) return formatDate(dates[0]);
+            return `${formatDate(dates[0])} - ${formatDate(dates[dates.length - 1])}`;
+        }
+
+        function preloadAlbum(album) {
+            album.photos.forEach(photo => {
+                const image = new Image();
+                image.src = resolvePhotoSrc(photo.src);
+            });
+        }
+
+        function renderCategories() {
+            albumSummary.textContent = `${albums.length} 个分类 · ${data.photos.length} 张照片`;
+            albumIndex.textContent = albums.length ? `01 / ${pad(albums.length)}` : '00 / 00';
+            categoryGrid.replaceChildren(...albums.map((album, index) => {
+                const button = document.createElement('button');
+                const preview = document.createElement('span');
+                const number = document.createElement('span');
+                const info = document.createElement('span');
+                const copy = document.createElement('span');
+                const title = document.createElement('strong');
+                const subtitle = document.createElement('span');
+                const meta = document.createElement('span');
+                const arrow = document.createElement('span');
+                const cover = photoById.get(album.coverPhotoId) || album.photos[0];
+                const previewPhotos = [cover, ...album.photos.filter(photo => photo.id !== cover?.id)].filter(Boolean);
+
+                button.type = 'button';
+                button.className = 'category-card';
+                button.dataset.category = album.id;
+                button.setAttribute('aria-label', `打开${album.title}，${album.photos.length}张照片`);
+                preview.className = 'category-preview';
+                previewPhotos.slice(0, 2).forEach((photo, photoPreviewIndex) => {
+                    const image = document.createElement('img');
+                    image.src = resolvePhotoSrc(photo.src);
+                    image.alt = photo.alt;
+                    if (photoPreviewIndex > 0) image.loading = 'lazy';
+                    preview.appendChild(image);
+                });
+                number.className = 'category-number';
+                number.setAttribute('aria-hidden', 'true');
+                number.textContent = `NO. ${pad(index + 1)}`;
+                preview.appendChild(number);
+
+                info.className = 'category-info';
+                title.textContent = album.title;
+                subtitle.className = 'category-subtitle';
+                subtitle.textContent = album.subtitle || '我们的影像收藏';
+                meta.className = 'category-meta';
+                meta.textContent = `${pad(album.photos.length)} 张照片 · ${getAlbumRange(album)}`;
+                copy.append(title, subtitle, meta);
+                arrow.className = 'category-arrow';
+                arrow.setAttribute('aria-hidden', 'true');
+                arrow.textContent = '→';
+                info.append(copy, arrow);
+                button.append(preview, info);
+                return button;
+            }));
+        }
+
+        function renderGallery({ focus = true } = {}) {
+            const album = albumById.get(activeAlbumId);
+            if (!album) return;
+            const albumPosition = albums.findIndex(item => item.id === album.id);
+            galleryTitle.textContent = album.title;
+            gallerySummary.textContent = `${album.subtitle || '我们的影像收藏'} · ${pad(album.photos.length)} 张照片 · ${getAlbumRange(album)}`;
+            galleryIndex.textContent = `${pad(albumPosition + 1)} / ${pad(albums.length)}`;
+            photoGrid.replaceChildren(...album.photos.map((photo, index) => {
                 const button = document.createElement('button');
                 const image = document.createElement('img');
                 const label = document.createElement('span');
@@ -668,17 +760,18 @@
                 button.className = 'photo-tile';
                 button.setAttribute('aria-label', `查看第 ${index + 1} 张照片`);
                 button.dataset.index = index;
-                image.src = photo.src;
+                button.dataset.photo = photo.id;
+                image.src = resolvePhotoSrc(photo.src);
                 image.alt = photo.alt;
-                image.loading = 'lazy';
-                label.textContent = String(index + 1).padStart(2, '0') + ' / 02';
+                image.loading = index < 2 ? 'eager' : 'lazy';
+                label.textContent = `${formatDate(photo.date)} · ${pad(index + 1)} / ${pad(album.photos.length)}`;
                 button.append(image, label);
                 return button;
             }));
             categoriesView.hidden = true;
             galleryView.hidden = false;
             window.scrollTo(0, 0);
-            galleryTitle.focus();
+            if (focus) galleryTitle.focus();
         }
 
         function finishIntro() {
@@ -691,11 +784,15 @@
         }
 
         function showFrame() {
-            const categoryPhotos = categories[activeCategory].photos;
-            const photo = categoryPhotos[frameIndex % categoryPhotos.length];
-            introPhoto.src = photo.src;
+            const album = albumById.get(activeAlbumId);
+            if (!album?.photos.length) {
+                finishIntro();
+                return;
+            }
+            const photo = album.photos[frameIndex % album.photos.length];
+            introPhoto.src = resolvePhotoSrc(photo.src);
             introPhoto.alt = photo.alt;
-            introCounter.textContent = String(frameIndex + 1).padStart(2, '0') + ' / 15';
+            introCounter.textContent = `${pad(frameIndex + 1)} / ${pad(frameCount)}`;
             introProgress.style.width = ((frameIndex + 1) / frameCount * 100) + '%';
             introPhoto.classList.remove('flash');
             void introPhoto.offsetWidth;
@@ -707,15 +804,23 @@
             }, frameDuration);
         }
 
-        function openCategory(id) {
-            if (!categories[id]) return;
-            activeCategory = id;
-            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        function openCategory(id, { playIntro = true, focus = true } = {}) {
+            const album = albumById.get(id);
+            if (!album) return;
+            activeAlbumId = id;
+            preloadAlbum(album);
+            if (!playIntro || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                renderGallery({ focus });
+                return;
+            }
+            clearTimeout(introTimer);
+            if (!album.photos.length) {
                 renderGallery();
                 return;
             }
             frameIndex = 0;
-            introTitle.textContent = categories[id].title;
+            introProgress.style.width = '0%';
+            introTitle.textContent = album.title;
             introOverlay.hidden = false;
             document.body.classList.add('modal-open');
             albumShell.inert = true;
@@ -724,47 +829,61 @@
         }
 
         function showLightbox() {
-            const photo = categories[activeCategory].photos[photoIndex];
-            lightboxPhoto.src = photo.src;
+            const album = albumById.get(activeAlbumId);
+            const photo = album.photos[photoIndex];
+            lightboxPhoto.src = resolvePhotoSrc(photo.src);
             lightboxPhoto.alt = photo.alt;
-            lightboxCaption.textContent = String(photoIndex + 1).padStart(2, '0') + ' / 02';
+            lightboxCaption.textContent = `${formatDate(photo.date)} · ${pad(photoIndex + 1)} / ${pad(album.photos.length)}`;
+            const linkedEvent = photo.eventId && eventById.get(photo.eventId);
+            lightboxStoryLink.hidden = !linkedEvent;
+            if (linkedEvent) {
+                lightboxStoryLink.href = `story.html?event=${encodeURIComponent(linkedEvent.id)}`;
+                lightboxStoryLink.textContent = `查看故事节点 · ${linkedEvent.title} ↗`;
+            }
         }
 
-        function openLightbox(index) {
-            lastFocused = document.activeElement;
+        function openLightbox(index, { focus = true } = {}) {
+            const album = albumById.get(activeAlbumId);
+            if (!album?.photos[index]) return;
+            lastFocused = focus ? document.activeElement : null;
             photoIndex = index;
             showLightbox();
             lightbox.hidden = false;
             document.body.classList.add('modal-open');
             albumShell.inert = true;
-            document.getElementById('closeLightbox').focus();
+            if (focus) document.getElementById('closeLightbox').focus();
         }
 
-        function closeLightbox() {
+        function closeLightbox({ restoreFocus = true } = {}) {
             lightbox.hidden = true;
             document.body.classList.remove('modal-open');
             albumShell.inert = false;
-            lastFocused?.focus();
+            if (restoreFocus) lastFocused?.focus();
         }
 
         function stepPhoto(direction) {
-            const length = categories[activeCategory].photos.length;
+            const length = albumById.get(activeAlbumId).photos.length;
             photoIndex = (photoIndex + direction + length) % length;
             showLightbox();
         }
 
-        document.querySelectorAll('.category-card').forEach(button => {
-            button.addEventListener('click', () => openCategory(button.dataset.category));
+        categoryGrid.addEventListener('click', event => {
+            const button = event.target.closest('.category-card');
+            if (button) openCategory(button.dataset.category);
         });
         document.getElementById('skipIntro').addEventListener('click', finishIntro);
-        document.getElementById('backToCategories').addEventListener('click', () => {
-            const category = activeCategory;
+        function returnToCategories() {
+            const album = activeAlbumId;
+            if (!lightbox.hidden) closeLightbox({ restoreFocus: false });
             galleryView.hidden = true;
             categoriesView.hidden = false;
-            activeCategory = null;
+            activeAlbumId = null;
             window.scrollTo(0, 0);
-            document.querySelector(`.category-card[data-category="${category}"]`)?.focus();
-        });
+            document.querySelector(`.category-card[data-category="${album}"]`)?.focus();
+        }
+
+        document.getElementById('backToCategories').addEventListener('click', returnToCategories);
+        document.getElementById('backFromLightbox').addEventListener('click', returnToCategories);
         photoGrid.addEventListener('click', event => {
             const tile = event.target.closest('.photo-tile');
             if (tile) openLightbox(Number(tile.dataset.index));
@@ -775,6 +894,24 @@
         lightbox.addEventListener('click', event => {
             if (event.target === lightbox) closeLightbox();
         });
+        lightbox.querySelector('figure').addEventListener('touchstart', event => {
+            if (event.target.closest('a')) return;
+            const touch = event.changedTouches[0];
+            touchStart = { x: touch.clientX, y: touch.clientY };
+        }, { passive: true });
+        lightbox.querySelector('figure').addEventListener('touchend', event => {
+            if (!touchStart || event.target.closest('a')) {
+                touchStart = null;
+                return;
+            }
+            const touch = event.changedTouches[0];
+            const deltaX = touch.clientX - touchStart.x;
+            const deltaY = touch.clientY - touchStart.y;
+            touchStart = null;
+            if (Math.abs(deltaX) >= 45 && Math.abs(deltaX) > Math.abs(deltaY)) {
+                stepPhoto(deltaX < 0 ? 1 : -1);
+            }
+        }, { passive: true });
         window.addEventListener('keydown', event => {
             if (!lightbox.hidden) {
                 if (event.key === 'Escape') closeLightbox();
@@ -784,6 +921,34 @@
                 finishIntro();
             }
         });
+
+        function openFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            const requestedEvent = eventById.get(params.get('event'));
+            let requestedPhoto = photoById.get(params.get('photo'));
+            let requestedAlbum = albumById.get(params.get('album'));
+
+            if (!requestedPhoto && requestedEvent?.photoIds?.length) {
+                requestedPhoto = photoById.get(requestedEvent.photoIds[0]);
+            }
+            if (!requestedAlbum && requestedPhoto) {
+                requestedAlbum = albums.find(album => album.photoIds.includes(requestedPhoto.id));
+            }
+            if (!requestedAlbum && requestedEvent?.albumIds?.length) {
+                requestedAlbum = requestedEvent.albumIds.map(id => albumById.get(id)).find(Boolean);
+            }
+            if (!requestedAlbum) return;
+
+            openCategory(requestedAlbum.id, { playIntro: false, focus: false });
+            if (requestedPhoto) {
+                const requestedIndex = requestedAlbum.photos.findIndex(photo => photo.id === requestedPhoto.id);
+                if (requestedIndex >= 0) openLightbox(requestedIndex, { focus: false });
+            }
+        }
+
+        renderCategories();
+        albums.forEach(preloadAlbum);
+        openFromUrl();
     })();
     </script>
 

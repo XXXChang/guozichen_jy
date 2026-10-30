@@ -8,12 +8,53 @@
  * @returns {number} 天数
  */
 function calculateDaysSince(dateStr) {
-    const start = new Date(dateStr);
+    const start = parseLocalDate(dateStr);
     const today = new Date();
     start.setHours(0, 0, 0, 0);
     today.setHours(0, 0, 0, 0);
     const diff = today - start;
     return Math.floor(diff / (1000 * 60 * 60 * 24)) + 1;
+}
+
+/**
+ * 按本地时区解析 YYYY-MM-DD，避免 UTC 解析造成日期偏移。
+ * @param {string} dateStr
+ * @returns {Date}
+ */
+function parseLocalDate(dateStr) {
+    const [year, month, day] = dateStr.split('-').map(Number);
+    return new Date(year, month - 1, day);
+}
+
+/**
+ * 获取某个日期下一次按年重复的日期；当天仍返回当天。
+ * @param {string} dateStr
+ * @param {Date} [fromDate]
+ * @returns {Date}
+ */
+function nextYearlyOccurrence(dateStr, fromDate = new Date()) {
+    const source = parseLocalDate(dateStr);
+    const today = new Date(fromDate);
+    today.setHours(0, 0, 0, 0);
+    let next = new Date(today.getFullYear(), source.getMonth(), source.getDate());
+    if (next < today) {
+        next = new Date(today.getFullYear() + 1, source.getMonth(), source.getDate());
+    }
+    return next;
+}
+
+/**
+ * 计算目标日期距离指定日期的自然日数。
+ * @param {Date} targetDate
+ * @param {Date} [fromDate]
+ * @returns {number}
+ */
+function daysUntil(targetDate, fromDate = new Date()) {
+    const today = new Date(fromDate);
+    const target = new Date(targetDate);
+    today.setHours(0, 0, 0, 0);
+    target.setHours(0, 0, 0, 0);
+    return Math.round((target - today) / (1000 * 60 * 60 * 24));
 }
 
 /**
@@ -40,12 +81,12 @@ function daysToNextHundredDay(days) {
  * @returns {Date} 下一个周年的 Date 对象
  */
 function nextAnniversaryDate(dateStr) {
-    const start = new Date(dateStr);
+    const start = parseLocalDate(dateStr);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     let nextYear = start.getFullYear() + 1;
     let next = new Date(nextYear, start.getMonth(), start.getDate());
-    while (next <= today) {
+    while (next < today) {
         nextYear += 1;
         next = new Date(nextYear, start.getMonth(), start.getDate());
     }

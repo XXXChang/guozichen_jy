@@ -1,36 +1,10 @@
 ﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <!-- ============================================
-         📅 事件数据（统一数据源：直接打开本文件或 HTTP 访问都使用此副本）
-         ✏️ 添加/修改事件：编辑下方 id="eventsData" 块里的内容
-         ℹ️  assets/data/events.json 已停用（保留为只读备份，不再被脚本读取）
-         ============================================ -->
-    <script type="application/json" id="eventsData">
-{
-    "events": [
-        { "date": "2025-11-08",  "name": "初次相遇",                "tag": "相识", "type": "anniversary" },
-
-        { "date": "2026-09-12",  "name": "在一起啦",                "tag": "相爱", "type": "anniversary" },
-
-        { "date": "2026-10-04",  "name": "生日",                    "tag": "生日", "type": "birthday" },
-        { "date": "2026-12-31",  "name": "跨年",                    "tag": "跨年", "type": "festival" },
-        { "date": "2027-01-05",  "name": "生日",                    "tag": "生日", "type": "birthday" },
-
-        { "startDate": "2025-12-20", "endDate": "2025-12-21", "name": "南京",                      "tag": "姚晓棠南京演唱会", "type": "together" },
-        { "startDate": "2026-07-11", "endDate": "2026-07-21", "name": "武汉-长沙-邵阳-武汉",        "tag": "和小铮去武汉玩", "type": "together" },
-        { "startDate": "2026-08-13", "endDate": "2026-08-16", "name": "武汉-南昌-武汉",            "tag": "王赫野南昌演唱会", "type": "together" },
-        { "startDate": "2026-09-05", "endDate": "2026-09-06", "name": "广州",                      "tag": "姚晓棠广州演唱会", "type": "together" },
-        { "startDate": "2026-09-12", "endDate": "2026-09-14", "name": "武汉",                      "tag": "见面", "type": "together" },
-        { "startDate": "2026-10-04", "endDate": "2026-10-11", "name": "武汉",                      "tag": "甜蜜国庆", "type": "together" },
-        { "startDate": "2026-10-24", "endDate": "2026-10-25", "name": "武汉",                      "tag": "见面", "type": "together" }
-    ]
-}
-    </script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>纪念日详情</title>
+    <script src="../assets/data/memories.js"></script>
     <style>
         body {
             margin: 0;
@@ -332,6 +306,10 @@
         .cal-day.has-event:hover {
             box-shadow: 0 4px 12px rgba(100, 181, 246, 0.4);
         }
+        .cal-day.has-event:focus-visible {
+            outline: 2px solid #0d47a1;
+            outline-offset: 2px;
+        }
         .cal-day.has-event.range-middle {
             background: rgba(187, 222, 251, 0.4);
         }
@@ -490,6 +468,7 @@
         }
         .modal-event-row {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
             gap: 10px;
             padding: 8px 10px;
@@ -531,6 +510,27 @@
             color: #263238;
             flex: 1;
             font-weight: 500;
+        }
+        .event-actions {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: auto;
+        }
+        .event-link {
+            padding: 5px 8px;
+            border: 1px solid rgba(25, 118, 210, 0.24);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.72);
+            color: #1565c0;
+            font-size: 11px;
+            font-weight: 600;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .event-link:hover {
+            background: #1976d2;
+            color: #fff;
         }
 
         /* 事件列表 */
@@ -702,7 +702,7 @@
         <div class="container">
             <div class="card">
                 <div class="card-title">在一起</div>
-                <div class="card-date">2026.09.12</div>
+                <div class="card-date" id="togetherDate">--</div>
                 <div class="main-count" id="togetherCount">--</div>
                 <div class="main-unit">天</div>
                 <div class="divider"></div>
@@ -712,14 +712,14 @@
                         <span><span class="next-value" id="togetherHundred">--</span><span class="next-date">天</span></span>
                     </div>
                     <div class="next-item">
-                        <span class="next-label">距离一周年</span>
+                        <span class="next-label">距离下个周年</span>
                         <span><span class="next-value" id="togetherYear">--</span><span class="next-date">天</span></span>
                     </div>
                 </div>
             </div>
             <div class="card">
                 <div class="card-title">相识</div>
-                <div class="card-date">2025.11.08</div>
+                <div class="card-date" id="meetDate">--</div>
                 <div class="main-count" id="meetCount">--</div>
                 <div class="main-unit">天</div>
                 <div class="divider"></div>
@@ -729,7 +729,7 @@
                         <span><span class="next-value" id="meetHundred">--</span><span class="next-date">天</span></span>
                     </div>
                     <div class="next-item">
-                        <span class="next-label">距离一周年</span>
+                        <span class="next-label">距离下个周年</span>
                         <span><span class="next-value" id="meetYear">--</span><span class="next-date">天</span></span>
                     </div>
                 </div>
@@ -740,21 +740,27 @@
     <script src="../assets/js/utils.js"></script>
     <script>
         // ============== 纪念日卡片 ==============
-        const togetherDays = calculateDaysSince('2026-09-12');
+        const memoryData = window.MEMORY_DATA || { meta: {}, events: [] };
+        const relationshipStart = memoryData.meta.relationshipStart || '2026-09-12';
+        const firstMet = memoryData.meta.firstMet || '2025-11-08';
+        const displayDate = value => value.replaceAll('-', '.');
+
+        document.getElementById('togetherDate').textContent = displayDate(relationshipStart);
+        const togetherDays = calculateDaysSince(relationshipStart);
         document.getElementById('togetherCount').textContent = togetherDays;
         document.getElementById('togetherHundredLabel').textContent = nextHundredDay(togetherDays);
         document.getElementById('togetherHundred').textContent = daysToNextHundredDay(togetherDays);
-        document.getElementById('togetherYear').textContent = daysToNextAnniversary('2026-09-12');
+        document.getElementById('togetherYear').textContent = daysToNextAnniversary(relationshipStart);
 
-        const meetDays = calculateDaysSince('2025-11-08');
+        document.getElementById('meetDate').textContent = displayDate(firstMet);
+        const meetDays = calculateDaysSince(firstMet);
         document.getElementById('meetCount').textContent = meetDays;
         document.getElementById('meetHundredLabel').textContent = nextHundredDay(meetDays);
         document.getElementById('meetHundred').textContent = daysToNextHundredDay(meetDays);
-        document.getElementById('meetYear').textContent = daysToNextAnniversary('2025-11-08');
+        document.getElementById('meetYear').textContent = daysToNextAnniversary(firstMet);
 
         // ============== 日历 ==============
-        // 事件数据：当前统一从页面顶部 <script id="eventsData"> 内嵌副本读取
-        //   （assets/data/events.json 已停用，保留为只读备份）
+        // 事件数据来自全站唯一数据源 assets/data/memories.js。
         // 事件支持两种形式：
         //   1) 单日：{ date: "2026-10-01", name, tag, type }
         //   2) 区间：{ startDate: "2026-10-01", endDate: "2026-10-03", name, tag, type }
@@ -793,7 +799,17 @@
             const list = [...(data.events || []), ...FESTIVALS];
             list.forEach(e => {
                 const type = e.type || 'special';
-                const meta = { name: e.name, tag: e.tag, type };
+                const meta = {
+                    id: e.id || '',
+                    name: e.title || e.name || '未命名事件',
+                    tag: e.tag || '事件',
+                    type,
+                    story: Boolean(e.story),
+                    description: e.description || '',
+                    location: e.location || '',
+                    photoIds: Array.isArray(e.photoIds) ? e.photoIds : [],
+                    albumIds: Array.isArray(e.albumIds) ? e.albumIds : []
+                };
                 if (e.startDate && e.endDate) {
                     // 区间事件
                     const start = parseDate(e.startDate);
@@ -811,29 +827,28 @@
                     const key = e.date;
                     allEvents.push({ ...meta, date: key });
                     if (!events[key]) events[key] = [];
-                    events[key].push(meta);
+                    events[key].push({ ...meta, date: key });
                 }
             });
         }
 
         async function loadEvents() {
-            // 事件数据源：统一使用页面顶部 <script id="eventsData"> 内嵌副本
-            // 历史说明：曾支持从 assets/data/events.json 加载；若该文件被重新启用且
-            // 移除 _disabled 标记，可在此处恢复 fetch 逻辑。当前默认从内嵌副本读取。
             try {
-                const inline = document.getElementById('eventsData').textContent;
-                const data = JSON.parse(inline);
-                // 若未来重新启用 events.json，可在此加：if (data._disabled) { /* 跳过 fetch */ }
-                parseEventsData(data);
+                parseEventsData(memoryData);
             } catch (err) {
-                console.error('解析内嵌事件数据失败：', err);
+                console.error('解析统一事件数据失败：', err);
                 events = {};
             }
         }
 
-        // 日历起始：2025 年 11 月（之前的年月不显示）
-        const MIN_YEAR = 2025;
-        const MIN_MONTH = 10; // 0-indexed：10 = 11 月
+        // 日历起始月份由统一数据中的最早事件自动决定。
+        const earliestDateText = (memoryData.events || [])
+            .map(event => event.date || event.startDate)
+            .filter(Boolean)
+            .sort()[0] || firstMet;
+        const earliestDate = parseDate(earliestDateText);
+        const MIN_YEAR = earliestDate.getFullYear();
+        const MIN_MONTH = earliestDate.getMonth();
 
         let currentYear, currentMonth;
 
@@ -940,6 +955,20 @@
                     day.innerHTML = `
                         <span class="d-num">${d}</span>
                         <div class="dots">${dotsHtml}</div>`;
+                    day.tabIndex = 0;
+                    day.setAttribute('role', 'button');
+                    day.setAttribute('aria-label', `${displayDate(dateStr)}，${dayEvents.length} 个事件`);
+                    const openDayEvents = () => openEventsModal(
+                        dayEvents,
+                        `${displayDate(dateStr)} · 事件`
+                    );
+                    day.addEventListener('click', openDayEvents);
+                    day.addEventListener('keydown', event => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                            event.preventDefault();
+                            openDayEvents();
+                        }
+                    });
                 } else {
                     // 无事件：纯数字 + 占位高度（用空 dots 撑住对齐）
                     day.innerHTML = `
@@ -1009,21 +1038,6 @@
                 `<span class="sum-dot type-${e.type}" title="${e.name}"></span>`
             ).join('');
 
-            // 详情列表（展开时显示）：按日期分组
-            const detailHtml = monthEvents.map(e => {
-                const dateText = e.range
-                    ? `${e.range.startDate} ~ ${e.range.endDate}`
-                    : e.date;
-                return `
-                    <div class="event-row">
-                        <span class="sum-dot type-${e.type}"></span>
-                        <span class="event-date">${dateText}</span>
-                        <span class="event-tag">${e.tag}</span>
-                        <span class="event-name">${e.name}</span>
-                    </div>
-                `;
-            }).join('');
-
             list.innerHTML = `
                 <div class="events-summary" id="eventsSummary">
                     ${dotsHtml}
@@ -1042,7 +1056,22 @@
         }
 
         // ============== 事件详情 Modal（覆盖式） ==============
-        function openEventsModal(monthEvents) {
+        function renderEventActions(event) {
+            const links = [];
+            if (event.story && event.id) {
+                links.push(`<a class="event-link" href="story.html?event=${encodeURIComponent(event.id)}">查看故事</a>`);
+            }
+            if (event.albumIds.length > 0) {
+                const album = encodeURIComponent(event.albumIds[0]);
+                const eventParam = event.id ? `&event=${encodeURIComponent(event.id)}` : '';
+                links.push(`<a class="event-link" href="photos.html?album=${album}${eventParam}">打开相册</a>`);
+            }
+            return links.length > 0
+                ? `<span class="event-actions">${links.join('')}</span>`
+                : '';
+        }
+
+        function openEventsModal(monthEvents, modalTitle = `${currentYear} 年 ${currentMonth + 1} 月 · 事件`) {
             // 防止重复打开
             if (document.getElementById('eventsModal')) return;
 
@@ -1056,6 +1085,7 @@
                         <span class="event-date">${dateText}</span>
                         <span class="event-tag">${e.tag}</span>
                         <span class="event-name">${e.name}</span>
+                        ${renderEventActions(e)}
                     </div>
                 `;
             }).join('');
@@ -1067,7 +1097,7 @@
                 <div class="events-modal-mask" data-close="1"></div>
                 <div class="events-modal-card" role="dialog" aria-modal="true">
                     <div class="events-modal-header">
-                        <div class="events-modal-title">${currentYear} 年 ${currentMonth + 1} 月 · 事件</div>
+                        <div class="events-modal-title">${modalTitle}</div>
                         <button type="button" class="events-modal-close" data-close="1" aria-label="关闭">✕</button>
                     </div>
                     <div class="events-modal-body">
