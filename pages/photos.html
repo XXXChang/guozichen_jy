@@ -640,11 +640,16 @@
         const eventById = new Map(data.events.map(event => [event.id, event]));
         const albums = data.albums.map(album => ({
             ...album,
-            photos: album.photoIds.map(id => photoById.get(id)).filter(Boolean)
+            photos: album.photoIds
+                .map(id => photoById.get(id))
+                .filter(Boolean)
+                .sort((a, b) => {
+                    const dateOrder = (b.date || '').localeCompare(a.date || '');
+                    if (dateOrder !== 0) return dateOrder;
+                    return (b.src || '').localeCompare(a.src || '', undefined, { numeric: true });
+                })
         }));
-        const introPhotos = (data.introPhotoIds || [])
-            .map(id => photoById.get(id))
-            .filter(Boolean);
+        const introPhotos = Array.isArray(data.introImages) ? data.introImages : [];
         const albumById = new Map(albums.map(album => [album.id, album]));
         const albumShell = document.querySelector('.album-shell');
         const categoriesView = document.getElementById('categoriesView');
