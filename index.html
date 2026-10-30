@@ -78,14 +78,35 @@
         .content {
             position: relative;
             z-index: 1;
+            min-height: 100vh;
+            min-height: 100svh;
+            padding: 24px;
+            overflow: clip;
+        }
+        .home-stage {
+            position: relative;
+            width: min(100%, 1180px);
+            min-height: max(720px, calc(100svh - 48px));
+            margin: 0 auto;
+        }
+        .hero-core {
+            position: absolute;
+            top: 48%;
+            left: 50%;
+            z-index: 4;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            width: min(92%, 480px);
             text-align: center;
-            padding: 80px 20px;
-            overflow: hidden; /* 防止任何子元素溢出 */
+            transform: translate(-50%, -50%);
+        }
+        .hero-kicker {
+            margin: 0 0 12px;
+            color: var(--c-700);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 3px;
         }
 
         /* 双头像组合 */
@@ -168,10 +189,11 @@
 
         /* 标题 - 流光渐变 + 微光晕 */
         h1 {
-            font-size: 48px;
+            font-size: 58px;
             color: var(--c-800);
-            margin-bottom: 10px;
-            letter-spacing: 4px;
+            margin-bottom: 12px;
+            letter-spacing: 6px;
+            line-height: 1;
             text-shadow: 0 0 24px rgba(var(--c-400-rgb), 0.45), 2px 2px 8px rgba(var(--c-600-rgb), 0.15);
             background: linear-gradient(120deg, var(--c-700), var(--c-500), var(--c-300), var(--c-500), var(--c-700));
             background-size: 300% 100%;
@@ -195,21 +217,18 @@
 
         /* 打字机效果 */
         .subtitle {
-            font-size: 18px;
+            font-size: 15px;
             color: var(--c-600);
-            margin-bottom: 20px;
             min-height: 24px;
-            font-weight: 500;
+            font-weight: 600;
+            letter-spacing: 1px;
         }
 
-        /* 页面内浮动的入口 */
+        /* 分散漂浮的云朵入口 */
         .bubble-links {
             position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            width: min(100%, 1100px);
-            transform: translateX(-50%);
+            inset: 0;
+            z-index: 3;
             pointer-events: none;
         }
         a.memory-card {
@@ -219,52 +238,62 @@
         }
         .memory-card {
             position: absolute;
-            top: calc(50% - 72px);
-            width: 144px;
-            height: 144px;
+            isolation: isolate;
+            width: 190px;
+            min-height: 112px;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 2;
             pointer-events: auto;
-            background:
-                radial-gradient(circle at 30% 20%, rgba(255,255,255,0.96), rgba(var(--c-100-rgb), 0.72) 52%, rgba(var(--c-300-rgb), 0.5) 100%);
+            --cloud-fill: linear-gradient(145deg, rgba(255,255,255,0.96), rgba(var(--c-100-rgb), 0.86) 56%, rgba(var(--c-300-rgb), 0.66));
+            background: var(--cloud-fill);
             backdrop-filter: blur(24px) saturate(180%);
             -webkit-backdrop-filter: blur(24px) saturate(180%);
-            border-radius: 50%;
-            padding: 16px;
+            border: 1px solid rgba(255,255,255,0.9);
+            border-radius: 47% 53% 58% 42% / 56% 43% 57% 44%;
+            padding: 24px 28px 18px;
             box-shadow:
-                0 16px 32px rgba(var(--c-700-rgb), 0.2),
-                inset 8px 10px 18px rgba(255,255,255,0.76),
-                inset -10px -12px 22px rgba(var(--c-500-rgb), 0.16);
-            border: 2px solid rgba(255,255,255,0.82);
+                0 18px 38px rgba(var(--c-700-rgb), 0.18),
+                inset 10px 12px 20px rgba(255,255,255,0.78),
+                inset -12px -14px 24px rgba(var(--c-500-rgb), 0.12);
             text-align: center;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            animation: bubbleFloat 6s ease-in-out infinite;
+            animation: cloudFloat 7.2s ease-in-out infinite;
         }
-        @keyframes bubbleFloat {
+        @keyframes cloudFloat {
             0%, 100% { translate: 0 0; }
-            50% { translate: 0 -14px; }
+            35% { translate: var(--float-x, 5px) -12px; }
+            70% { translate: var(--float-x-reverse, -3px) 5px; }
         }
-        .memory-card::before {
+        .memory-card::before,
+        .memory-card::after {
             content: "";
             position: absolute;
-            top: 15%;
-            left: 23%;
-            width: 28%;
-            height: 13%;
+            z-index: -1;
+            background: var(--cloud-fill);
+            border: 1px solid rgba(255,255,255,0.72);
             border-radius: 50%;
-            rotate: -28deg;
-            background: rgba(255,255,255,0.82);
-            filter: blur(2px);
             pointer-events: none;
         }
+        .memory-card::before {
+            top: -26%;
+            left: 17%;
+            width: 52%;
+            height: 72%;
+            box-shadow: inset 7px 8px 15px rgba(255,255,255,0.52);
+        }
+        .memory-card::after {
+            top: -10%;
+            right: 5%;
+            width: 43%;
+            height: 64%;
+        }
         .memory-card:hover {
-            transform: scale(1.06);
+            transform: scale(1.055) rotate(-1deg);
             box-shadow:
-                0 20px 42px rgba(var(--c-700-rgb), 0.28),
-                inset 8px 10px 18px rgba(255,255,255,0.88),
-                inset -10px -12px 22px rgba(var(--c-500-rgb), 0.18);
+                0 24px 48px rgba(var(--c-700-rgb), 0.27),
+                inset 10px 12px 20px rgba(255,255,255,0.9),
+                inset -12px -14px 24px rgba(var(--c-500-rgb), 0.15);
         }
         .memory-card:focus-visible {
             outline: 3px solid var(--c-700);
@@ -301,21 +330,50 @@
         }
 
         .memory-card.days-card {
-            right: clamp(32px, 10vw, 180px);
+            top: 11%;
+            right: 4%;
+            width: 222px;
+            min-height: 128px;
+            --float-x: 8px;
+            --float-x-reverse: -5px;
+            animation-duration: 7.8s;
         }
         .memory-card.photo-card {
-            left: clamp(32px, 10vw, 180px);
-            width: 136px;
-            height: 136px;
-            top: calc(50% - 48px);
-            animation-delay: -3s;
+            top: 51%;
+            left: 3%;
+            width: 184px;
+            min-height: 108px;
+            --float-x: -7px;
+            --float-x-reverse: 4px;
+            border-radius: 57% 43% 46% 54% / 48% 57% 43% 52%;
+            animation-delay: -2.6s;
+            animation-duration: 6.8s;
         }
         .memory-card.story-card {
-            left: calc(50% - 62px);
-            top: calc(50% + 143px);
-            width: 124px;
-            height: 124px;
-            animation-delay: -1.5s;
+            right: 9%;
+            bottom: 8%;
+            width: 174px;
+            min-height: 106px;
+            --float-x: 6px;
+            --float-x-reverse: -4px;
+            border-radius: 43% 57% 55% 45% / 56% 46% 54% 44%;
+            animation-delay: -4.1s;
+            animation-duration: 7.4s;
+        }
+        .memory-card > span {
+            position: relative;
+            z-index: 1;
+        }
+        .cloud-arrow {
+            position: absolute !important;
+            top: 15px;
+            right: 21px;
+            color: var(--c-600);
+            font-size: 15px;
+            transition: translate 0.25s ease;
+        }
+        .memory-card:hover .cloud-arrow {
+            translate: 3px -3px;
         }
         .photo-label {
             font-size: 15px;
@@ -337,31 +395,18 @@
             font-size: 11px;
             color: var(--c-600);
         }
+        .photo-caption {
+            margin-top: 6px;
+            color: var(--c-500);
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
         @media (max-width: 900px) {
-            .bubble-links {
-                position: static;
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                align-items: center;
-                gap: 22px;
-                width: 100%;
-                margin-top: 12px;
-                transform: none;
-            }
-            .memory-card,
-            .memory-card.days-card,
-            .memory-card.photo-card,
-            .memory-card.story-card {
-                position: relative;
-                top: auto;
-                right: auto;
-                left: auto;
-                width: 138px;
-                height: 138px;
-                padding: 12px;
-            }
-            .memory-card.photo-card { order: -1; }
+            .home-stage { min-height: max(780px, calc(100svh - 48px)); }
+            .hero-core { top: 40%; }
+            .memory-card.days-card { top: 1%; right: 1%; }
+            .memory-card.photo-card { top: auto; bottom: 16%; left: 2%; }
+            .memory-card.story-card { right: 3%; bottom: 2%; }
             .memory-date { font-size: 11px; }
             .memory-label { font-size: 10px; }
             .memory-count { font-size: 38px; }
@@ -481,18 +526,44 @@
         }
 
         @media (max-width: 480px) {
-            .bubble-links { gap: 18px; }
-            .memory-card,
-            .memory-card.days-card,
-            .memory-card.photo-card,
-            .memory-card.story-card { width: 124px; height: 124px; }
+            .content { padding: 16px; }
+            .home-stage { min-height: max(820px, calc(100svh - 32px)); }
+            .hero-core {
+                top: 46px;
+                width: calc(100% - 16px);
+                transform: translateX(-50%);
+            }
+            .hero-kicker { margin-bottom: 10px; font-size: 10px; }
+            .memory-card { padding: 21px 22px 16px; }
+            .memory-card.days-card {
+                top: 355px;
+                right: 1%;
+                width: 172px;
+                min-height: 106px;
+            }
+            .memory-card.photo-card {
+                top: 505px;
+                bottom: auto;
+                left: 0;
+                width: 150px;
+                min-height: 94px;
+            }
+            .memory-card.story-card {
+                top: 650px;
+                right: 3%;
+                bottom: auto;
+                width: 156px;
+                min-height: 96px;
+            }
             .memory-date { font-size: 10px; }
             .memory-label { font-size: 10px; letter-spacing: 1px; }
-            .memory-count { font-size: 34px; }
+            .memory-count { font-size: 32px; }
             .memory-unit { font-size: 11px; }
-            .content { padding: 48px 16px 64px; }
-            .avatar { width: 96px; height: 96px; }
-            h1 { font-size: 40px; }
+            .avatar { width: 92px; height: 92px; }
+            .theme-hue-slider { margin-bottom: 16px; }
+            h1 { font-size: 42px; letter-spacing: 4px; }
+            .subtitle { font-size: 13px; }
+            .cloud-arrow { top: 12px; right: 17px; }
         }
         @media (prefers-reduced-motion: reduce) {
             .memory-card { animation: none; }
@@ -504,33 +575,43 @@
     <canvas id="heartCanvas"></canvas>
 
     <div class="content">
-        <div class="avatar-group">
-            <div class="avatar avatar-left" onclick="this.style.transform='scale(0.9)'">
-                <img src="assets/gzc_jy_Img/HeadIcon1.jpg" alt="头像1">
-            </div>
-            <div class="heart-icon">💕</div>
-            <div class="avatar avatar-right" onclick="this.style.transform='scale(0.9)'">
-                <img src="assets/gzc_jy_Img/HeadIcon2.jpg" alt="头像2">
-            </div>
-        </div>
-        <input class="theme-hue-slider" id="themeHue" type="range" min="0" max="359" value="258" aria-label="调整主页主题颜色" title="拖动调整主题颜色">
-        <h1>JY_GZC</h1>
-        <div class="subtitle" id="subtitle"></div>
-        <nav class="bubble-links" aria-label="页面入口">
-            <a href="pages/days.html" class="memory-card days-card">
-                <span class="memory-date">2026.09.12</span>
-                <span class="memory-label">在一起已经</span>
-                <span class="memory-count" id="daysCount">--</span>
-                <span class="memory-unit">天</span>
-            </a>
-            <a href="pages/photos.html" class="memory-card photo-card" aria-label="打开相册 Memories">
-                <span class="photo-label">Memories</span>
-            </a>
-            <a href="pages/story.html" class="memory-card story-card" aria-label="打开我们的故事时间线">
-                <span class="story-label">Story</span>
-                <span class="story-caption">我们的故事</span>
-            </a>
-        </nav>
+        <main class="home-stage">
+            <section class="hero-core" aria-labelledby="homeTitle">
+                <div class="avatar-group">
+                    <div class="avatar avatar-left">
+                        <img src="assets/gzc_jy_Img/HeadIcon1.jpg" alt="头像1">
+                    </div>
+                    <div class="heart-icon">💕</div>
+                    <div class="avatar avatar-right">
+                        <img src="assets/gzc_jy_Img/HeadIcon2.jpg" alt="头像2">
+                    </div>
+                </div>
+                <input class="theme-hue-slider" id="themeHue" type="range" min="0" max="359" value="258" aria-label="调整主页主题颜色" title="拖动调整主题颜色">
+                <p class="hero-kicker">JY × GZC · OUR SPACE</p>
+                <h1 id="homeTitle">JY_GZC</h1>
+                <div class="subtitle" id="subtitle"></div>
+            </section>
+
+            <nav class="bubble-links" aria-label="页面入口">
+                <a href="pages/days.html" class="memory-card days-card">
+                    <span class="cloud-arrow" aria-hidden="true">↗</span>
+                    <span class="memory-date">2026.09.12</span>
+                    <span class="memory-label">在一起已经</span>
+                    <span class="memory-count" id="daysCount">--</span>
+                    <span class="memory-unit">天</span>
+                </a>
+                <a href="pages/photos.html" class="memory-card photo-card" aria-label="打开相册 Memories">
+                    <span class="cloud-arrow" aria-hidden="true">↗</span>
+                    <span class="photo-label">Memories</span>
+                    <span class="photo-caption">相册收藏</span>
+                </a>
+                <a href="pages/story.html" class="memory-card story-card" aria-label="打开我们的故事时间线">
+                    <span class="cloud-arrow" aria-hidden="true">↗</span>
+                    <span class="story-label">Story</span>
+                    <span class="story-caption">我们的故事</span>
+                </a>
+            </nav>
+        </main>
     </div>
 
     <script>
