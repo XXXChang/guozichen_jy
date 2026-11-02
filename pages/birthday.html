@@ -4,27 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#f6cfd1">
-    <title>祝姐姐生日快乐 | JY_GZC</title>
-    <link rel="preload" as="image" type="image/jpeg" href="../assets/gzc_jy_Img/AvatarImg/HeadIcon1.jpg?v=1" fetchpriority="high">
-    <link rel="preload" as="image" type="image/jpeg" href="../assets/gzc_jy_Img/AvatarImg/HeadIcon2.jpg?v=1" fetchpriority="high">
+    <title>生日蛋糕 | JY_GZC</title>
     <style>
         :root {
-            --ink: #4b3036;
-            --muted: #806168;
             --coral: #c64f5d;
             --mint: #4a8c7e;
-            --gold: #c9953f;
-            --paper: #fff8f7;
+            --gold: #d4a449;
+            --cream: #fff5e8;
+            --chocolate: #70413b;
         }
         * { box-sizing: border-box; }
-        html, body { min-height: 100%; }
+        html, body { width: 100%; height: 100%; }
         body {
             margin: 0;
-            overflow-x: hidden;
-            color: var(--ink);
+            overflow: hidden;
+            background: linear-gradient(135deg, #ffe2e6 0%, #f5d0c1 50%, #d9eee7 100%);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background:
-                linear-gradient(135deg, #ffe2e6 0%, #f5d0c1 50%, #d9eee7 100%);
         }
         body::before {
             content: "";
@@ -33,16 +28,10 @@
             z-index: 0;
             pointer-events: none;
             background-image:
-                radial-gradient(circle, rgba(198, 79, 93, 0.12) 1px, transparent 1.5px),
+                radial-gradient(circle, rgba(198, 79, 93, 0.13) 1px, transparent 1.5px),
                 radial-gradient(circle, rgba(74, 140, 126, 0.11) 1px, transparent 1.5px);
             background-position: 0 0, 18px 22px;
             background-size: 42px 42px, 54px 54px;
-        }
-        [hidden] { display: none !important; }
-        a { color: inherit; }
-        a:focus-visible, button:focus-visible {
-            outline: 3px solid var(--mint);
-            outline-offset: 5px;
         }
         #fallingHearts, #clickHearts {
             position: fixed;
@@ -53,200 +42,201 @@
         }
         #fallingHearts { z-index: 1; }
         #clickHearts { z-index: 9999; }
-        .page-nav {
-            position: relative;
-            z-index: 3;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 18px;
-            min-height: 68px;
-            padding: 0 max(20px, calc((100% - 960px) / 2));
-            border-bottom: 1px solid rgba(111, 74, 73, 0.18);
-            background: rgba(255, 248, 247, 0.72);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            font-size: 13px;
-            font-weight: 700;
+        .back-link {
+            position: fixed;
+            top: 22px;
+            left: 24px;
+            z-index: 20;
+            display: grid;
+            place-items: center;
+            width: 44px;
+            height: 44px;
+            border: 1px solid rgba(94, 60, 65, 0.2);
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.55);
+            color: #633a42;
+            font-size: 25px;
+            text-decoration: none;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
-        .page-nav a { text-decoration: none; }
-        .page-nav a:hover { color: var(--coral); }
-        .nav-mark { color: var(--mint); letter-spacing: 1.5px; }
-        .birthday-main {
+        .back-link:hover { background: rgba(255, 255, 255, 0.86); }
+        .back-link:focus-visible { outline: 3px solid var(--mint); outline-offset: 4px; }
+        .birthday-stage {
             position: relative;
             z-index: 2;
             display: grid;
             place-items: center;
-            min-height: calc(100svh - 68px);
-            padding: 44px 22px 72px;
-        }
-        .birthday-wrap {
-            width: min(100%, 920px);
-            text-align: center;
-        }
-        .portrait-pair {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        .portrait-pair img {
-            display: block;
-            width: 76px;
-            height: 76px;
-            border: 5px solid var(--paper);
-            border-radius: 50%;
-            object-fit: cover;
-            box-shadow: 0 10px 24px rgba(102, 56, 59, 0.17);
-        }
-        .portrait-pair img + img { margin-left: -16px; }
-        .portrait-pair img:first-child { rotate: -7deg; }
-        .portrait-pair img:last-child { rotate: 7deg; }
-        .cake-button {
-            display: inline-grid;
-            place-items: center;
-            width: 150px;
-            height: 138px;
-            padding: 0;
-            border: 0;
-            background: transparent;
+            width: 100%;
+            height: 100%;
+            padding: 24px;
             cursor: pointer;
-            animation: cakeFloat 3.8s ease-in-out infinite;
-            transition: transform 0.25s ease, filter 0.25s ease;
         }
-        .cake-button:hover { transform: scale(1.07); filter: brightness(1.04); }
-        .cake-icon {
-            font-size: 116px;
-            line-height: 1;
-            filter: drop-shadow(0 15px 19px rgba(129, 56, 63, 0.23));
+        .cake-scene {
+            position: relative;
+            width: 320px;
+            height: 310px;
+            animation: cakeEntrance 1.55s cubic-bezier(.16,.84,.2,1) both;
+            filter: drop-shadow(0 24px 30px rgba(103, 52, 56, 0.24));
+            transform-origin: center bottom;
         }
-        body.is-celebrating .cake-icon { animation: cakeCelebrate 0.8s cubic-bezier(.2,.8,.2,1); }
-        @keyframes cakeFloat {
-            0%, 100% { translate: 0 0; }
-            50% { translate: 0 -9px; }
+        @keyframes cakeEntrance {
+            0% { opacity: 0; transform: scale(0.2) translateY(70px) rotate(-5deg); }
+            65% { opacity: 1; transform: scale(1.12) translateY(-8px) rotate(2deg); }
+            100% { opacity: 1; transform: scale(1) translateY(0) rotate(0); }
         }
-        @keyframes cakeCelebrate {
-            0%, 100% { transform: rotate(0) scale(1); }
-            25% { transform: rotate(-8deg) scale(1.12); }
-            55% { transform: rotate(7deg) scale(1.18); }
-            80% { transform: rotate(-3deg) scale(1.06); }
+        .plate {
+            position: absolute;
+            left: 10px;
+            bottom: 14px;
+            width: 300px;
+            height: 30px;
+            border: 2px solid rgba(74, 140, 126, 0.38);
+            border-radius: 50%;
+            background: linear-gradient(180deg, #f7ffff, #b8d9d1);
+            box-shadow: inset 0 5px 8px rgba(255, 255, 255, 0.72);
         }
-        .eyebrow {
-            margin: 10px 0 12px;
-            color: var(--mint);
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 3px;
+        .cake-layer {
+            position: absolute;
+            left: 50%;
+            border: 2px solid rgba(112, 65, 59, 0.18);
+            border-radius: 18px 18px 12px 12px;
+            transform: translateX(-50%);
+            box-shadow: inset 0 -10px 14px rgba(112, 65, 59, 0.12);
         }
-        h1 {
-            margin: 0;
-            color: var(--coral);
-            font-family: "Songti SC", "Noto Serif CJK SC", "SimSun", serif;
-            font-size: 52px;
-            font-weight: 650;
-            line-height: 1.2;
-            letter-spacing: 0;
-            text-shadow: 0 7px 24px rgba(198, 79, 93, 0.16);
+        .cake-layer::before {
+            content: "";
+            position: absolute;
+            top: -2px;
+            left: 7px;
+            right: 7px;
+            height: 18px;
+            border-radius: 14px 14px 50% 50%;
+            background: var(--cream);
+            box-shadow: 0 5px 0 rgba(255, 255, 255, 0.35);
         }
-        .lead {
-            margin: 16px auto 0;
-            color: var(--muted);
-            font-size: 16px;
-            line-height: 1.7;
+        .cake-layer.bottom {
+            bottom: 34px;
+            width: 260px;
+            height: 78px;
+            background: linear-gradient(180deg, #e9838c, var(--coral));
         }
-        .wish-status {
-            min-height: 24px;
-            margin: 14px 0 0;
-            color: var(--gold);
-            font-size: 13px;
-            font-weight: 750;
-            letter-spacing: 1px;
+        .cake-layer.middle {
+            bottom: 104px;
+            width: 218px;
+            height: 66px;
+            background: linear-gradient(180deg, #78b5a7, var(--mint));
         }
-        .wish-lines {
-            width: min(100%, 680px);
-            margin: 30px auto 0;
-            padding: 23px 12px;
-            border-top: 1px solid rgba(198, 79, 93, 0.28);
-            border-bottom: 1px solid rgba(74, 140, 126, 0.28);
+        .cake-layer.top {
+            bottom: 162px;
+            width: 174px;
+            height: 58px;
+            background: linear-gradient(180deg, #f3c86b, var(--gold));
         }
-        .wish-lines p {
-            margin: 7px 0;
-            font-family: "Songti SC", "Noto Serif CJK SC", "SimSun", serif;
-            font-size: 17px;
-            line-height: 1.75;
+        .cake-layer span {
+            position: absolute;
+            z-index: 2;
+            top: 34px;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.72);
+            box-shadow: 37px 8px 0 rgba(255, 255, 255, 0.52), 74px 0 0 rgba(255, 255, 255, 0.65);
         }
-        .birthday-links {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 12px;
-            margin-top: 28px;
+        .cake-layer span:first-child { left: 36px; }
+        .candle {
+            position: absolute;
+            z-index: 5;
+            bottom: 213px;
+            width: 12px;
+            height: 48px;
+            border: 1px solid rgba(95, 54, 61, 0.18);
+            border-radius: 3px 3px 1px 1px;
+            background: repeating-linear-gradient(135deg, #fff 0 6px, var(--coral) 6px 12px);
         }
-        .birthday-links a {
-            min-width: 132px;
-            padding: 10px 15px;
-            border: 1px solid rgba(75, 48, 54, 0.28);
-            border-radius: 5px;
-            background: rgba(255, 255, 255, 0.52);
-            font-size: 12px;
-            font-weight: 750;
-            text-decoration: none;
-            transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+        .candle.one { left: 104px; }
+        .candle.two { left: 154px; height: 56px; }
+        .candle.three { right: 103px; }
+        .flame {
+            position: absolute;
+            left: 50%;
+            bottom: calc(100% + 7px);
+            width: 18px;
+            height: 25px;
+            border-radius: 70% 35% 65% 35%;
+            background: radial-gradient(circle at 55% 65%, #fff7b2 0 18%, #ffc84d 30%, #f17842 74%);
+            filter: drop-shadow(0 0 9px rgba(255, 166, 60, 0.85));
+            transform: translateX(-50%) rotate(45deg);
+            transform-origin: center bottom;
+            animation: flameFlicker 0.42s ease-in-out infinite alternate;
+            transition: opacity 0.35s ease, scale 0.35s ease;
         }
-        .birthday-links a:hover {
-            color: white;
-            transform: translateY(-2px);
+        @keyframes flameFlicker {
+            from { scale: 0.94 1.04; rotate: -2deg; }
+            to { scale: 1.08 0.92; rotate: 4deg; }
         }
-        .birthday-links a:first-child:hover { border-color: var(--coral); background: var(--coral); }
-        .birthday-links a:last-child:hover { border-color: var(--mint); background: var(--mint); }
-        @media (max-width: 600px) {
-            .page-nav { min-height: 62px; }
-            .birthday-main { min-height: calc(100svh - 62px); padding: 32px 18px 58px; }
-            .cake-button { width: 124px; height: 116px; }
-            .cake-icon { font-size: 94px; }
-            h1 { font-size: 38px; }
-            .lead { font-size: 14px; }
-            .wish-lines p { font-size: 15px; }
+        .smoke {
+            position: absolute;
+            left: 50%;
+            bottom: calc(100% + 10px);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(101, 111, 111, 0.42);
+            opacity: 0;
+            transform: translateX(-50%);
+        }
+        body.candles-out .flame { opacity: 0; scale: 0.2; animation: none; }
+        body.candles-out .smoke { animation: smokeRise 1.7s ease-out forwards; }
+        body.candles-out .candle.two .smoke { animation-delay: 0.08s; }
+        body.candles-out .candle.three .smoke { animation-delay: 0.16s; }
+        body.candles-out .cake-scene { animation: cakeSettle 0.7s ease-out both; }
+        @keyframes smokeRise {
+            0% { opacity: 0; transform: translate(-50%, 0) scale(0.6); }
+            25% { opacity: 0.55; }
+            100% { opacity: 0; transform: translate(-25%, -62px) scale(2.3); }
+        }
+        @keyframes cakeSettle {
+            0% { transform: scale(1); }
+            45% { transform: scale(0.96); }
+            100% { transform: scale(1); }
+        }
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        @media (max-width: 520px) {
+            .back-link { top: 15px; left: 15px; width: 40px; height: 40px; }
+            .cake-scene { width: 280px; height: 280px; scale: 0.88; }
         }
         @media (prefers-reduced-motion: reduce) {
-            .cake-button, body.is-celebrating .cake-icon { animation: none; }
+            .cake-scene, .flame, body.candles-out .cake-scene { animation: none; }
         }
     </style>
 </head>
 <body>
     <canvas id="fallingHearts" aria-hidden="true"></canvas>
     <canvas id="clickHearts" aria-hidden="true"></canvas>
+    <a class="back-link" href="../index.html" aria-label="返回主页">←</a>
 
-    <nav class="page-nav" aria-label="生日页面导航">
-        <a href="../index.html">← 返回主页</a>
-        <span class="nav-mark">HAPPY BIRTHDAY / 2026</span>
-    </nav>
-
-    <main class="birthday-main">
-        <section class="birthday-wrap" aria-labelledby="birthdayTitle">
-            <div class="portrait-pair">
-                <img src="../assets/gzc_jy_Img/AvatarImg/HeadIcon1.jpg?v=1" alt="JY 的头像" width="256" height="256" decoding="async">
-                <img src="../assets/gzc_jy_Img/AvatarImg/HeadIcon2.jpg?v=1" alt="GZC 的头像" width="256" height="256" decoding="async">
-            </div>
-            <button id="cakeButton" class="cake-button" type="button" aria-label="点亮生日蛋糕">
-                <span class="cake-icon" aria-hidden="true">🎂</span>
-            </button>
-            <p class="eyebrow">HAPPY BIRTHDAY · OUR 2026</p>
-            <h1 id="birthdayTitle">祝姐姐生日快乐！</h1>
-            <p class="lead">和姐姐在一起的第一年，也是属于我们的 2026。</p>
-            <p id="wishStatus" class="wish-status" aria-live="polite">愿新的一岁，每一天都有值得期待的事。</p>
-
-            <div class="wish-lines">
-                <p>愿姐姐新的一岁平安顺遂，也一直被爱包围。</p>
-                <p>愿我们继续一起吃很多顿饭，看很多次风景。</p>
-                <p>愿每一次见面，都比上一次更开心。</p>
-            </div>
-
-            <nav class="birthday-links" aria-label="生日页面入口">
-                <a href="story.html">我们的回忆 ↗</a>
-                <a href="photos.html">一起吃过的饭 ↗</a>
-            </nav>
-        </section>
+    <main id="birthdayStage" class="birthday-stage" aria-label="生日蛋糕，点击任意位置吹灭蜡烛">
+        <div class="cake-scene" aria-hidden="true">
+            <div class="plate"></div>
+            <div class="cake-layer bottom"><span></span></div>
+            <div class="cake-layer middle"><span></span></div>
+            <div class="cake-layer top"><span></span></div>
+            <div class="candle one"><i class="flame"></i><i class="smoke"></i></div>
+            <div class="candle two"><i class="flame"></i><i class="smoke"></i></div>
+            <div class="candle three"><i class="flame"></i><i class="smoke"></i></div>
+        </div>
+        <span id="birthdayStatus" class="sr-only" aria-live="polite">蜡烛已经点亮</span>
     </main>
 
     <script>
@@ -254,7 +244,7 @@
         const canvas = document.getElementById('fallingHearts');
         const ctx = canvas.getContext('2d');
         const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
         function resize() {
             canvas.width = window.innerWidth * dpr;
@@ -264,22 +254,17 @@
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         }
         resize();
-        let resizeTimer = null;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(resize, 150);
-        });
+        window.addEventListener('resize', resize);
 
-        const palette = ['#c64f5d', '#e9818b', '#4a8c7e', '#7ab6a8', '#c9953f'];
-        const isMobile = window.matchMedia('(max-width: 768px)').matches;
-        const count = reduceMotion ? 12 : (isMobile ? 26 : 54);
-        const particles = Array.from({ length: count }, () => ({
+        const palette = ['#c64f5d', '#e9818b', '#4a8c7e', '#7ab6a8', '#d4a449'];
+        const count = reduced ? 12 : (window.innerWidth <= 768 ? 28 : 56);
+        const hearts = Array.from({ length: count }, () => ({
             x: Math.random() * window.innerWidth,
             y: Math.random() * window.innerHeight,
-            size: Math.random() * 3.5 + 2,
+            size: 2 + Math.random() * 3.8,
             vx: (Math.random() - 0.5) * 0.45,
-            vy: Math.random() * 0.7 + 0.35,
-            alpha: Math.random() * 0.48 + 0.28,
+            vy: 0.35 + Math.random() * 0.7,
+            alpha: 0.26 + Math.random() * 0.5,
             color: palette[Math.floor(Math.random() * palette.length)]
         }));
 
@@ -295,19 +280,19 @@
 
         function draw() {
             ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-            particles.forEach(particle => {
-                particle.x += particle.vx;
-                particle.y += particle.vy;
-                if (particle.x < 0) particle.x = window.innerWidth;
-                if (particle.x > window.innerWidth) particle.x = 0;
-                if (particle.y > window.innerHeight) {
-                    particle.y = -12;
-                    particle.x = Math.random() * window.innerWidth;
+            hearts.forEach(heart => {
+                heart.x += heart.vx;
+                heart.y += heart.vy;
+                if (heart.x < 0) heart.x = window.innerWidth;
+                if (heart.x > window.innerWidth) heart.x = 0;
+                if (heart.y > window.innerHeight) {
+                    heart.y = -12;
+                    heart.x = Math.random() * window.innerWidth;
                 }
                 ctx.save();
-                ctx.globalAlpha = particle.alpha;
-                ctx.fillStyle = particle.color;
-                heartPath(particle.x, particle.y, particle.size);
+                ctx.globalAlpha = heart.alpha;
+                ctx.fillStyle = heart.color;
+                heartPath(heart.x, heart.y, heart.size);
                 ctx.fill();
                 ctx.restore();
             });
@@ -321,12 +306,11 @@
     (function () {
         const canvas = document.getElementById('clickHearts');
         const ctx = canvas.getContext('2d');
-        let dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        const palette = ['#c64f5d', '#e9818b', '#4a8c7e', '#7ab6a8', '#d4a449'];
         let particles = [];
-        const palette = ['#c64f5d', '#e9818b', '#4a8c7e', '#7ab6a8', '#c9953f'];
 
         function resize() {
-            dpr = Math.min(window.devicePixelRatio || 1, 1.5);
             canvas.width = window.innerWidth * dpr;
             canvas.height = window.innerHeight * dpr;
             canvas.style.width = window.innerWidth + 'px';
@@ -390,28 +374,26 @@
         }
         animate();
 
+        let extinguished = false;
         let lastTouch = 0;
+        function handleInteraction(x, y, target) {
+            spawn(x, y, extinguished ? 5 : 13);
+            if (!extinguished && !target.closest('.back-link')) {
+                extinguished = true;
+                document.body.classList.add('candles-out');
+                document.getElementById('birthdayStatus').textContent = '蜡烛已经熄灭';
+            }
+        }
+
         window.addEventListener('click', event => {
             if (Date.now() - lastTouch < 600) return;
-            spawn(event.clientX, event.clientY);
+            handleInteraction(event.clientX, event.clientY, event.target);
         });
         window.addEventListener('touchstart', event => {
             lastTouch = Date.now();
             const touch = event.touches[0];
-            spawn(touch.clientX, touch.clientY);
+            handleInteraction(touch.clientX, touch.clientY, event.target);
         }, { passive: true });
-
-        const cakeButton = document.getElementById('cakeButton');
-        const wishStatus = document.getElementById('wishStatus');
-        cakeButton.addEventListener('click', () => {
-            document.body.classList.remove('is-celebrating');
-            void document.body.offsetWidth;
-            document.body.classList.add('is-celebrating');
-            wishStatus.textContent = '愿姐姐的愿望都会实现，生日快乐！';
-            const rect = cakeButton.getBoundingClientRect();
-            spawn(rect.left + rect.width / 2, rect.top + rect.height / 2, 14);
-            setTimeout(() => document.body.classList.remove('is-celebrating'), 900);
-        });
     })();
     </script>
 </body>
