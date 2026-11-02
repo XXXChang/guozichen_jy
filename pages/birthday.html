@@ -80,6 +80,7 @@
             height: 100%;
             cursor: pointer;
         }
+        body.celebration-ready .birthday-stage { cursor: default; }
         .cake-dock {
             position: fixed;
             z-index: 30;
@@ -187,19 +188,24 @@
                 37px 8px 0 rgba(255, 255, 255, 0.52),
                 74px 0 0 rgba(255, 255, 255, 0.65);
         }
-        .candle {
+        .number-candle {
             position: absolute;
             z-index: 5;
-            bottom: 213px;
-            width: 12px;
-            height: 48px;
-            border: 1px solid rgba(95, 54, 61, 0.18);
-            border-radius: 3px 3px 1px 1px;
-            background: repeating-linear-gradient(135deg, #fff 0 6px, var(--coral) 6px 12px);
+            bottom: 210px;
+            width: 48px;
+            height: 62px;
+            color: var(--berry);
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 64px;
+            font-weight: 800;
+            line-height: 1;
+            text-align: center;
+            -webkit-text-stroke: 2px var(--cream);
+            paint-order: stroke fill;
+            text-shadow: 0 5px 0 rgba(214, 166, 75, 0.35), 0 8px 12px rgba(86, 57, 65, 0.18);
         }
-        .candle.one { left: 104px; }
-        .candle.two { left: 154px; height: 56px; }
-        .candle.three { right: 103px; }
+        .number-candle.first { left: 105px; }
+        .number-candle.second { right: 105px; }
         .flame {
             position: absolute;
             left: 50%;
@@ -231,8 +237,7 @@
         }
         body.candles-out .flame { opacity: 0; scale: 0.2; animation: none; }
         body.candles-out .smoke { animation: smokeRise 1.55s ease-out forwards; }
-        body.candles-out .candle.two .smoke { animation-delay: 0.08s; }
-        body.candles-out .candle.three .smoke { animation-delay: 0.16s; }
+        body.candles-out .number-candle.second .smoke { animation-delay: 0.12s; }
         body.candles-out:not(.celebration-ready) .cake-scene { animation: cakeSettle 0.72s ease-out both; }
         @keyframes smokeRise {
             0% { opacity: 0; transform: translate(-50%, 0) scale(0.6); }
@@ -478,67 +483,240 @@
             display: grid;
             place-items: center;
             padding: 24px;
-            background: rgba(62, 37, 47, 0.68);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(45, 28, 50, 0.74);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
         }
         .letter-paper {
             position: relative;
-            width: min(100%, 680px);
-            max-height: min(82vh, 760px);
-            overflow: auto;
-            padding: 58px 54px 50px;
-            border: 1px solid rgba(116, 91, 72, 0.25);
-            background:
-                repeating-linear-gradient(180deg, transparent 0 31px, rgba(116, 91, 72, 0.09) 31px 32px),
-                #fffdf6;
+            display: grid;
+            grid-template-columns: 0.9fr 1.1fr;
+            width: min(94vw, 880px);
+            max-height: min(88vh, 610px);
+            padding: 18px;
+            overflow: visible;
+            border: 6px solid #9f67c8;
+            border-radius: 34px;
+            background: linear-gradient(145deg, #f3a8d2, #a06ad0 70%, #734cad);
             color: #4d403a;
-            box-shadow: 0 30px 75px rgba(29, 19, 38, 0.34);
-            transform: rotate(-0.35deg);
+            box-shadow:
+                0 0 0 3px rgba(255, 225, 123, 0.88),
+                0 32px 90px rgba(27, 12, 36, 0.48),
+                inset 0 0 28px rgba(255, 255, 255, 0.38);
             animation: letterOpen 0.45s cubic-bezier(.2,.8,.2,1) both;
         }
         @keyframes letterOpen {
-            from { opacity: 0; transform: translateY(34px) scale(0.9) rotate(-2deg); }
-            to { opacity: 1; transform: translateY(0) scale(1) rotate(-0.35deg); }
+            from { opacity: 0; transform: translateY(34px) scale(0.88) rotate(-1.5deg); }
+            to { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
         }
         .letter-paper::before {
             content: "";
             position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 35px;
-            width: 1px;
-            background: rgba(184, 63, 89, 0.18);
+            z-index: 4;
+            top: 22px;
+            bottom: 22px;
+            left: 50%;
+            width: 28px;
+            transform: translateX(-50%);
+            background: linear-gradient(90deg, rgba(93, 52, 108, 0.18), rgba(255, 255, 255, 0.84) 48%, rgba(93, 52, 108, 0.2));
+            border-radius: 50%;
+            pointer-events: none;
         }
-        .letter-close {
+        .book-page {
+            position: relative;
+            min-height: 500px;
+            padding: 78px 42px 48px;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 88% 12%, rgba(244, 179, 213, 0.18), transparent 22%),
+                radial-gradient(circle at 12% 88%, rgba(121, 202, 167, 0.14), transparent 24%),
+                #fffdf9;
+            box-shadow: inset 0 0 34px rgba(127, 82, 126, 0.11);
+        }
+        .book-page-left { border-radius: 18px 4px 4px 18px; }
+        .book-page-right { border-radius: 4px 18px 18px 4px; }
+        .book-page::after {
+            content: "";
             position: absolute;
-            top: 14px;
-            right: 16px;
+            inset: 12px;
+            border: 2px solid rgba(164, 92, 196, 0.34);
+            border-radius: 14px;
+            pointer-events: none;
+        }
+        .book-bunting {
+            position: absolute;
+            z-index: 8;
+            top: -9px;
+            left: 50%;
+            display: flex;
+            gap: 9px;
+            transform: translateX(-50%) rotate(-1deg);
+        }
+        .book-bunting i {
+            display: block;
+            width: 34px;
+            height: 43px;
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+            background: #f4cc49;
+            filter: drop-shadow(0 3px 2px rgba(54, 28, 67, 0.22));
+        }
+        .book-bunting i:nth-child(2) { background: #ef78ac; }
+        .book-bunting i:nth-child(3) { background: #71c8e8; }
+        .book-bunting i:nth-child(4) { background: #8bcf92; }
+        .book-bunting i:nth-child(5) { background: #a87be0; }
+        .book-badge {
+            position: absolute;
+            z-index: 7;
+            top: -24px;
+            left: -22px;
             display: grid;
             place-items: center;
-            width: 40px;
-            height: 40px;
-            padding: 0;
-            border: 1px solid rgba(86, 57, 65, 0.24);
+            width: 82px;
+            height: 82px;
+            border: 4px solid #fff5a6;
+            border-radius: 26px 38px 24px 42px;
+            background: linear-gradient(145deg, #ff83b5, #a865dc);
+            color: white;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 34px;
+            font-weight: 800;
+            rotate: -9deg;
+            box-shadow: 0 8px 0 rgba(93, 52, 126, 0.24);
+        }
+        .book-ribbon {
+            position: absolute;
+            z-index: 7;
+            left: -24px;
+            bottom: -17px;
+            width: 220px;
+            height: 31px;
+            border-radius: 6px 50% 50% 6px;
+            background: linear-gradient(180deg, #fa8bbc, #dc5d9d);
+            box-shadow: 0 8px 12px rgba(83, 38, 78, 0.28);
+            transform: rotate(-4deg);
+        }
+        .book-ribbon::after {
+            content: "";
+            position: absolute;
+            right: -34px;
+            top: 0;
+            border-top: 16px solid #e36aa5;
+            border-bottom: 15px solid #e36aa5;
+            border-right: 35px solid transparent;
+        }
+        .book-heart-tab {
+            position: absolute;
+            z-index: 7;
+            right: -28px;
+            top: 42%;
+            display: grid;
+            place-items: center;
+            width: 52px;
+            height: 68px;
+            border: 3px solid #8e58bd;
+            border-radius: 7px 13px 13px 7px;
+            background: #f16ca9;
+            color: white;
+            font-size: 29px;
+            box-shadow: 7px 7px 0 rgba(66, 38, 86, 0.22);
+        }
+        .book-envelope-art {
+            position: relative;
+            display: grid;
+            place-items: center;
+            width: min(100%, 260px);
+            aspect-ratio: 1.28;
+            margin: 46px auto 26px;
+            border: 4px solid #9d63c4;
+            border-radius: 13px;
+            background: linear-gradient(145deg, #fff4c9, #ffd5e8);
+            box-shadow: 10px 12px 0 rgba(159, 103, 200, 0.16);
+            transform: rotate(-3deg);
+        }
+        .book-envelope-art::before,
+        .book-envelope-art::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            clip-path: polygon(0 0, 50% 57%, 100% 0);
+            background: #fffaf0;
+        }
+        .book-envelope-art::after {
+            clip-path: polygon(0 100%, 0 28%, 50% 70%, 100% 28%, 100% 100%);
+            background: #f6c9df;
+        }
+        .book-envelope-art span {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            place-items: center;
+            width: 62px;
+            height: 62px;
+            border: 4px solid #fff2a8;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.72);
-            color: var(--ink);
-            font-size: 25px;
+            background: #dc517d;
+            color: white;
+            font-size: 34px;
+            box-shadow: 0 5px 0 rgba(128, 62, 103, 0.2);
+        }
+        .book-date {
+            position: relative;
+            z-index: 3;
+            margin: 0;
+            color: #8d58b7;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            text-align: center;
+        }
+        .book-corner {
+            position: absolute;
+            z-index: 3;
+            color: #70be95;
+            font-size: 42px;
+            line-height: 1;
+        }
+        .book-corner.left { left: 22px; bottom: 20px; rotate: -18deg; }
+        .book-corner.right { right: 22px; bottom: 18px; rotate: 17deg; color: #ef7cad; }
+        .letter-close {
+            position: absolute;
+            z-index: 20;
+            top: -22px;
+            right: -22px;
+            display: grid;
+            place-items: center;
+            width: 48px;
+            height: 48px;
+            padding: 0;
+            border: 3px solid #fff4a5;
+            border-radius: 15px 22px 13px 21px;
+            background: #f5c742;
+            color: #38213f;
+            font-size: 28px;
+            font-weight: 900;
             line-height: 1;
             cursor: pointer;
+            rotate: 8deg;
+            box-shadow: 0 7px 0 rgba(91, 54, 108, 0.28);
         }
         .letter-title {
-            margin: 0 0 28px;
-            color: var(--berry);
+            position: relative;
+            z-index: 3;
+            margin: 0 0 26px;
+            color: #9a4fc0;
             font-family: "Songti SC", "Noto Serif CJK SC", "SimSun", serif;
-            font-size: 30px;
-            font-weight: 650;
+            font-size: 31px;
+            font-weight: 700;
+            text-align: center;
         }
         .letter-body {
+            position: relative;
+            z-index: 3;
             margin: 0;
             font-family: "Songti SC", "Noto Serif CJK SC", "SimSun", serif;
             font-size: 17px;
-            line-height: 1.95;
+            line-height: 2;
             white-space: pre-wrap;
         }
         .sr-only {
@@ -578,8 +756,28 @@
             .balloon-cluster { scale: 0.72; }
             .balloon-cluster.left { left: -8px; }
             .balloon-cluster.right { right: -7px; }
-            .letter-dialog { padding: 12px; }
-            .letter-paper { padding: 52px 26px 40px 42px; }
+            .letter-dialog { padding: 10px; }
+            .letter-paper {
+                grid-template-columns: 1fr;
+                width: min(94vw, 460px);
+                max-height: 90vh;
+                overflow: auto;
+                padding: 12px;
+                border-width: 4px;
+                border-radius: 24px;
+            }
+            .letter-paper::before { display: none; }
+            .book-page { min-height: auto; padding: 62px 25px 38px; }
+            .book-page-left { min-height: 245px; border-radius: 14px 14px 4px 4px; }
+            .book-page-right { border-radius: 4px 4px 14px 14px; }
+            .book-envelope-art { width: min(82%, 210px); margin: 18px auto 15px; }
+            .book-bunting { gap: 5px; }
+            .book-bunting i { width: 25px; height: 32px; }
+            .book-badge { top: 4px; left: 4px; width: 58px; height: 58px; font-size: 25px; }
+            .book-ribbon { left: -8px; bottom: 2px; width: 150px; height: 24px; }
+            .book-ribbon::after { right: -25px; border-top-width: 12px; border-bottom-width: 12px; border-right-width: 26px; }
+            .book-heart-tab { right: -8px; top: 48%; width: 42px; height: 54px; font-size: 23px; }
+            .letter-close { top: 7px; right: 7px; width: 42px; height: 42px; font-size: 24px; }
             .letter-title { font-size: 25px; }
             .letter-body { font-size: 15px; }
         }
@@ -624,9 +822,8 @@
                 <div class="cake-layer bottom"><span></span></div>
                 <div class="cake-layer middle"><span></span></div>
                 <div class="cake-layer top"><span></span></div>
-                <div class="candle one"><i class="flame"></i><i class="smoke"></i></div>
-                <div class="candle two"><i class="flame"></i><i class="smoke"></i></div>
-                <div class="candle three"><i class="flame"></i><i class="smoke"></i></div>
+                <div class="number-candle first"><span>2</span><i class="flame"></i><i class="smoke"></i></div>
+                <div class="number-candle second"><span>2</span><i class="flame"></i><i class="smoke"></i></div>
             </div>
         </div>
 
@@ -654,13 +851,25 @@
 
     <div id="letterDialog" class="letter-dialog" role="dialog" aria-modal="true" aria-labelledby="letterTitle" hidden>
         <article class="letter-paper">
+            <div class="book-bunting" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+            <span class="book-badge" aria-hidden="true">22</span>
+            <span class="book-ribbon" aria-hidden="true"></span>
+            <span class="book-heart-tab" aria-hidden="true">♥</span>
             <button id="letterClose" class="letter-close" type="button" aria-label="关闭信件" title="关闭">×</button>
-            <h2 id="letterTitle" class="letter-title">给姐姐的一封信</h2>
-            <p class="letter-body">这是一封信，这是一封信，这是一封信……
+            <section class="book-page book-page-left" aria-hidden="true">
+                <div class="book-envelope-art"><span>♥</span></div>
+                <p class="book-date">2005.01.05 · 22</p>
+                <span class="book-corner left">❀</span>
+            </section>
+            <section class="book-page book-page-right">
+                <h2 id="letterTitle" class="letter-title">给姐姐的一封信</h2>
+                <p class="letter-body">这是一封信，这是一封信，这是一封信……
 
 这是一封信，这是一封信，这是一封信，这是一封信……
 
 这是一封信，这是一封信，这是一封信……</p>
+                <span class="book-corner right" aria-hidden="true">♥</span>
+            </section>
         </article>
     </div>
 
@@ -823,9 +1032,9 @@
 
         function handleInteraction(x, y, target) {
             if (isProtectedTarget(target)) return;
-            spawn(x, y, extinguished ? 5 : 13);
             if (extinguished) return;
 
+            spawn(x, y, 13);
             extinguished = true;
             document.body.classList.add('candles-out');
             status.textContent = '蜡烛已经熄灭';
