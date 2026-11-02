@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f6cfd1">
+    <title>祝姐姐生日快乐 | JY_GZC</title>
+    <link rel="preload" as="image" type="image/jpeg" href="../assets/gzc_jy_Img/AvatarImg/HeadIcon1.jpg?v=1" fetchpriority="high">
+    <link rel="preload" as="image" type="image/jpeg" href="../assets/gzc_jy_Img/AvatarImg/HeadIcon2.jpg?v=1" fetchpriority="high">
+    <style>
+        :root {
+            --ink: #4b3036;
+            --muted: #806168;
+            --coral: #c64f5d;
+            --mint: #4a8c7e;
+            --gold: #c9953f;
+            --paper: #fff8f7;
+        }
+        * { box-sizing: border-box; }
+        html, body { min-height: 100%; }
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            color: var(--ink);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background:
+                linear-gradient(135deg, #ffe2e6 0%, #f5d0c1 50%, #d9eee7 100%);
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background-image:
+                radial-gradient(circle, rgba(198, 79, 93, 0.12) 1px, transparent 1.5px),
+                radial-gradient(circle, rgba(74, 140, 126, 0.11) 1px, transparent 1.5px);
+            background-position: 0 0, 18px 22px;
+            background-size: 42px 42px, 54px 54px;
+        }
+        [hidden] { display: none !important; }
+        a { color: inherit; }
+        a:focus-visible, button:focus-visible {
+            outline: 3px solid var(--mint);
+            outline-offset: 5px;
+        }
+        #fallingHearts, #clickHearts {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        #fallingHearts { z-index: 1; }
+        #clickHearts { z-index: 9999; }
+        .page-nav {
+            position: relative;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            min-height: 68px;
+            padding: 0 max(20px, calc((100% - 960px) / 2));
+            border-bottom: 1px solid rgba(111, 74, 73, 0.18);
+            background: rgba(255, 248, 247, 0.72);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            font-size: 13px;
+            font-weight: 700;
+        }
+        .page-nav a { text-decoration: none; }
+        .page-nav a:hover { color: var(--coral); }
+        .nav-mark { color: var(--mint); letter-spacing: 1.5px; }
+        .birthday-main {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            place-items: center;
+            min-height: calc(100svh - 68px);
+            padding: 44px 22px 72px;
+        }
+        .birthday-wrap {
+            width: min(100%, 920px);
+            text-align: center;
+        }
+        .portrait-pair {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .portrait-pair img {
+            display: block;
+            width: 76px;
+            height: 76px;
+            border: 5px solid var(--paper);
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 10px 24px rgba(102, 56, 59, 0.17);
+        }
+        .portrait-pair img + img { margin-left: -16px; }
+        .portrait-pair img:first-child { rotate: -7deg; }
+        .portrait-pair img:last-child { rotate: 7deg; }
+        .cake-button {
+            display: inline-grid;
+            place-items: center;
+            width: 150px;
+            height: 138px;
+            padding: 0;
+            border: 0;
+            background: transparent;
+            cursor: pointer;
+            animation: cakeFloat 3.8s ease-in-out infinite;
+            transition: transform 0.25s ease, filter 0.25s ease;
+        }
+        .cake-button:hover { transform: scale(1.07); filter: brightness(1.04); }
+        .cake-icon {
+            font-size: 116px;
+            line-height: 1;
+            filter: drop-shadow(0 15px 19px rgba(129, 56, 63, 0.23));
+        }
+        body.is-celebrating .cake-icon { animation: cakeCelebrate 0.8s cubic-bezier(.2,.8,.2,1); }
+        @keyframes cakeFloat {
+            0%, 100% { translate: 0 0; }
+            50% { translate: 0 -9px; }
+        }
+        @keyframes cakeCelebrate {
+            0%, 100% { transform: rotate(0) scale(1); }
+            25% { transform: rotate(-8deg) scale(1.12); }
+            55% { transform: rotate(7deg) scale(1.18); }
+            80% { transform: rotate(-3deg) scale(1.06); }
+        }
+        .eyebrow {
+            margin: 10px 0 12px;
+            color: var(--mint);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 3px;
+        }
+        h1 {
+            margin: 0;
+            color: var(--coral);
+            font-family: "Songti SC", "Noto Serif CJK SC", "SimSun", serif;
+            font-size: 52px;
+            font-weight: 650;
+            line-height: 1.2;
+            letter-spacing: 0;
+            text-shadow: 0 7px 24px rgba(198, 79, 93, 0.16);
+        }
+        .lead {
+            margin: 16px auto 0;
+            color: var(--muted);
+            font-size: 16px;
+            line-height: 1.7;
+        }
+        .wish-status {
+            min-height: 24px;
+            margin: 14px 0 0;
+            color: var(--gold);
+            font-size: 13px;
+            font-weight: 750;
+            letter-spacing: 1px;
+        }
+        .wish-lines {
+            width: min(100%, 680px);
+            margin: 30px auto 0;
+            padding: 23px 12px;
+            border-top: 1px solid rgba(198, 79, 93, 0.28);
+            border-bottom: 1px solid rgba(74, 140, 126, 0.28);
+        }
+        .wish-lines p {
+            margin: 7px 0;
+            font-family: "Songti SC", "Noto Serif CJK SC", "SimSun", serif;
+            font-size: 17px;
+            line-height: 1.75;
+        }
+        .birthday-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 28px;
+        }
+        .birthday-links a {
+            min-width: 132px;
+            padding: 10px 15px;
+            border: 1px solid rgba(75, 48, 54, 0.28);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.52);
+            font-size: 12px;
+            font-weight: 750;
+            text-decoration: none;
+            transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+        }
+        .birthday-links a:hover {
+            color: white;
+            transform: translateY(-2px);
+        }
+        .birthday-links a:first-child:hover { border-color: var(--coral); background: var(--coral); }
+        .birthday-links a:last-child:hover { border-color: var(--mint); background: var(--mint); }
+        @media (max-width: 600px) {
+            .page-nav { min-height: 62px; }
+            .birthday-main { min-height: calc(100svh - 62px); padding: 32px 18px 58px; }
+            .cake-button { width: 124px; height: 116px; }
+            .cake-icon { font-size: 94px; }
+            h1 { font-size: 38px; }
+            .lead { font-size: 14px; }
+            .wish-lines p { font-size: 15px; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .cake-button, body.is-celebrating .cake-icon { animation: none; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="fallingHearts" aria-hidden="true"></canvas>
+    <canvas id="clickHearts" aria-hidden="true"></canvas>
+
+    <nav class="page-nav" aria-label="生日页面导航">
+        <a href="../index.html">← 返回主页</a>
+        <span class="nav-mark">HAPPY BIRTHDAY / 2026</span>
+    </nav>
+
+    <main class="birthday-main">
+        <section class="birthday-wrap" aria-labelledby="birthdayTitle">
+            <div class="portrait-pair">
+                <img src="../assets/gzc_jy_Img/AvatarImg/HeadIcon1.jpg?v=1" alt="JY 的头像" width="256" height="256" decoding="async">
+                <img src="../assets/gzc_jy_Img/AvatarImg/HeadIcon2.jpg?v=1" alt="GZC 的头像" width="256" height="256" decoding="async">
+            </div>
+            <button id="cakeButton" class="cake-button" type="button" aria-label="点亮生日蛋糕">
+                <span class="cake-icon" aria-hidden="true">🎂</span>
+            </button>
+            <p class="eyebrow">HAPPY BIRTHDAY · OUR 2026</p>
+            <h1 id="birthdayTitle">祝姐姐生日快乐！</h1>
+            <p class="lead">和姐姐在一起的第一年，也是属于我们的 2026。</p>
+            <p id="wishStatus" class="wish-status" aria-live="polite">愿新的一岁，每一天都有值得期待的事。</p>
+
+            <div class="wish-lines">
+                <p>愿姐姐新的一岁平安顺遂，也一直被爱包围。</p>
+                <p>愿我们继续一起吃很多顿饭，看很多次风景。</p>
+                <p>愿每一次见面，都比上一次更开心。</p>
+            </div>
+
+            <nav class="birthday-links" aria-label="生日页面入口">
+                <a href="story.html">我们的回忆 ↗</a>
+                <a href="photos.html">一起吃过的饭 ↗</a>
+            </nav>
+        </section>
+    </main>
+
+    <script>
+    (function () {
+        const canvas = document.getElementById('fallingHearts');
+        const ctx = canvas.getContext('2d');
+        const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        function resize() {
+            canvas.width = window.innerWidth * dpr;
+            canvas.height = window.innerHeight * dpr;
+            canvas.style.width = window.innerWidth + 'px';
+            canvas.style.height = window.innerHeight + 'px';
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        resize();
+        let resizeTimer = null;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(resize, 150);
+        });
+
+        const palette = ['#c64f5d', '#e9818b', '#4a8c7e', '#7ab6a8', '#c9953f'];
+        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+        const count = reduceMotion ? 12 : (isMobile ? 26 : 54);
+        const particles = Array.from({ length: count }, () => ({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            size: Math.random() * 3.5 + 2,
+            vx: (Math.random() - 0.5) * 0.45,
+            vy: Math.random() * 0.7 + 0.35,
+            alpha: Math.random() * 0.48 + 0.28,
+            color: palette[Math.floor(Math.random() * palette.length)]
+        }));
+
+        function heartPath(x, y, size) {
+            ctx.beginPath();
+            ctx.moveTo(x, y + size * 0.3);
+            ctx.bezierCurveTo(x, y, x - size, y, x - size, y + size * 0.5);
+            ctx.bezierCurveTo(x - size, y + size, x, y + size * 1.3, x, y + size * 1.5);
+            ctx.bezierCurveTo(x, y + size * 1.3, x + size, y + size, x + size, y + size * 0.5);
+            ctx.bezierCurveTo(x + size, y, x, y, x, y + size * 0.3);
+            ctx.closePath();
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            particles.forEach(particle => {
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+                if (particle.x < 0) particle.x = window.innerWidth;
+                if (particle.x > window.innerWidth) particle.x = 0;
+                if (particle.y > window.innerHeight) {
+                    particle.y = -12;
+                    particle.x = Math.random() * window.innerWidth;
+                }
+                ctx.save();
+                ctx.globalAlpha = particle.alpha;
+                ctx.fillStyle = particle.color;
+                heartPath(particle.x, particle.y, particle.size);
+                ctx.fill();
+                ctx.restore();
+            });
+            requestAnimationFrame(draw);
+        }
+        draw();
+    })();
+    </script>
+
+    <script>
+    (function () {
+        const canvas = document.getElementById('clickHearts');
+        const ctx = canvas.getContext('2d');
+        let dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        let particles = [];
+        const palette = ['#c64f5d', '#e9818b', '#4a8c7e', '#7ab6a8', '#c9953f'];
+
+        function resize() {
+            dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+            canvas.width = window.innerWidth * dpr;
+            canvas.height = window.innerHeight * dpr;
+            canvas.style.width = window.innerWidth + 'px';
+            canvas.style.height = window.innerHeight + 'px';
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        function heartShape(size) {
+            ctx.beginPath();
+            ctx.moveTo(0, size * 0.3);
+            ctx.bezierCurveTo(0, -size * 0.2, -size * 0.6, -size * 0.2, -size * 0.5, size * 0.2);
+            ctx.bezierCurveTo(-size * 0.4, size * 0.6, 0, size * 0.8, 0, size);
+            ctx.bezierCurveTo(0, size * 0.8, size * 0.4, size * 0.6, size * 0.5, size * 0.2);
+            ctx.bezierCurveTo(size * 0.6, -size * 0.2, 0, -size * 0.2, 0, size * 0.3);
+            ctx.closePath();
+        }
+
+        function spawn(x, y, amount = 5) {
+            for (let index = 0; index < amount; index++) {
+                const angle = Math.PI * 2 * index / amount + Math.random() * 0.45;
+                particles.push({
+                    x,
+                    y,
+                    size: 13 + Math.random() * 13,
+                    vx: Math.cos(angle) * (1.3 + Math.random() * 1.8),
+                    vy: Math.sin(angle) * (1.3 + Math.random() * 1.8) - 1.7,
+                    life: 1,
+                    decay: 0.012 + Math.random() * 0.012,
+                    angle: (Math.random() - 0.5) * 0.5,
+                    spin: (Math.random() - 0.5) * 0.05,
+                    color: palette[Math.floor(Math.random() * palette.length)]
+                });
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            particles = particles.filter(particle => particle.life > 0);
+            particles.forEach(particle => {
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+                particle.vy += 0.05;
+                particle.vx *= 0.99;
+                particle.angle += particle.spin;
+                particle.life -= particle.decay;
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, particle.life);
+                ctx.translate(particle.x, particle.y);
+                ctx.rotate(particle.angle);
+                ctx.fillStyle = particle.color;
+                heartShape(particle.size);
+                ctx.fill();
+                ctx.lineWidth = 1.2;
+                ctx.strokeStyle = 'rgba(108, 54, 62, 0.48)';
+                ctx.stroke();
+                ctx.restore();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        let lastTouch = 0;
+        window.addEventListener('click', event => {
+            if (Date.now() - lastTouch < 600) return;
+            spawn(event.clientX, event.clientY);
+        });
+        window.addEventListener('touchstart', event => {
+            lastTouch = Date.now();
+            const touch = event.touches[0];
+            spawn(touch.clientX, touch.clientY);
+        }, { passive: true });
+
+        const cakeButton = document.getElementById('cakeButton');
+        const wishStatus = document.getElementById('wishStatus');
+        cakeButton.addEventListener('click', () => {
+            document.body.classList.remove('is-celebrating');
+            void document.body.offsetWidth;
+            document.body.classList.add('is-celebrating');
+            wishStatus.textContent = '愿姐姐的愿望都会实现，生日快乐！';
+            const rect = cakeButton.getBoundingClientRect();
+            spawn(rect.left + rect.width / 2, rect.top + rect.height / 2, 14);
+            setTimeout(() => document.body.classList.remove('is-celebrating'), 900);
+        });
+    })();
+    </script>
+</body>
+</html>

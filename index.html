@@ -221,11 +221,49 @@
 
         /* 打字机效果 */
         .subtitle {
-            font-size: 15px;
+            font-size: 20px;
             color: var(--c-600);
-            min-height: 24px;
+            min-height: 28px;
             font-weight: 600;
             letter-spacing: 1px;
+        }
+        .birthday-cake {
+            position: relative;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            margin-top: 18px;
+            color: var(--c-700);
+            text-decoration: none;
+            transition: transform 0.3s ease, filter 0.3s ease;
+            animation: cakeFloat 4.8s ease-in-out infinite;
+        }
+        .birthday-cake-icon {
+            display: block;
+            font-size: 82px;
+            line-height: 1;
+            filter: drop-shadow(0 10px 16px rgba(var(--c-700-rgb), 0.28));
+        }
+        .birthday-cake-label {
+            font-size: 10px;
+            font-weight: 750;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+        }
+        .birthday-cake:hover {
+            transform: scale(1.07) rotate(-2deg);
+            filter: brightness(1.05);
+        }
+        .birthday-cake:focus-visible {
+            outline: 3px solid var(--c-700);
+            outline-offset: 7px;
+            border-radius: 8px;
+        }
+        @keyframes cakeFloat {
+            0%, 100% { translate: 0 0; }
+            50% { translate: 0 -8px; }
         }
 
         /* 分散漂浮的信笺入口 */
@@ -485,10 +523,10 @@
             box-shadow: 0 0 0 1px rgba(var(--c-700-rgb),0.24);
         }
         @media (max-width: 900px) {
-            .home-stage { min-height: max(780px, calc(100svh - 48px)); }
-            .hero-core { top: 44%; }
+            .home-stage { min-height: max(820px, calc(100svh - 48px)); }
+            .hero-core { top: 37%; }
             .memory-card.days-card { top: 1%; right: 5%; }
-            .memory-card.photo-card { top: auto; bottom: 16%; left: 6%; }
+            .memory-card.photo-card { top: auto; bottom: 8%; left: 6%; }
             .memory-card.story-card { right: 7%; bottom: 2%; }
             .memory-count { font-size: 34px; }
         }
@@ -607,7 +645,7 @@
 
         @media (max-width: 480px) {
             .content { padding: 16px; }
-            .home-stage { min-height: max(840px, calc(100svh - 32px)); }
+            .home-stage { min-height: max(1010px, calc(100svh - 32px)); }
             .hero-core {
                 top: 46px;
                 width: calc(100% - 16px);
@@ -616,13 +654,13 @@
             .hero-kicker { margin-bottom: 10px; font-size: 10px; }
             .memory-card { padding: 20px 20px 17px 23px; }
             .memory-card.days-card {
-                top: 355px;
+                top: 510px;
                 right: 5%;
                 width: 188px;
                 min-height: 140px;
             }
             .memory-card.photo-card {
-                top: 540px;
+                top: 700px;
                 bottom: auto;
                 left: 5%;
                 width: 180px;
@@ -630,7 +668,7 @@
                 padding-right: 73px;
             }
             .memory-card.story-card {
-                top: 690px;
+                top: 855px;
                 right: 7%;
                 bottom: auto;
                 width: 174px;
@@ -647,10 +685,12 @@
             .avatar { width: 92px; height: 92px; }
             .theme-hue-slider { margin-bottom: 16px; }
             h1 { font-size: 42px; letter-spacing: 4px; }
-            .subtitle { font-size: 13px; }
+            .subtitle { font-size: 17px; }
+            .birthday-cake { margin-top: 14px; }
+            .birthday-cake-icon { font-size: 70px; }
         }
         @media (prefers-reduced-motion: reduce) {
-            .memory-card { animation: none; }
+            .memory-card, .birthday-cake { animation: none; }
         }
     </style>
 </head>
@@ -674,6 +714,10 @@
                 <p class="hero-kicker">JY × GZC · OUR SPACE</p>
                 <h1 id="homeTitle">JY_GZC</h1>
                 <div class="subtitle" id="subtitle"></div>
+                <a class="birthday-cake" href="pages/birthday.html" aria-label="打开生日快乐页面">
+                    <span class="birthday-cake-icon" aria-hidden="true">🎂</span>
+                    <span class="birthday-cake-label">Birthday</span>
+                </a>
             </section>
 
             <nav class="bubble-links" aria-label="页面入口">
