@@ -4,22 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#f6cfd1">
-    <title>生日蛋糕 | JY_GZC</title>
+    <title>22 岁生日 | JY_GZC</title>
     <style>
         :root {
-            --coral: #c64f5d;
-            --mint: #4a8c7e;
-            --gold: #d4a449;
-            --cream: #fff5e8;
-            --chocolate: #70413b;
+            --berry: #b83f59;
+            --coral: #dc6e79;
+            --mint: #498d80;
+            --gold: #d6a64b;
+            --cream: #fff7e9;
+            --ink: #563941;
         }
         * { box-sizing: border-box; }
         html, body { width: 100%; height: 100%; }
         body {
             margin: 0;
             overflow: hidden;
-            background: linear-gradient(135deg, #ffe2e6 0%, #f5d0c1 50%, #d9eee7 100%);
+            color: var(--ink);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background:
+                radial-gradient(circle at 18% 20%, rgba(255, 248, 222, 0.92), transparent 28%),
+                radial-gradient(circle at 82% 75%, rgba(185, 226, 215, 0.58), transparent 30%),
+                linear-gradient(135deg, #ffdfe5 0%, #f4c8b9 48%, #d5ebe4 100%);
         }
         body::before {
             content: "";
@@ -28,10 +33,16 @@
             z-index: 0;
             pointer-events: none;
             background-image:
-                radial-gradient(circle, rgba(198, 79, 93, 0.13) 1px, transparent 1.5px),
-                radial-gradient(circle, rgba(74, 140, 126, 0.11) 1px, transparent 1.5px);
+                radial-gradient(circle, rgba(184, 63, 89, 0.13) 1px, transparent 1.5px),
+                radial-gradient(circle, rgba(73, 141, 128, 0.11) 1px, transparent 1.5px);
             background-position: 0 0, 18px 22px;
             background-size: 42px 42px, 54px 54px;
+        }
+        [hidden] { display: none !important; }
+        button, a { font: inherit; }
+        button:focus-visible, a:focus-visible {
+            outline: 3px solid var(--mint);
+            outline-offset: 4px;
         }
         #fallingHearts, #clickHearts {
             position: fixed;
@@ -46,39 +57,69 @@
             position: fixed;
             top: 22px;
             left: 24px;
-            z-index: 20;
+            z-index: 50;
             display: grid;
             place-items: center;
             width: 44px;
             height: 44px;
-            border: 1px solid rgba(94, 60, 65, 0.2);
+            border: 1px solid rgba(86, 57, 65, 0.2);
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.55);
-            color: #633a42;
+            background: rgba(255, 255, 255, 0.58);
+            color: var(--ink);
             font-size: 25px;
             text-decoration: none;
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 8px 24px rgba(102, 57, 69, 0.12);
         }
-        .back-link:hover { background: rgba(255, 255, 255, 0.86); }
-        .back-link:focus-visible { outline: 3px solid var(--mint); outline-offset: 4px; }
+        .back-link:hover { background: rgba(255, 255, 255, 0.9); }
         .birthday-stage {
             position: relative;
             z-index: 2;
-            display: grid;
-            place-items: center;
             width: 100%;
             height: 100%;
-            padding: 24px;
             cursor: pointer;
         }
+        .cake-dock {
+            position: fixed;
+            z-index: 30;
+            top: 50%;
+            left: 50%;
+            width: 320px;
+            height: 310px;
+            transform: translate(-50%, -50%);
+            transition:
+                top 0.9s cubic-bezier(.2,.8,.2,1),
+                left 0.9s cubic-bezier(.2,.8,.2,1),
+                width 0.9s cubic-bezier(.2,.8,.2,1),
+                height 0.9s cubic-bezier(.2,.8,.2,1),
+                transform 0.9s cubic-bezier(.2,.8,.2,1);
+            pointer-events: none;
+        }
+        .cake-dock::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            border: 1px solid rgba(255, 255, 255, 0.78);
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 14px 40px rgba(92, 51, 61, 0.18);
+            opacity: 0;
+            transition: opacity 0.45s ease 0.42s;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
         .cake-scene {
-            position: relative;
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 320px;
             height: 310px;
             animation: cakeEntrance 1.55s cubic-bezier(.16,.84,.2,1) both;
             filter: drop-shadow(0 24px 30px rgba(103, 52, 56, 0.24));
-            transform-origin: center bottom;
+            transform-origin: top left;
+            transition: transform 0.9s cubic-bezier(.2,.8,.2,1), filter 0.9s ease;
         }
         @keyframes cakeEntrance {
             0% { opacity: 0; transform: scale(0.2) translateY(70px) rotate(-5deg); }
@@ -91,7 +132,7 @@
             bottom: 14px;
             width: 300px;
             height: 30px;
-            border: 2px solid rgba(74, 140, 126, 0.38);
+            border: 2px solid rgba(73, 141, 128, 0.38);
             border-radius: 50%;
             background: linear-gradient(180deg, #f7ffff, #b8d9d1);
             box-shadow: inset 0 5px 8px rgba(255, 255, 255, 0.72);
@@ -119,7 +160,7 @@
             bottom: 34px;
             width: 260px;
             height: 78px;
-            background: linear-gradient(180deg, #e9838c, var(--coral));
+            background: linear-gradient(180deg, #ed9099, var(--coral));
         }
         .cake-layer.middle {
             bottom: 104px;
@@ -137,13 +178,15 @@
             position: absolute;
             z-index: 2;
             top: 34px;
+            left: 36px;
             width: 13px;
             height: 13px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.72);
-            box-shadow: 37px 8px 0 rgba(255, 255, 255, 0.52), 74px 0 0 rgba(255, 255, 255, 0.65);
+            box-shadow:
+                37px 8px 0 rgba(255, 255, 255, 0.52),
+                74px 0 0 rgba(255, 255, 255, 0.65);
         }
-        .cake-layer span:first-child { left: 36px; }
         .candle {
             position: absolute;
             z-index: 5;
@@ -187,10 +230,10 @@
             transform: translateX(-50%);
         }
         body.candles-out .flame { opacity: 0; scale: 0.2; animation: none; }
-        body.candles-out .smoke { animation: smokeRise 1.7s ease-out forwards; }
+        body.candles-out .smoke { animation: smokeRise 1.55s ease-out forwards; }
         body.candles-out .candle.two .smoke { animation-delay: 0.08s; }
         body.candles-out .candle.three .smoke { animation-delay: 0.16s; }
-        body.candles-out .cake-scene { animation: cakeSettle 0.7s ease-out both; }
+        body.candles-out:not(.celebration-ready) .cake-scene { animation: cakeSettle 0.72s ease-out both; }
         @keyframes smokeRise {
             0% { opacity: 0; transform: translate(-50%, 0) scale(0.6); }
             25% { opacity: 0.55; }
@@ -198,8 +241,305 @@
         }
         @keyframes cakeSettle {
             0% { transform: scale(1); }
-            45% { transform: scale(0.96); }
+            45% { transform: scale(0.95); }
             100% { transform: scale(1); }
+        }
+        body.celebration-ready .cake-dock {
+            top: 18px;
+            left: 100%;
+            width: 102px;
+            height: 102px;
+            transform: translateX(calc(-100% - 18px));
+        }
+        body.celebration-ready .cake-dock::before { opacity: 1; }
+        body.celebration-ready .cake-scene {
+            animation: none;
+            transform: translate(5px, 7px) scale(0.29);
+            filter: drop-shadow(0 10px 12px rgba(103, 52, 56, 0.2));
+        }
+        .celebration-panel {
+            position: relative;
+            z-index: 5;
+            display: grid;
+            align-content: center;
+            justify-items: center;
+            width: 100%;
+            height: 100%;
+            padding: 82px 24px 34px;
+            opacity: 0;
+            transform: translateY(24px) scale(0.96);
+            pointer-events: none;
+            transition: opacity 0.7s ease 0.28s, transform 0.8s cubic-bezier(.2,.8,.2,1) 0.28s;
+        }
+        body.celebration-ready .celebration-panel {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+        .celebration-panel::before {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            top: 50%;
+            left: 50%;
+            width: min(76vw, 650px);
+            aspect-ratio: 1;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.16);
+            transform: translate(-50%, -50%);
+            box-shadow: inset 0 0 80px rgba(255, 255, 255, 0.2);
+        }
+        .age-lockup {
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            color: var(--berry);
+            line-height: 0.8;
+            text-shadow: 0 12px 30px rgba(184, 63, 89, 0.18);
+        }
+        .age-number {
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: clamp(92px, 18vw, 164px);
+            font-weight: 600;
+        }
+        .age-label {
+            margin: 0 0 14px 8px;
+            font-size: 23px;
+            font-weight: 750;
+            letter-spacing: 0;
+        }
+        .birthday-date {
+            margin: 20px 0 28px;
+            padding: 8px 18px;
+            border-top: 1px solid rgba(86, 57, 65, 0.3);
+            border-bottom: 1px solid rgba(86, 57, 65, 0.3);
+            color: var(--ink);
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: 4px;
+        }
+        .letter-trigger {
+            position: relative;
+            display: grid;
+            grid-template-columns: 94px 1fr;
+            align-items: center;
+            width: min(88vw, 390px);
+            min-height: 132px;
+            padding: 18px 26px 18px 20px;
+            overflow: hidden;
+            border: 1px solid rgba(184, 63, 89, 0.24);
+            border-radius: 8px;
+            background:
+                linear-gradient(135deg, rgba(255, 255, 255, 0.88), rgba(255, 247, 233, 0.72));
+            color: var(--ink);
+            box-shadow: 0 22px 48px rgba(103, 52, 66, 0.18);
+            cursor: pointer;
+            text-align: left;
+            transition: transform 0.28s ease, box-shadow 0.28s ease;
+        }
+        .letter-trigger::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 76px;
+            height: 76px;
+            border-radius: 0 0 0 100%;
+            background: rgba(73, 141, 128, 0.13);
+        }
+        .letter-trigger:hover {
+            transform: translateY(-5px) rotate(-0.5deg);
+            box-shadow: 0 28px 58px rgba(103, 52, 66, 0.24);
+        }
+        .letter-envelope {
+            display: grid;
+            place-items: center;
+            width: 82px;
+            height: 70px;
+            border: 2px solid var(--berry);
+            border-radius: 5px;
+            background: var(--cream);
+            color: var(--berry);
+            font-size: 48px;
+            line-height: 1;
+            box-shadow: 6px 7px 0 rgba(214, 166, 75, 0.23);
+            transform: rotate(-4deg);
+        }
+        .letter-copy {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            gap: 8px;
+            padding-left: 10px;
+        }
+        .letter-copy strong {
+            font-family: "Songti SC", "Noto Serif CJK SC", "SimSun", serif;
+            font-size: 23px;
+            font-weight: 650;
+        }
+        .letter-copy small {
+            color: var(--mint);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+        .birthday-icons {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 36px;
+            margin-top: 24px;
+            font-size: 33px;
+        }
+        .birthday-icons span {
+            display: block;
+            filter: drop-shadow(0 8px 8px rgba(103, 52, 66, 0.16));
+            animation: iconFloat 3.8s ease-in-out infinite;
+        }
+        .birthday-icons span:nth-child(2) { animation-delay: -1.3s; }
+        .birthday-icons span:nth-child(3) { animation-delay: -2.1s; }
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0) rotate(-2deg); }
+            50% { transform: translateY(-8px) rotate(3deg); }
+        }
+        .balloon-cluster {
+            position: fixed;
+            z-index: 3;
+            top: 11%;
+            width: 92px;
+            height: 180px;
+            opacity: 0;
+            transform: translateY(25px);
+            transition: opacity 0.8s ease 0.5s, transform 0.8s ease 0.5s;
+            pointer-events: none;
+        }
+        body.celebration-ready .balloon-cluster { opacity: 0.9; transform: translateY(0); }
+        .balloon-cluster.left { left: 6%; }
+        .balloon-cluster.right { right: 7%; transform: translateY(25px) scaleX(-1); }
+        body.celebration-ready .balloon-cluster.right { transform: translateY(0) scaleX(-1); }
+        .balloon {
+            position: absolute;
+            width: 48px;
+            height: 60px;
+            border: 1px solid rgba(86, 57, 65, 0.13);
+            border-radius: 52% 48% 48% 52%;
+            box-shadow: inset -8px -8px 12px rgba(86, 57, 65, 0.1);
+        }
+        .balloon::after {
+            content: "";
+            position: absolute;
+            top: 58px;
+            left: 50%;
+            width: 1px;
+            height: 94px;
+            background: rgba(86, 57, 65, 0.34);
+            transform: rotate(5deg);
+            transform-origin: top;
+        }
+        .balloon.one { top: 0; left: 4px; background: #e97d89; }
+        .balloon.two { top: 34px; left: 42px; background: #73afa2; }
+        .balloon.three { top: 74px; left: 0; width: 42px; height: 52px; background: #edc267; }
+        .balloon.three::after { top: 50px; height: 54px; }
+        .confetti {
+            position: fixed;
+            z-index: 2;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.8s ease 0.35s;
+        }
+        body.celebration-ready .confetti { opacity: 0.9; }
+        .confetti i {
+            position: absolute;
+            width: 9px;
+            height: 18px;
+            border-radius: 2px;
+            background: var(--coral);
+            rotate: 24deg;
+            animation: confettiDrift 5s ease-in-out infinite;
+        }
+        .confetti i:nth-child(1) { top: 16%; left: 24%; }
+        .confetti i:nth-child(2) { top: 24%; right: 26%; background: var(--mint); rotate: -34deg; animation-delay: -1s; }
+        .confetti i:nth-child(3) { top: 68%; left: 18%; background: var(--gold); rotate: 56deg; animation-delay: -2.3s; }
+        .confetti i:nth-child(4) { top: 73%; right: 18%; width: 15px; height: 8px; background: var(--berry); animation-delay: -3.1s; }
+        .confetti i:nth-child(5) { top: 43%; left: 8%; width: 8px; height: 8px; border-radius: 50%; background: var(--mint); animation-delay: -0.7s; }
+        .confetti i:nth-child(6) { top: 38%; right: 8%; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); animation-delay: -1.8s; }
+        @keyframes confettiDrift {
+            0%, 100% { translate: 0 0; }
+            50% { translate: 0 12px; rotate: 90deg; }
+        }
+        .letter-dialog {
+            position: fixed;
+            inset: 0;
+            z-index: 9000;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+            background: rgba(62, 37, 47, 0.68);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+        .letter-paper {
+            position: relative;
+            width: min(100%, 680px);
+            max-height: min(82vh, 760px);
+            overflow: auto;
+            padding: 58px 54px 50px;
+            border: 1px solid rgba(116, 91, 72, 0.25);
+            background:
+                repeating-linear-gradient(180deg, transparent 0 31px, rgba(116, 91, 72, 0.09) 31px 32px),
+                #fffdf6;
+            color: #4d403a;
+            box-shadow: 0 30px 75px rgba(29, 19, 38, 0.34);
+            transform: rotate(-0.35deg);
+            animation: letterOpen 0.45s cubic-bezier(.2,.8,.2,1) both;
+        }
+        @keyframes letterOpen {
+            from { opacity: 0; transform: translateY(34px) scale(0.9) rotate(-2deg); }
+            to { opacity: 1; transform: translateY(0) scale(1) rotate(-0.35deg); }
+        }
+        .letter-paper::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 35px;
+            width: 1px;
+            background: rgba(184, 63, 89, 0.18);
+        }
+        .letter-close {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            display: grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border: 1px solid rgba(86, 57, 65, 0.24);
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.72);
+            color: var(--ink);
+            font-size: 25px;
+            line-height: 1;
+            cursor: pointer;
+        }
+        .letter-title {
+            margin: 0 0 28px;
+            color: var(--berry);
+            font-family: "Songti SC", "Noto Serif CJK SC", "SimSun", serif;
+            font-size: 30px;
+            font-weight: 650;
+        }
+        .letter-body {
+            margin: 0;
+            font-family: "Songti SC", "Noto Serif CJK SC", "SimSun", serif;
+            font-size: 17px;
+            line-height: 1.95;
+            white-space: pre-wrap;
         }
         .sr-only {
             position: absolute;
@@ -212,12 +552,49 @@
             white-space: nowrap;
             border: 0;
         }
-        @media (max-width: 520px) {
-            .back-link { top: 15px; left: 15px; width: 40px; height: 40px; }
-            .cake-scene { width: 280px; height: 280px; scale: 0.88; }
+        @media (max-width: 680px) {
+            .back-link { top: 14px; left: 14px; width: 40px; height: 40px; }
+            body.celebration-ready .cake-dock {
+                top: 12px;
+                width: 84px;
+                height: 84px;
+                transform: translateX(calc(-100% - 12px));
+            }
+            body.celebration-ready .cake-scene { transform: translate(3px, 5px) scale(0.24); }
+            .celebration-panel { padding: 66px 16px 20px; }
+            .celebration-panel::before { width: min(110vw, 520px); }
+            .age-number { font-size: clamp(88px, 29vw, 126px); }
+            .age-label { margin-bottom: 10px; font-size: 19px; }
+            .birthday-date { margin: 13px 0 20px; font-size: 14px; letter-spacing: 3px; }
+            .letter-trigger {
+                grid-template-columns: 76px 1fr;
+                width: min(92vw, 350px);
+                min-height: 112px;
+                padding: 14px 18px 14px 15px;
+            }
+            .letter-envelope { width: 68px; height: 58px; font-size: 39px; }
+            .letter-copy strong { font-size: 20px; }
+            .birthday-icons { gap: 28px; margin-top: 18px; font-size: 27px; }
+            .balloon-cluster { scale: 0.72; }
+            .balloon-cluster.left { left: -8px; }
+            .balloon-cluster.right { right: -7px; }
+            .letter-dialog { padding: 12px; }
+            .letter-paper { padding: 52px 26px 40px 42px; }
+            .letter-title { font-size: 25px; }
+            .letter-body { font-size: 15px; }
+        }
+        @media (max-height: 680px) {
+            .celebration-panel { padding-top: 62px; }
+            .age-number { font-size: 82px; }
+            .birthday-date { margin: 9px 0 13px; }
+            .letter-trigger { min-height: 96px; }
+            .birthday-icons { margin-top: 10px; }
         }
         @media (prefers-reduced-motion: reduce) {
-            .cake-scene, .flame, body.candles-out .cake-scene { animation: none; }
+            .cake-scene, .flame, .birthday-icons span, .confetti i, .letter-paper {
+                animation: none !important;
+            }
+            .cake-dock, .celebration-panel, .cake-scene { transition-duration: 0.01ms !important; }
         }
     </style>
 </head>
@@ -226,18 +603,66 @@
     <canvas id="clickHearts" aria-hidden="true"></canvas>
     <a class="back-link" href="../index.html" aria-label="返回主页">←</a>
 
+    <div class="confetti" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
+    <div class="balloon-cluster left" aria-hidden="true">
+        <i class="balloon one"></i>
+        <i class="balloon two"></i>
+        <i class="balloon three"></i>
+    </div>
+    <div class="balloon-cluster right" aria-hidden="true">
+        <i class="balloon one"></i>
+        <i class="balloon two"></i>
+        <i class="balloon three"></i>
+    </div>
+
     <main id="birthdayStage" class="birthday-stage" aria-label="生日蛋糕，点击任意位置吹灭蜡烛">
-        <div class="cake-scene" aria-hidden="true">
-            <div class="plate"></div>
-            <div class="cake-layer bottom"><span></span></div>
-            <div class="cake-layer middle"><span></span></div>
-            <div class="cake-layer top"><span></span></div>
-            <div class="candle one"><i class="flame"></i><i class="smoke"></i></div>
-            <div class="candle two"><i class="flame"></i><i class="smoke"></i></div>
-            <div class="candle three"><i class="flame"></i><i class="smoke"></i></div>
+        <div class="cake-dock" aria-hidden="true">
+            <div class="cake-scene">
+                <div class="plate"></div>
+                <div class="cake-layer bottom"><span></span></div>
+                <div class="cake-layer middle"><span></span></div>
+                <div class="cake-layer top"><span></span></div>
+                <div class="candle one"><i class="flame"></i><i class="smoke"></i></div>
+                <div class="candle two"><i class="flame"></i><i class="smoke"></i></div>
+                <div class="candle three"><i class="flame"></i><i class="smoke"></i></div>
+            </div>
         </div>
+
+        <section id="celebrationPanel" class="celebration-panel" aria-label="22 岁生日主界面" aria-hidden="true" inert>
+            <div class="age-lockup">
+                <span class="age-number">22</span>
+                <span class="age-label">岁</span>
+            </div>
+            <p class="birthday-date">2005.01.05</p>
+            <button id="letterTrigger" class="letter-trigger" type="button" aria-label="打开给姐姐的一封信">
+                <span class="letter-envelope" aria-hidden="true">✉</span>
+                <span class="letter-copy">
+                    <strong>给姐姐的一封信</strong>
+                    <small>OPEN THE LETTER</small>
+                </span>
+            </button>
+            <div class="birthday-icons" aria-hidden="true">
+                <span>🎈</span>
+                <span>🎁</span>
+                <span>🎉</span>
+            </div>
+        </section>
         <span id="birthdayStatus" class="sr-only" aria-live="polite">蜡烛已经点亮</span>
     </main>
+
+    <div id="letterDialog" class="letter-dialog" role="dialog" aria-modal="true" aria-labelledby="letterTitle" hidden>
+        <article class="letter-paper">
+            <button id="letterClose" class="letter-close" type="button" aria-label="关闭信件" title="关闭">×</button>
+            <h2 id="letterTitle" class="letter-title">给姐姐的一封信</h2>
+            <p class="letter-body">这是一封信，这是一封信，这是一封信……
+
+这是一封信，这是一封信，这是一封信，这是一封信……
+
+这是一封信，这是一封信，这是一封信……</p>
+        </article>
+    </div>
 
     <script>
     (function () {
@@ -256,7 +681,7 @@
         resize();
         window.addEventListener('resize', resize);
 
-        const palette = ['#c64f5d', '#e9818b', '#4a8c7e', '#7ab6a8', '#d4a449'];
+        const palette = ['#b83f59', '#dc6e79', '#498d80', '#7ab6a8', '#d6a64b'];
         const count = reduced ? 12 : (window.innerWidth <= 768 ? 28 : 56);
         const hearts = Array.from({ length: count }, () => ({
             x: Math.random() * window.innerWidth,
@@ -307,8 +732,18 @@
         const canvas = document.getElementById('clickHearts');
         const ctx = canvas.getContext('2d');
         const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-        const palette = ['#c64f5d', '#e9818b', '#4a8c7e', '#7ab6a8', '#d4a449'];
+        const palette = ['#b83f59', '#dc6e79', '#498d80', '#7ab6a8', '#d6a64b'];
+        const stage = document.getElementById('birthdayStage');
+        const panel = document.getElementById('celebrationPanel');
+        const status = document.getElementById('birthdayStatus');
+        const letterTrigger = document.getElementById('letterTrigger');
+        const letterDialog = document.getElementById('letterDialog');
+        const letterClose = document.getElementById('letterClose');
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         let particles = [];
+        let extinguished = false;
+        let lastTouch = 0;
+        let lastFocused = null;
 
         function resize() {
             canvas.width = window.innerWidth * dpr;
@@ -374,15 +809,42 @@
         }
         animate();
 
-        let extinguished = false;
-        let lastTouch = 0;
+        function isProtectedTarget(target) {
+            return target instanceof Element && Boolean(target.closest('.back-link, .letter-trigger, .letter-dialog'));
+        }
+
+        function revealCelebration() {
+            document.body.classList.add('celebration-ready');
+            panel.inert = false;
+            panel.setAttribute('aria-hidden', 'false');
+            status.textContent = '生日主界面已经打开';
+            spawn(window.innerWidth / 2, window.innerHeight / 2, 20);
+        }
+
         function handleInteraction(x, y, target) {
+            if (isProtectedTarget(target)) return;
             spawn(x, y, extinguished ? 5 : 13);
-            if (!extinguished && !target.closest('.back-link')) {
-                extinguished = true;
-                document.body.classList.add('candles-out');
-                document.getElementById('birthdayStatus').textContent = '蜡烛已经熄灭';
-            }
+            if (extinguished) return;
+
+            extinguished = true;
+            document.body.classList.add('candles-out');
+            status.textContent = '蜡烛已经熄灭';
+            window.setTimeout(revealCelebration, reduced ? 80 : 1150);
+        }
+
+        function openLetter(event) {
+            event.stopPropagation();
+            lastFocused = document.activeElement;
+            letterDialog.hidden = false;
+            stage.inert = true;
+            letterClose.focus();
+        }
+
+        function closeLetter() {
+            if (letterDialog.hidden) return;
+            letterDialog.hidden = true;
+            stage.inert = false;
+            lastFocused?.focus();
         }
 
         window.addEventListener('click', event => {
@@ -394,6 +856,18 @@
             const touch = event.touches[0];
             handleInteraction(touch.clientX, touch.clientY, event.target);
         }, { passive: true });
+
+        letterTrigger.addEventListener('click', openLetter);
+        letterClose.addEventListener('click', event => {
+            event.stopPropagation();
+            closeLetter();
+        });
+        letterDialog.addEventListener('click', event => {
+            if (event.target === letterDialog) closeLetter();
+        });
+        window.addEventListener('keydown', event => {
+            if (!letterDialog.hidden && event.key === 'Escape') closeLetter();
+        });
     })();
     </script>
 </body>
