@@ -7,43 +7,43 @@ window.MEMORY_DATA = Object.freeze({
     },
     "introImages": [
         {
-            "src": "assets/gzc_jy_Img/AlbumImg/EatTog/AnimotionImg/20260914.1.jpg",
+            "src": "assets/gzc_jy_Img/AlbumImg/EatTog/AnimotionImg/optimized/20260914.1.jpg?v=2",
             "alt": "相册开场动画 01"
         },
         {
-            "src": "assets/gzc_jy_Img/AlbumImg/EatTog/AnimotionImg/20261005.1.jpg",
+            "src": "assets/gzc_jy_Img/AlbumImg/EatTog/AnimotionImg/optimized/20261005.1.jpg?v=2",
             "alt": "相册开场动画 02"
         },
         {
-            "src": "assets/gzc_jy_Img/AlbumImg/EatTog/AnimotionImg/20261006.1.jpg",
+            "src": "assets/gzc_jy_Img/AlbumImg/EatTog/AnimotionImg/optimized/20261006.1.jpg?v=2",
             "alt": "相册开场动画 03"
         },
         {
-            "src": "assets/gzc_jy_Img/AlbumImg/EatTog/AnimotionImg/20261006.2.jpg",
+            "src": "assets/gzc_jy_Img/AlbumImg/EatTog/AnimotionImg/optimized/20261006.2.jpg?v=2",
             "alt": "相册开场动画 04"
         },
         {
-            "src": "assets/gzc_jy_Img/AlbumImg/EatTog/AnimotionImg/20261010.1.jpg",
+            "src": "assets/gzc_jy_Img/AlbumImg/EatTog/AnimotionImg/optimized/20261010.1.jpg?v=2",
             "alt": "相册开场动画 05"
         },
         {
-            "src": "assets/gzc_jy_Img/AlbumImg/EatTog/AnimotionImg/20261010.2.jpg",
+            "src": "assets/gzc_jy_Img/AlbumImg/EatTog/AnimotionImg/optimized/20261010.2.jpg?v=2",
             "alt": "相册开场动画 06"
         },
         {
-            "src": "assets/gzc_jy_Img/AlbumImg/EatTog/AnimotionImg/20261024.1.jpg",
+            "src": "assets/gzc_jy_Img/AlbumImg/EatTog/AnimotionImg/optimized/20261024.1.jpg?v=2",
             "alt": "相册开场动画 07"
         },
         {
-            "src": "assets/gzc_jy_Img/AlbumImg/EatTog/AnimotionImg/20261024.2.jpg",
+            "src": "assets/gzc_jy_Img/AlbumImg/EatTog/AnimotionImg/optimized/20261024.2.jpg?v=2",
             "alt": "相册开场动画 08"
         },
         {
-            "src": "assets/gzc_jy_Img/AlbumImg/EatTog/AnimotionImg/20261024.3.jpg",
+            "src": "assets/gzc_jy_Img/AlbumImg/EatTog/AnimotionImg/optimized/20261024.3.jpg?v=2",
             "alt": "相册开场动画 09"
         },
         {
-            "src": "assets/gzc_jy_Img/AlbumImg/EatTog/AnimotionImg/20261025.1.jpg",
+            "src": "assets/gzc_jy_Img/AlbumImg/EatTog/AnimotionImg/optimized/20261025.1.jpg?v=2",
             "alt": "相册开场动画 10"
         }
     ],

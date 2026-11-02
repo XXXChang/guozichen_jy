@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>guozichen_jy</title>
+    <link rel="preload" as="image" type="image/jpeg" href="assets/gzc_jy_Img/AvatarImg/HeadIcon1.jpg?v=1" fetchpriority="high">
+    <link rel="preload" as="image" type="image/jpeg" href="assets/gzc_jy_Img/AvatarImg/HeadIcon2.jpg?v=1" fetchpriority="high">
     <style>
         :root {
             /* 淡紫色主题（替代原蓝色） */
@@ -157,6 +159,8 @@
             height: 100%;
             object-fit: cover;
             border-radius: 50%;
+            color: transparent;
+            font-size: 0;
         }
         .avatar:hover {
             transform: scale(1.1) translateY(-2px);
@@ -658,12 +662,12 @@
         <main class="home-stage">
             <section class="hero-core" aria-labelledby="homeTitle">
                 <div class="avatar-group">
-                    <div class="avatar avatar-left">
-                        <img src="assets/gzc_jy_Img/HeadIcon1.jpg" alt="头像1">
+                    <div class="avatar avatar-left" role="img" aria-label="JY 的头像">
+                        <img src="assets/gzc_jy_Img/AvatarImg/HeadIcon1.jpg?v=1" alt="" width="256" height="256" loading="eager" decoding="async" fetchpriority="high">
                     </div>
                     <div class="heart-icon">💕</div>
-                    <div class="avatar avatar-right">
-                        <img src="assets/gzc_jy_Img/HeadIcon2.jpg" alt="头像2">
+                    <div class="avatar avatar-right" role="img" aria-label="GZC 的头像">
+                        <img src="assets/gzc_jy_Img/AvatarImg/HeadIcon2.jpg?v=1" alt="" width="256" height="256" loading="eager" decoding="async" fetchpriority="high">
                     </div>
                 </div>
                 <input class="theme-hue-slider" id="themeHue" type="range" min="0" max="359" value="258" aria-label="调整主页主题颜色" title="拖动调整主题颜色">

@@ -693,8 +693,9 @@
         let frameIndex = 0;
         let introTimer = null;
         let introRunId = 0;
-        let playableIntroPhotos = introPhotos;
-        let introReadyPromise = Promise.resolve(introPhotos);
+        let playableIntroPhotos = [];
+        let introReadyPromise = Promise.resolve([]);
+        const readyIntroSources = new Set();
         let photoIndex = 0;
         let lastFocused = null;
         let touchStart = null;
@@ -718,17 +719,20 @@
             return `${formatDate(dates[0])} - ${formatDate(dates[dates.length - 1])}`;
         }
 
-        function cachePhoto(photo) {
+        function cachePhoto(photo, priority = 'auto') {
             const src = resolvePhotoSrc(photo.src);
             if (imageCache.has(src)) return imageCache.get(src);
 
             const image = new Image();
             image.decoding = 'async';
+            image.fetchPriority = priority;
             const ready = new Promise(resolve => {
                 let settled = false;
+                const timeout = setTimeout(() => finish(false), 15000);
                 const finish = async loaded => {
                     if (settled) return;
                     settled = true;
+                    clearTimeout(timeout);
                     if (loaded && typeof image.decode === 'function') {
                         try { await image.decode(); } catch (error) { /* load 状态仍可继续使用 */ }
                     }
@@ -742,6 +746,59 @@
             const cached = { image, ready, src };
             imageCache.set(src, cached);
             return cached;
+        }
+
+        function prepareIntroPhotos() {
+            if (!introPhotos.length) return Promise.resolve([]);
+
+            let resolved = false;
+            let settledCount = 0;
+            let restStarted = false;
+            let resolveStart;
+            const startPromise = new Promise(resolve => { resolveStart = resolve; });
+            const firstBatch = introPhotos.slice(0, 2);
+            const remaining = introPhotos.slice(2);
+
+            const refreshPlayablePhotos = () => {
+                playableIntroPhotos = introPhotos.filter(photo =>
+                    readyIntroSources.has(resolvePhotoSrc(photo.src))
+                );
+            };
+
+            const resolveOnce = () => {
+                if (resolved) return;
+                resolved = true;
+                resolveStart([...playableIntroPhotos]);
+            };
+
+            const queuePhoto = (photo, priority) => {
+                const cached = cachePhoto(photo, priority);
+                cached.ready.then(loaded => {
+                    settledCount++;
+                    if (loaded) readyIntroSources.add(cached.src);
+                    refreshPlayablePhotos();
+                    if (loaded) {
+                        startRemaining();
+                        resolveOnce();
+                    } else if (settledCount === introPhotos.length) {
+                        resolveOnce();
+                    }
+                });
+            };
+
+            const startRemaining = () => {
+                if (restStarted) return;
+                restStarted = true;
+                remaining.forEach(photo => queuePhoto(photo, 'low'));
+            };
+
+            firstBatch.forEach(photo => queuePhoto(photo, 'high'));
+            setTimeout(startRemaining, 1200);
+            setTimeout(() => {
+                startRemaining();
+                resolveOnce();
+            }, 6000);
+            return startPromise;
         }
 
         function preloadPhotos(photos) {
@@ -859,7 +916,7 @@
         async function showFrame(runId) {
             if (runId !== introRunId) return;
             const album = albumById.get(activeAlbumId);
-            const framePhotos = playableIntroPhotos.length ? playableIntroPhotos : album?.photos || [];
+            const framePhotos = playableIntroPhotos;
             if (!framePhotos.length) {
                 finishIntro();
                 return;
@@ -897,7 +954,7 @@
                 return;
             }
             clearTimeout(introTimer);
-            if (!(introPhotos.length || album.photos.length)) {
+            if (!introPhotos.length) {
                 renderGallery();
                 return;
             }
@@ -914,9 +971,12 @@
             document.body.classList.add('modal-open');
             albumShell.inert = true;
             document.getElementById('skipIntro').focus();
-            const loaded = await introReadyPromise;
+            await introReadyPromise;
             if (runId !== introRunId || introOverlay.hidden) return;
-            playableIntroPhotos = loaded;
+            if (!playableIntroPhotos.length) {
+                finishIntro();
+                return;
+            }
             introOverlay.classList.remove('is-loading');
             void preloadAlbum(album);
             void showFrame(runId);
@@ -1041,10 +1101,7 @@
         }
 
         renderCategories();
-        introReadyPromise = preloadPhotos(introPhotos).then(results => {
-            const readyPhotos = introPhotos.filter((photo, index) => results[index]);
-            return readyPhotos.length ? readyPhotos : introPhotos;
-        });
+        introReadyPromise = prepareIntroPhotos();
         openFromUrl();
     })();
     </script>
