@@ -1,11 +1,31 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
+const childProcess = require('node:child_process');
 
 const projectRoot = path.resolve(__dirname, '..');
 const dataPath = path.join(projectRoot, 'assets', 'data', 'memories.js');
 const albumDirectory = path.join(projectRoot, 'assets', 'gzc_jy_Img', 'AlbumImg', 'EatTog');
 const albumId = 'eat-together';
+
+const thumbnailScript = path.join(__dirname, 'generate-album-thumbnails.ps1');
+let generated = false;
+for (const executable of ['powershell.exe', 'pwsh']) {
+    try {
+        childProcess.execFileSync(executable, [
+            '-NoProfile',
+            '-ExecutionPolicy',
+            'Bypass',
+            '-File',
+            thumbnailScript
+        ], { cwd: projectRoot, stdio: 'inherit' });
+        generated = true;
+        break;
+    } catch (error) {
+        if (error.code !== 'ENOENT') throw error;
+    }
+}
+if (!generated) throw new Error('未找到 PowerShell，无法生成相册缩略图。');
 
 const context = { window: {} };
 vm.createContext(context);
@@ -34,6 +54,7 @@ function createPhoto(filename) {
     return {
         id: `meal-${dateText}-${sequence}`,
         src: `assets/gzc_jy_Img/AlbumImg/EatTog/${filename}`,
+        thumbnailSrc: `assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/${stem}.jpg`,
         alt: `一起吃过的饭 · ${date.replaceAll('-', '.')}（${sequence}）`,
         date,
         albumIds: [albumId]

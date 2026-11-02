@@ -708,6 +708,10 @@
             return '../' + src;
         }
 
+        function resolveThumbnailSrc(photo) {
+            return resolvePhotoSrc(photo.thumbnailSrc || photo.src);
+        }
+
         function formatDate(date) {
             return date ? date.replaceAll('-', '.') : '';
         }
@@ -806,7 +810,9 @@
         }
 
         function preloadAlbum(album) {
-            return preloadPhotos(album.photos);
+            return preloadPhotos(album.photos.slice(0, 2).map(photo => ({
+                src: photo.thumbnailSrc || photo.src
+            })));
         }
 
         async function waitForDisplayedImage(image) {
@@ -846,8 +852,10 @@
                 preview.className = 'category-preview';
                 previewPhotos.slice(0, 2).forEach((photo, photoPreviewIndex) => {
                     const image = document.createElement('img');
-                    image.src = resolvePhotoSrc(photo.src);
+                    image.src = resolveThumbnailSrc(photo);
                     image.alt = photo.alt;
+                    image.decoding = 'async';
+                    if (photoPreviewIndex === 0) image.fetchPriority = 'high';
                     if (photoPreviewIndex > 0) image.loading = 'lazy';
                     preview.appendChild(image);
                 });
@@ -888,8 +896,9 @@
                 button.setAttribute('aria-label', `查看第 ${index + 1} 张照片`);
                 button.dataset.index = index;
                 button.dataset.photo = photo.id;
-                image.src = resolvePhotoSrc(photo.src);
+                image.src = resolveThumbnailSrc(photo);
                 image.alt = photo.alt;
+                image.decoding = 'async';
                 image.loading = index < 2 ? 'eager' : 'lazy';
                 label.textContent = `${formatDate(photo.date)} · ${pad(index + 1)} / ${pad(album.photos.length)}`;
                 button.append(image, label);

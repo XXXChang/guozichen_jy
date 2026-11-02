@@ -246,6 +246,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "meal-20251220-1",
             "src": "assets/gzc_jy_Img/AlbumImg/EatTog/20251220.1.jpg",
+            "thumbnailSrc": "assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/20251220.1.jpg",
             "alt": "一起吃过的饭 · 2025.12.20（1）",
             "date": "2025-12-20",
             "albumIds": [
@@ -255,6 +256,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "meal-20260711-1",
             "src": "assets/gzc_jy_Img/AlbumImg/EatTog/20260711.1.jpg",
+            "thumbnailSrc": "assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/20260711.1.jpg",
             "alt": "一起吃过的饭 · 2026.07.11（1）",
             "date": "2026-07-11",
             "albumIds": [
@@ -264,6 +266,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "meal-20260716-1",
             "src": "assets/gzc_jy_Img/AlbumImg/EatTog/20260716.1.jpg",
+            "thumbnailSrc": "assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/20260716.1.jpg",
             "alt": "一起吃过的饭 · 2026.07.16（1）",
             "date": "2026-07-16",
             "albumIds": [
@@ -273,6 +276,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "meal-20260717-1",
             "src": "assets/gzc_jy_Img/AlbumImg/EatTog/20260717.1.jpg",
+            "thumbnailSrc": "assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/20260717.1.jpg",
             "alt": "一起吃过的饭 · 2026.07.17（1）",
             "date": "2026-07-17",
             "albumIds": [
@@ -282,6 +286,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "meal-20260718-1",
             "src": "assets/gzc_jy_Img/AlbumImg/EatTog/20260718.1.jpg",
+            "thumbnailSrc": "assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/20260718.1.jpg",
             "alt": "一起吃过的饭 · 2026.07.18（1）",
             "date": "2026-07-18",
             "albumIds": [
@@ -291,6 +296,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "meal-20260719-1",
             "src": "assets/gzc_jy_Img/AlbumImg/EatTog/20260719.1.jpg",
+            "thumbnailSrc": "assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/20260719.1.jpg",
             "alt": "一起吃过的饭 · 2026.07.19（1）",
             "date": "2026-07-19",
             "albumIds": [
@@ -300,6 +306,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "meal-20260814-1",
             "src": "assets/gzc_jy_Img/AlbumImg/EatTog/20260814.1.jpg",
+            "thumbnailSrc": "assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/20260814.1.jpg",
             "alt": "一起吃过的饭 · 2026.08.14（1）",
             "date": "2026-08-14",
             "albumIds": [
@@ -309,6 +316,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "meal-20260815-1",
             "src": "assets/gzc_jy_Img/AlbumImg/EatTog/20260815.1.jpg",
+            "thumbnailSrc": "assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/20260815.1.jpg",
             "alt": "一起吃过的饭 · 2026.08.15（1）",
             "date": "2026-08-15",
             "albumIds": [
@@ -318,6 +326,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "meal-20260815-2",
             "src": "assets/gzc_jy_Img/AlbumImg/EatTog/20260815.2.jpg",
+            "thumbnailSrc": "assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/20260815.2.jpg",
             "alt": "一起吃过的饭 · 2026.08.15（2）",
             "date": "2026-08-15",
             "albumIds": [
@@ -327,6 +336,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "meal-20260905-2",
             "src": "assets/gzc_jy_Img/AlbumImg/EatTog/20260905.2.jpg",
+            "thumbnailSrc": "assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/20260905.2.jpg",
             "alt": "一起吃过的饭 · 2026.09.05（2）",
             "date": "2026-09-05",
             "albumIds": [
@@ -336,6 +346,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "meal-20260905-3",
             "src": "assets/gzc_jy_Img/AlbumImg/EatTog/20260905.3.jpg",
+            "thumbnailSrc": "assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/20260905.3.jpg",
             "alt": "一起吃过的饭 · 2026.09.05（3）",
             "date": "2026-09-05",
             "albumIds": [
@@ -345,6 +356,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "meal-20260905-4",
             "src": "assets/gzc_jy_Img/AlbumImg/EatTog/20260905.4.jpg",
+            "thumbnailSrc": "assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/20260905.4.jpg",
             "alt": "一起吃过的饭 · 2026.09.05（4）",
             "date": "2026-09-05",
             "albumIds": [
@@ -354,6 +366,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "meal-20260906-1",
             "src": "assets/gzc_jy_Img/AlbumImg/EatTog/20260906.1.jpg",
+            "thumbnailSrc": "assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/20260906.1.jpg",
             "alt": "一起吃过的饭 · 2026.09.06（1）",
             "date": "2026-09-06",
             "albumIds": [
@@ -363,6 +376,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "meal-20260906-2",
             "src": "assets/gzc_jy_Img/AlbumImg/EatTog/20260906.2.jpg",
+            "thumbnailSrc": "assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/20260906.2.jpg",
             "alt": "一起吃过的饭 · 2026.09.06（2）",
             "date": "2026-09-06",
             "albumIds": [
@@ -372,6 +386,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "meal-20260906-3",
             "src": "assets/gzc_jy_Img/AlbumImg/EatTog/20260906.3.jpg",
+            "thumbnailSrc": "assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/20260906.3.jpg",
             "alt": "一起吃过的饭 · 2026.09.06（3）",
             "date": "2026-09-06",
             "albumIds": [
@@ -381,6 +396,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "meal-20260906-4",
             "src": "assets/gzc_jy_Img/AlbumImg/EatTog/20260906.4.jpg",
+            "thumbnailSrc": "assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/20260906.4.jpg",
             "alt": "一起吃过的饭 · 2026.09.06（4）",
             "date": "2026-09-06",
             "albumIds": [
@@ -390,6 +406,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "meal-20260906-5",
             "src": "assets/gzc_jy_Img/AlbumImg/EatTog/20260906.5.jpg",
+            "thumbnailSrc": "assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/20260906.5.jpg",
             "alt": "一起吃过的饭 · 2026.09.06（5）",
             "date": "2026-09-06",
             "albumIds": [
@@ -399,6 +416,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "meal-20261004-1",
             "src": "assets/gzc_jy_Img/AlbumImg/EatTog/20261004.1.jpg",
+            "thumbnailSrc": "assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/20261004.1.jpg",
             "alt": "一起吃过的饭 · 2026.10.04（1）",
             "date": "2026-10-04",
             "albumIds": [
@@ -408,6 +426,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "meal-20261005-2",
             "src": "assets/gzc_jy_Img/AlbumImg/EatTog/20261005.2.jpg",
+            "thumbnailSrc": "assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/20261005.2.jpg",
             "alt": "一起吃过的饭 · 2026.10.05（2）",
             "date": "2026-10-05",
             "albumIds": [
@@ -417,6 +436,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "meal-20261006-3",
             "src": "assets/gzc_jy_Img/AlbumImg/EatTog/20261006.3.jpg",
+            "thumbnailSrc": "assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/20261006.3.jpg",
             "alt": "一起吃过的饭 · 2026.10.06（3）",
             "date": "2026-10-06",
             "albumIds": [
@@ -426,6 +446,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "meal-20261007-1",
             "src": "assets/gzc_jy_Img/AlbumImg/EatTog/20261007.1.jpg",
+            "thumbnailSrc": "assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/20261007.1.jpg",
             "alt": "一起吃过的饭 · 2026.10.07（1）",
             "date": "2026-10-07",
             "albumIds": [
@@ -435,6 +456,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "meal-20261008-1",
             "src": "assets/gzc_jy_Img/AlbumImg/EatTog/20261008.1.jpg",
+            "thumbnailSrc": "assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/20261008.1.jpg",
             "alt": "一起吃过的饭 · 2026.10.08（1）",
             "date": "2026-10-08",
             "albumIds": [
@@ -444,6 +466,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "meal-20261011-1",
             "src": "assets/gzc_jy_Img/AlbumImg/EatTog/20261011.1.jpg",
+            "thumbnailSrc": "assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/20261011.1.jpg",
             "alt": "一起吃过的饭 · 2026.10.11（1）",
             "date": "2026-10-11",
             "albumIds": [
@@ -453,6 +476,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "meal-20261024-4",
             "src": "assets/gzc_jy_Img/AlbumImg/EatTog/20261024.4.jpg",
+            "thumbnailSrc": "assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/20261024.4.jpg",
             "alt": "一起吃过的饭 · 2026.10.24（4）",
             "date": "2026-10-24",
             "albumIds": [
@@ -462,6 +486,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "meal-20261024-5",
             "src": "assets/gzc_jy_Img/AlbumImg/EatTog/20261024.5.jpg",
+            "thumbnailSrc": "assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/20261024.5.jpg",
             "alt": "一起吃过的饭 · 2026.10.24（5）",
             "date": "2026-10-24",
             "albumIds": [
@@ -471,6 +496,7 @@ window.MEMORY_DATA = Object.freeze({
         {
             "id": "meal-20261025-1",
             "src": "assets/gzc_jy_Img/AlbumImg/EatTog/20261025.1.jpg",
+            "thumbnailSrc": "assets/gzc_jy_Img/AlbumImg/EatTog/Thumbnails/20261025.1.jpg",
             "alt": "一起吃过的饭 · 2026.10.25（1）",
             "date": "2026-10-25",
             "albumIds": [
