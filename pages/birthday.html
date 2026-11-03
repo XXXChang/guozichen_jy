@@ -383,45 +383,48 @@
         .letter-trigger {
             position: relative;
             display: grid;
-            grid-template-columns: 94px 1fr;
-            align-items: center;
-            width: min(88vw, 390px);
-            min-height: 132px;
-            padding: 18px 26px 18px 20px;
-            overflow: hidden;
-            border: 1px solid rgba(184, 63, 89, 0.24);
-            border-radius: 8px;
-            background:
-                linear-gradient(135deg, rgba(255, 255, 255, 0.88), rgba(255, 247, 233, 0.72));
-            color: var(--ink);
-            box-shadow: 0 22px 48px rgba(103, 52, 66, 0.18);
+            place-items: center;
+            width: 180px;
+            height: 138px;
+            padding: 0;
+            border: 0;
+            background: transparent;
             cursor: pointer;
-            text-align: left;
-            transition: transform 0.28s ease, box-shadow 0.28s ease;
+            transition: transform 0.28s ease, filter 0.28s ease;
+            animation: letterFloat 4.2s ease-in-out infinite;
         }
-        .letter-trigger::after {
+        .letter-trigger::before {
             content: "";
             position: absolute;
-            top: 0;
-            right: 0;
-            width: 76px;
-            height: 76px;
-            border-radius: 0 0 0 100%;
-            background: rgba(73, 141, 128, 0.13);
+            left: 50%;
+            bottom: 5px;
+            width: 132px;
+            height: 25px;
+            border-radius: 50%;
+            background: rgba(86, 57, 65, 0.14);
+            filter: blur(9px);
+            transform: translateX(-50%);
         }
         .letter-trigger:hover {
-            transform: translateY(-5px) rotate(-0.5deg);
-            box-shadow: 0 28px 58px rgba(103, 52, 66, 0.24);
+            transform: translateY(-7px) rotate(1deg) scale(1.04);
+            filter: brightness(1.03);
+        }
+        @keyframes letterFloat {
+            0%, 100% { translate: 0 0; }
+            50% { translate: 0 -8px; }
         }
         .letter-envelope {
             position: relative;
             display: block;
-            width: 82px;
-            height: 70px;
-            border: 2px solid var(--berry);
-            border-radius: 5px;
-            background: var(--cream);
-            box-shadow: 6px 7px 0 rgba(214, 166, 75, 0.23);
+            width: 142px;
+            height: 98px;
+            overflow: hidden;
+            border: 3px solid var(--berry);
+            border-radius: 9px;
+            background: linear-gradient(145deg, #fffdf5, #f8d2df);
+            box-shadow:
+                9px 11px 0 rgba(214, 166, 75, 0.24),
+                0 18px 30px rgba(103, 52, 66, 0.22);
             transform: rotate(-4deg);
         }
         .letter-envelope::before {
@@ -438,23 +441,23 @@
             clip-path: polygon(0 100%, 0 28%, 50% 70%, 100% 28%, 100% 100%);
             background: #f4c6d5;
         }
-        .letter-copy {
-            position: relative;
-            z-index: 1;
+        .letter-seal {
+            position: absolute;
+            z-index: 3;
+            left: 50%;
+            top: 54%;
             display: grid;
-            gap: 8px;
-            padding-left: 10px;
-        }
-        .letter-copy strong {
-            font-family: "Songti SC", "Noto Serif CJK SC", "SimSun", serif;
-            font-size: 23px;
-            font-weight: 650;
-        }
-        .letter-copy small {
-            color: var(--mint);
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 2px;
+            place-items: center;
+            width: 42px;
+            height: 42px;
+            border: 3px solid #fff0b5;
+            border-radius: 50%;
+            background: var(--berry);
+            color: white;
+            font-size: 22px;
+            line-height: 1;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 5px 0 rgba(102, 45, 68, 0.22);
         }
         .balloon-cluster {
             position: fixed;
@@ -836,13 +839,11 @@
             .age-label { margin-bottom: 10px; font-size: 19px; }
             .birthday-date { margin: 13px 0 20px; font-size: 14px; letter-spacing: 3px; }
             .letter-trigger {
-                grid-template-columns: 76px 1fr;
-                width: min(92vw, 350px);
-                min-height: 112px;
-                padding: 14px 18px 14px 15px;
+                width: 158px;
+                height: 120px;
             }
-            .letter-envelope { width: 68px; height: 58px; }
-            .letter-copy strong { font-size: 20px; }
+            .letter-envelope { width: 126px; height: 86px; }
+            .letter-seal { width: 38px; height: 38px; font-size: 20px; }
             .balloon-cluster { scale: 0.72; }
             .balloon-cluster.left { left: -8px; }
             .balloon-cluster.right { right: -7px; }
@@ -875,10 +876,10 @@
             .celebration-panel { padding-top: 62px; }
             .age-number { font-size: 82px; }
             .birthday-date { margin: 9px 0 13px; }
-            .letter-trigger { min-height: 96px; }
+            .letter-trigger { height: 104px; }
         }
         @media (prefers-reduced-motion: reduce) {
-            .flame, .confetti i, .letter-paper {
+            .flame, .confetti i, .letter-paper, .letter-trigger {
                 animation: none !important;
             }
             .cake-dock, .celebration-panel, .cake-scene { transition-duration: 0.01ms !important; }
@@ -925,11 +926,7 @@
             <p class="birthday-date">2005.01.05</p>
             <div class="birthday-flourish" aria-hidden="true"><i></i></div>
             <button id="letterTrigger" class="letter-trigger" type="button" aria-label="打开给姐姐的一封信">
-                <span class="letter-envelope" aria-hidden="true"></span>
-                <span class="letter-copy">
-                    <strong>给姐姐的一封信</strong>
-                    <small>OPEN THE LETTER</small>
-                </span>
+                <span class="letter-envelope" aria-hidden="true"><i class="letter-seal">♥</i></span>
             </button>
         </section>
         <span id="birthdayStatus" class="sr-only" aria-live="polite">蜡烛已经点亮</span>
@@ -1120,7 +1117,10 @@
 
         function handleInteraction(x, y, target) {
             if (isProtectedTarget(target)) return;
-            if (extinguished) return;
+            if (extinguished) {
+                spawn(x, y, 6);
+                return;
+            }
 
             spawn(x, y, 13);
             extinguished = true;
