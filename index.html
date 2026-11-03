@@ -91,6 +91,8 @@
             overflow: hidden;
         }
         .home-stage {
+            --cake-size: 250px;
+            --orbit-x: 28%;
             position: relative;
             width: min(100%, 1180px);
             height: 100%;
@@ -99,15 +101,15 @@
         }
         .hero-core {
             position: absolute;
-            top: 48%;
+            top: clamp(14px, 4svh, 42px);
             left: 50%;
             z-index: 4;
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: min(92%, 480px);
+            width: min(92%, 320px);
             text-align: center;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
         }
 
         /* 双头像组合 */
@@ -115,12 +117,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             position: relative;
         }
         .avatar {
-            width: 110px;
-            height: 110px;
+            width: 88px;
+            height: 88px;
             border-radius: 50%;
             border: 4px solid transparent;
             background:
@@ -198,9 +200,9 @@
 
         /* 标题 - 流光渐变 + 微光晕 */
         h1 {
-            font-size: 58px;
+            font-size: 46px;
             color: var(--c-800);
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             letter-spacing: 6px;
             line-height: 1;
             text-shadow: 0 0 24px rgba(var(--c-400-rgb), 0.45), 2px 2px 8px rgba(var(--c-600-rgb), 0.15);
@@ -233,26 +235,29 @@
             letter-spacing: 1px;
         }
         .birthday-cake {
-            position: relative;
+            position: absolute;
+            top: 50%;
+            left: 50%;
             z-index: 5;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 5px;
-            margin-top: 18px;
+            justify-content: center;
+            width: var(--cake-size);
+            height: var(--cake-size);
             color: var(--c-700);
             text-decoration: none;
+            transform: translate(-50%, -50%);
             transition: transform 0.3s ease, filter 0.3s ease;
             animation: cakeFloat 4.8s ease-in-out infinite;
         }
         .birthday-cake-icon {
             display: block;
-            width: 250px;
-            height: 250px;
+            width: 100%;
+            height: 100%;
             filter: drop-shadow(0 8px 10px rgba(var(--c-700-rgb), 0.2));
         }
         .birthday-cake:hover {
-            transform: scale(1.07) rotate(-2deg);
+            transform: translate(-50%, -50%) scale(1.07) rotate(-2deg);
             filter: brightness(1.05);
         }
         .birthday-cake:focus-visible {
@@ -432,8 +437,8 @@
         .memory-card.days-card.is-upcoming .memory-reminder { display: inline-block; }
 
         .memory-card.days-card {
-            top: 11%;
-            right: 9%;
+            top: calc(50% - 190px);
+            left: calc(50% + var(--orbit-x) - 116px);
             width: 232px;
             min-height: 148px;
             --entry-rotate: 1.2deg;
@@ -442,8 +447,8 @@
             animation-duration: 7.8s;
         }
         .memory-card.photo-card {
-            top: 51%;
-            left: 8%;
+            top: calc(50% - 28px);
+            left: calc(50% - var(--orbit-x) - 107px);
             width: 214px;
             min-height: 126px;
             padding-right: 90px;
@@ -455,8 +460,8 @@
             animation-duration: 6.8s;
         }
         .memory-card.story-card {
-            right: 14%;
-            bottom: 8%;
+            top: calc(50% + 142px);
+            left: calc(50% + var(--orbit-x) - 99px);
             width: 198px;
             min-height: 120px;
             padding-right: 72px;
@@ -522,14 +527,36 @@
             background: var(--c-500);
             box-shadow: 0 0 0 1px rgba(var(--c-700-rgb),0.24);
         }
-        @media (max-width: 900px) {
+        @media (max-width: 1100px) {
             .content { padding: 16px; }
-            .home-stage { height: 100%; min-height: 0; }
-            .hero-core { top: 37%; }
-            .memory-card.days-card { top: 1%; right: 5%; }
-            .memory-card.photo-card { top: auto; bottom: 8%; left: 6%; }
-            .memory-card.story-card { right: 7%; bottom: 2%; }
-            .memory-count { font-size: 34px; }
+            .home-stage { --cake-size: 210px; --orbit-x: 32%; }
+            .hero-core { top: 14px; }
+            .memory-card { padding: 18px 20px; }
+            .memory-card.days-card {
+                top: calc(50% - 110px);
+                left: calc(50% + var(--orbit-x) - 90px);
+                width: 180px;
+                min-height: 124px;
+            }
+            .memory-card.photo-card {
+                top: calc(50% - 2px);
+                left: calc(50% - var(--orbit-x) - 89px);
+                width: 178px;
+                min-height: 112px;
+                padding-right: 64px;
+            }
+            .memory-card.story-card {
+                top: calc(50% + 126px);
+                left: calc(50% + var(--orbit-x) - 86px);
+                width: 172px;
+                min-height: 104px;
+                padding-right: 58px;
+            }
+            .memory-count { font-size: 32px; }
+            .entry-title { font-size: 21px; }
+            .entry-head { margin-bottom: 8px; }
+            .entry-thumbnails { right: 8px; bottom: 12px; scale: 0.8; }
+            .mini-timeline { right: 20px; }
         }
 
         /* 链接卡片 */
@@ -584,9 +611,9 @@
             font-size: 13px;
         }
 
-        @media (max-width: 480px) {
+        @media (max-width: 700px) {
             .content { padding: 8px 12px; }
-            .home-stage { height: 100%; min-height: 0; }
+            .home-stage { --cake-size: 170px; }
             .hero-core {
                 top: 10px;
                 width: calc(100% - 16px);
@@ -598,27 +625,25 @@
             }
             h1 { font-size: 36px; letter-spacing: 3px; margin-bottom: 7px; }
             .subtitle { min-height: 22px; font-size: 15px; }
-            .birthday-cake { gap: 2px; margin-top: 7px; }
-            .birthday-cake-icon { width: 170px; height: 170px; }
             .memory-card { padding: 16px 17px 14px 20px; }
             .memory-card.days-card {
-                top: 48%;
-                right: 3%;
+                top: calc(50% - var(--cake-size) / 2 - 136px);
+                left: auto;
+                right: 6%;
                 width: 168px;
                 min-height: 112px;
             }
             .memory-card.photo-card {
-                top: 67%;
-                bottom: auto;
-                left: 3%;
+                top: calc(50% + var(--cake-size) / 2 + 24px);
+                left: auto;
+                right: 5%;
                 width: 160px;
                 min-height: 92px;
                 padding-right: 64px;
             }
             .memory-card.story-card {
-                top: 83%;
-                right: 6%;
-                bottom: auto;
+                top: calc(50% + var(--cake-size) / 2 + 136px);
+                left: 5%;
                 width: 154px;
                 min-height: 86px;
                 padding-right: 55px;
@@ -631,6 +656,58 @@
             .entry-arrow { font-size: 12px; }
             .entry-thumbnails { right: 9px; bottom: 8px; scale: 0.72; }
             .mini-timeline { right: 17px; bottom: 13px; scale: 0.76; }
+        }
+        @media (max-height: 740px) {
+            .hero-core {
+                top: 10px;
+                display: grid;
+                grid-template-columns: max-content minmax(0, 260px);
+                width: min(92%, 480px);
+                justify-content: center;
+                align-items: center;
+                column-gap: 18px;
+                row-gap: 4px;
+            }
+            .avatar-group { grid-row: 1 / 3; margin-bottom: 0; }
+            .avatar { width: 64px; height: 64px; }
+            h1 { font-size: 32px; margin-bottom: 0; letter-spacing: 2px; }
+            .subtitle { font-size: 16px; min-height: 22px; }
+            .memory-card.story-card { top: calc(50% + 94px); }
+        }
+        @media (max-width: 700px) and (max-height: 740px) {
+            .hero-core {
+                top: 6px;
+                grid-template-columns: 87px minmax(0, 180px);
+                column-gap: 12px;
+            }
+            .avatar { width: 56px; height: 56px; }
+            h1 { font-size: 28px; }
+            .subtitle { font-size: 14px; min-height: 20px; white-space: nowrap; }
+            .memory-card.days-card {
+                top: calc(50% - var(--cake-size) / 2 - 128px);
+                min-height: 94px;
+                padding: 12px 16px;
+            }
+            .days-card .entry-head { margin-bottom: 4px; }
+            .memory-count { font-size: 23px; }
+            .memory-card.story-card {
+                top: calc(50% + var(--cake-size) / 2 + 136px);
+            }
+        }
+        @media (max-width: 700px) and (max-height: 680px) {
+            .memory-card.photo-card,
+            .memory-card.story-card {
+                top: calc(50% + var(--cake-size) / 2 + 24px);
+                width: calc(50% - 26px);
+                min-height: 88px;
+                padding: 14px 16px;
+            }
+            .memory-card.photo-card { right: 8px; }
+            .memory-card.story-card { left: 8px; }
+            .entry-thumbnails, .mini-timeline { display: none; }
+        }
+        @media (max-width: 700px) and (max-height: 600px) {
+            .home-stage { --cake-size: 144px; }
         }
         @media (prefers-reduced-motion: reduce) {
             body, .memory-card, .birthday-cake { animation: none; }
@@ -655,7 +732,8 @@
                 </div>
                 <h1 id="homeTitle">JY_GZC</h1>
                 <div class="subtitle" id="subtitle"></div>
-                <a class="birthday-cake" href="pages/birthday.html" aria-label="打开生日快乐页面">
+            </section>
+            <a class="birthday-cake" href="pages/birthday.html" aria-label="打开生日快乐页面">
                     <svg class="birthday-cake-icon" xmlns="http://www.w3.org/2000/svg" width="250" height="250" viewBox="0 0 320 320" fill="none" aria-hidden="true" focusable="false">
                         <defs>
                             <linearGradient id="cake-plate" x1="160" y1="272" x2="160" y2="304" gradientUnits="userSpaceOnUse">
@@ -764,8 +842,7 @@
                         <use href="#cake-number-two" x="128" y="52"/>
                         <use href="#cake-number-two" x="165" y="52"/>
                     </svg>
-                </a>
-            </section>
+            </a>
 
             <nav class="bubble-links" aria-label="页面入口">
                 <a href="pages/days.html" class="memory-card days-card">
