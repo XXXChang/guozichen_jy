@@ -78,9 +78,8 @@
             z-index: 2;
             width: 100%;
             height: 100%;
-            cursor: pointer;
+            cursor: default;
         }
-        body.celebration-ready .birthday-stage { cursor: default; }
         .cake-dock {
             position: fixed;
             z-index: 30;
@@ -117,15 +116,9 @@
             left: 0;
             width: 320px;
             height: 310px;
-            animation: cakeEntrance 1.55s cubic-bezier(.16,.84,.2,1) both;
             filter: drop-shadow(0 24px 30px rgba(103, 52, 56, 0.24));
             transform-origin: top left;
             transition: transform 0.9s cubic-bezier(.2,.8,.2,1), filter 0.9s ease;
-        }
-        @keyframes cakeEntrance {
-            0% { opacity: 0; transform: scale(0.2) translateY(70px) rotate(-5deg); }
-            65% { opacity: 1; transform: scale(1.12) translateY(-8px) rotate(2deg); }
-            100% { opacity: 1; transform: scale(1) translateY(0) rotate(0); }
         }
         .plate {
             position: absolute;
@@ -238,16 +231,10 @@
         body.candles-out .flame { opacity: 0; scale: 0.2; animation: none; }
         body.candles-out .smoke { animation: smokeRise 1.55s ease-out forwards; }
         body.candles-out .number-candle.second .smoke { animation-delay: 0.12s; }
-        body.candles-out:not(.celebration-ready) .cake-scene { animation: cakeSettle 0.72s ease-out both; }
         @keyframes smokeRise {
             0% { opacity: 0; transform: translate(-50%, 0) scale(0.6); }
             25% { opacity: 0.55; }
             100% { opacity: 0; transform: translate(-25%, -62px) scale(2.3); }
-        }
-        @keyframes cakeSettle {
-            0% { transform: scale(1); }
-            45% { transform: scale(0.95); }
-            100% { transform: scale(1); }
         }
         body.celebration-ready .cake-dock {
             top: 18px;
@@ -295,6 +282,35 @@
             transform: translate(-50%, -50%);
             box-shadow: inset 0 0 80px rgba(255, 255, 255, 0.2);
         }
+        .celebration-panel::after {
+            content: "";
+            position: absolute;
+            z-index: -2;
+            top: 50%;
+            left: 50%;
+            width: min(88vw, 760px);
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 50% 2%, var(--gold) 0 3px, transparent 4px),
+                radial-gradient(circle at 88% 22%, var(--mint) 0 3px, transparent 4px),
+                radial-gradient(circle at 98% 58%, var(--coral) 0 3px, transparent 4px),
+                radial-gradient(circle at 72% 92%, var(--gold) 0 3px, transparent 4px),
+                radial-gradient(circle at 23% 91%, var(--mint) 0 3px, transparent 4px),
+                radial-gradient(circle at 2% 57%, var(--berry) 0 3px, transparent 4px),
+                radial-gradient(circle at 12% 20%, var(--coral) 0 3px, transparent 4px);
+            transform: translate(-50%, -50%);
+            opacity: 0.72;
+            pointer-events: none;
+        }
+        .celebration-kicker {
+            margin: 0 0 12px;
+            color: var(--mint);
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 5px;
+        }
         .age-lockup {
             position: relative;
             display: flex;
@@ -304,6 +320,20 @@
             line-height: 0.8;
             text-shadow: 0 12px 30px rgba(184, 63, 89, 0.18);
         }
+        .age-lockup::before,
+        .age-lockup::after {
+            content: "";
+            position: absolute;
+            top: 18%;
+            width: 26px;
+            height: 26px;
+            background:
+                linear-gradient(var(--gold), var(--gold)) 50% 0 / 2px 100% no-repeat,
+                linear-gradient(90deg, var(--gold), var(--gold)) 0 50% / 100% 2px no-repeat;
+            opacity: 0.8;
+        }
+        .age-lockup::before { left: -48px; rotate: 12deg; }
+        .age-lockup::after { right: -48px; rotate: -12deg; }
         .age-number {
             font-family: Georgia, "Times New Roman", serif;
             font-size: clamp(92px, 18vw, 164px);
@@ -325,6 +355,30 @@
             font-size: 17px;
             font-weight: 700;
             letter-spacing: 4px;
+        }
+        .birthday-flourish {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: min(74vw, 330px);
+            margin: 0 0 28px;
+        }
+        .birthday-flourish::before,
+        .birthday-flourish::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(86, 57, 65, 0.42));
+        }
+        .birthday-flourish::after {
+            background: linear-gradient(90deg, rgba(86, 57, 65, 0.42), transparent);
+        }
+        .birthday-flourish i {
+            width: 8px;
+            height: 8px;
+            border: 1px solid var(--berry);
+            background: rgba(255, 255, 255, 0.72);
+            transform: rotate(45deg);
         }
         .letter-trigger {
             position: relative;
@@ -360,18 +414,29 @@
             box-shadow: 0 28px 58px rgba(103, 52, 66, 0.24);
         }
         .letter-envelope {
-            display: grid;
-            place-items: center;
+            position: relative;
+            display: block;
             width: 82px;
             height: 70px;
             border: 2px solid var(--berry);
             border-radius: 5px;
             background: var(--cream);
-            color: var(--berry);
-            font-size: 48px;
-            line-height: 1;
             box-shadow: 6px 7px 0 rgba(214, 166, 75, 0.23);
             transform: rotate(-4deg);
+        }
+        .letter-envelope::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            clip-path: polygon(0 0, 50% 56%, 100% 0);
+            background: #fffdf8;
+        }
+        .letter-envelope::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            clip-path: polygon(0 100%, 0 28%, 50% 70%, 100% 28%, 100% 100%);
+            background: #f4c6d5;
         }
         .letter-copy {
             position: relative;
@@ -390,25 +455,6 @@
             font-size: 10px;
             font-weight: 800;
             letter-spacing: 2px;
-        }
-        .birthday-icons {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 36px;
-            margin-top: 24px;
-            font-size: 33px;
-        }
-        .birthday-icons span {
-            display: block;
-            filter: drop-shadow(0 8px 8px rgba(103, 52, 66, 0.16));
-            animation: iconFloat 3.8s ease-in-out infinite;
-        }
-        .birthday-icons span:nth-child(2) { animation-delay: -1.3s; }
-        .birthday-icons span:nth-child(3) { animation-delay: -2.1s; }
-        @keyframes iconFloat {
-            0%, 100% { transform: translateY(0) rotate(-2deg); }
-            50% { transform: translateY(-8px) rotate(3deg); }
         }
         .balloon-cluster {
             position: fixed;
@@ -710,6 +756,39 @@
             font-weight: 700;
             text-align: center;
         }
+        .letter-eyebrow {
+            position: relative;
+            z-index: 3;
+            margin: 0 0 12px;
+            color: #d4689f;
+            font-size: 10px;
+            font-weight: 850;
+            letter-spacing: 4px;
+            text-align: center;
+        }
+        .letter-rule {
+            position: relative;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            width: min(100%, 230px);
+            margin: 0 auto 27px;
+        }
+        .letter-rule::before,
+        .letter-rule::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: rgba(154, 79, 192, 0.34);
+        }
+        .letter-rule i {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ef82ae;
+            box-shadow: 14px 0 0 #78c6ab, -14px 0 0 #f0c65d;
+        }
         .letter-body {
             position: relative;
             z-index: 3;
@@ -718,6 +797,18 @@
             font-size: 17px;
             line-height: 2;
             white-space: pre-wrap;
+        }
+        .letter-signature {
+            position: relative;
+            z-index: 3;
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 28px;
+            color: #9a4fc0;
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 13px;
+            font-style: italic;
+            letter-spacing: 1px;
         }
         .sr-only {
             position: absolute;
@@ -750,9 +841,8 @@
                 min-height: 112px;
                 padding: 14px 18px 14px 15px;
             }
-            .letter-envelope { width: 68px; height: 58px; font-size: 39px; }
+            .letter-envelope { width: 68px; height: 58px; }
             .letter-copy strong { font-size: 20px; }
-            .birthday-icons { gap: 28px; margin-top: 18px; font-size: 27px; }
             .balloon-cluster { scale: 0.72; }
             .balloon-cluster.left { left: -8px; }
             .balloon-cluster.right { right: -7px; }
@@ -786,10 +876,9 @@
             .age-number { font-size: 82px; }
             .birthday-date { margin: 9px 0 13px; }
             .letter-trigger { min-height: 96px; }
-            .birthday-icons { margin-top: 10px; }
         }
         @media (prefers-reduced-motion: reduce) {
-            .cake-scene, .flame, .birthday-icons span, .confetti i, .letter-paper {
+            .flame, .confetti i, .letter-paper {
                 animation: none !important;
             }
             .cake-dock, .celebration-panel, .cake-scene { transition-duration: 0.01ms !important; }
@@ -828,23 +917,20 @@
         </div>
 
         <section id="celebrationPanel" class="celebration-panel" aria-label="22 岁生日主界面" aria-hidden="true" inert>
+            <p class="celebration-kicker">HAPPY BIRTHDAY</p>
             <div class="age-lockup">
                 <span class="age-number">22</span>
                 <span class="age-label">岁</span>
             </div>
             <p class="birthday-date">2005.01.05</p>
+            <div class="birthday-flourish" aria-hidden="true"><i></i></div>
             <button id="letterTrigger" class="letter-trigger" type="button" aria-label="打开给姐姐的一封信">
-                <span class="letter-envelope" aria-hidden="true">✉</span>
+                <span class="letter-envelope" aria-hidden="true"></span>
                 <span class="letter-copy">
                     <strong>给姐姐的一封信</strong>
                     <small>OPEN THE LETTER</small>
                 </span>
             </button>
-            <div class="birthday-icons" aria-hidden="true">
-                <span>🎈</span>
-                <span>🎁</span>
-                <span>🎉</span>
-            </div>
         </section>
         <span id="birthdayStatus" class="sr-only" aria-live="polite">蜡烛已经点亮</span>
     </main>
@@ -862,12 +948,15 @@
                 <span class="book-corner left">❀</span>
             </section>
             <section class="book-page book-page-right">
+                <p class="letter-eyebrow">FOR YOUR TWENTY-TWO</p>
                 <h2 id="letterTitle" class="letter-title">给姐姐的一封信</h2>
+                <div class="letter-rule" aria-hidden="true"><i></i></div>
                 <p class="letter-body">这是一封信，这是一封信，这是一封信……
 
 这是一封信，这是一封信，这是一封信，这是一封信……
 
 这是一封信，这是一封信，这是一封信……</p>
+                <span class="letter-signature">JY × GZC · 2026</span>
                 <span class="book-corner right" aria-hidden="true">♥</span>
             </section>
         </article>
@@ -1027,7 +1116,6 @@
             panel.inert = false;
             panel.setAttribute('aria-hidden', 'false');
             status.textContent = '生日主界面已经打开';
-            spawn(window.innerWidth / 2, window.innerHeight / 2, 20);
         }
 
         function handleInteraction(x, y, target) {
