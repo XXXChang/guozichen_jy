@@ -237,7 +237,7 @@
         }
         .birthday-cake-icon {
             display: block;
-            font-size: 132px;
+            font-size: 152px;
             line-height: 1;
             filter: drop-shadow(0 10px 16px rgba(var(--c-700-rgb), 0.28));
         }
@@ -647,12 +647,29 @@
                 transform: translateX(-50%);
             }
             .avatar { width: 78px; height: 78px; }
-            .avatar-group { margin-bottom: 7px; }
-            .theme-hue-slider { width: min(200px, calc(100vw - 42px)); height: 38px; margin-bottom: 9px; }
+            .avatar-group {
+                left: 50%;
+                width: max-content;
+                margin-bottom: 7px;
+                transform: translateX(-50%);
+            }
+            .theme-hue-slider {
+                position: absolute;
+                top: 12px;
+                left: -8px;
+                z-index: 20;
+                width: 170px;
+                height: 38px;
+                margin: 0;
+                transform: rotate(90deg);
+                transform-origin: 19px 19px;
+            }
+            .theme-hue-slider::-webkit-slider-thumb { transform: rotate(-90deg); }
+            .theme-hue-slider::-moz-range-thumb { transform: rotate(-90deg); }
             h1 { font-size: 36px; letter-spacing: 3px; margin-bottom: 7px; }
             .subtitle { min-height: 22px; font-size: 15px; }
             .birthday-cake { gap: 2px; margin-top: 7px; }
-            .birthday-cake-icon { font-size: 88px; }
+            .birthday-cake-icon { font-size: 100px; }
             .birthday-cake-label { font-size: 8px; letter-spacing: 2px; }
             .memory-card { padding: 16px 17px 14px 20px; }
             .memory-card.days-card {
@@ -707,7 +724,7 @@
                         <img src="assets/gzc_jy_Img/AvatarImg/HeadIcon2.jpg?v=1" alt="" width="256" height="256" loading="eager" decoding="async" fetchpriority="high">
                     </div>
                 </div>
-                <input class="theme-hue-slider" id="themeHue" type="range" min="0" max="359" value="258" aria-label="调整主页主题颜色" title="拖动调整主题颜色">
+                <input class="theme-hue-slider" id="themeHue" type="range" min="0" max="359" value="180" aria-label="调整主页主题颜色" title="拖动调整主题颜色">
                 <h1 id="homeTitle">JY_GZC</h1>
                 <div class="subtitle" id="subtitle"></div>
                 <a class="birthday-cake" href="pages/birthday.html" aria-label="打开生日快乐页面">
@@ -759,7 +776,8 @@
 
     <script>
     (function () {
-        const DEFAULT_COLOR = '#8b5cf6';
+        const DEFAULT_COLOR = '#43e5e5';
+        const LEGACY_DEFAULT_COLOR = '#8b5cf6';
         const STORAGE_KEY = 'gzc-home-theme-color';
         const hueSlider = document.getElementById('themeHue');
         const root = document.documentElement;
@@ -876,7 +894,10 @@
 
         let initialColor = DEFAULT_COLOR;
         try {
-            initialColor = localStorage.getItem(STORAGE_KEY) || DEFAULT_COLOR;
+            const storedColor = localStorage.getItem(STORAGE_KEY);
+            initialColor = !storedColor || storedColor.toLowerCase() === LEGACY_DEFAULT_COLOR
+                ? DEFAULT_COLOR
+                : storedColor;
         } catch (error) {
             initialColor = DEFAULT_COLOR;
         }
