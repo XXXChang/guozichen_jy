@@ -237,9 +237,9 @@
         }
         .birthday-cake-icon {
             display: block;
-            font-size: 250px;
-            line-height: 1;
-            filter: drop-shadow(0 10px 16px rgba(var(--c-700-rgb), 0.28));
+            width: 250px;
+            height: 250px;
+            filter: drop-shadow(0 8px 10px rgba(var(--c-700-rgb), 0.2));
         }
         .birthday-cake:hover {
             transform: scale(1.07) rotate(-2deg);
@@ -663,7 +663,7 @@
             h1 { font-size: 36px; letter-spacing: 3px; margin-bottom: 7px; }
             .subtitle { min-height: 22px; font-size: 15px; }
             .birthday-cake { gap: 2px; margin-top: 7px; }
-            .birthday-cake-icon { font-size: 170px; }
+            .birthday-cake-icon { width: 170px; height: 170px; }
             .memory-card { padding: 16px 17px 14px 20px; }
             .memory-card.days-card {
                 top: 48%;
@@ -721,7 +721,114 @@
                 <h1 id="homeTitle">JY_GZC</h1>
                 <div class="subtitle" id="subtitle"></div>
                 <a class="birthday-cake" href="pages/birthday.html" aria-label="打开生日快乐页面">
-                    <span class="birthday-cake-icon" aria-hidden="true">🎂</span>
+                    <svg class="birthday-cake-icon" xmlns="http://www.w3.org/2000/svg" width="250" height="250" viewBox="0 0 320 320" fill="none" aria-hidden="true" focusable="false">
+                        <defs>
+                            <linearGradient id="cake-plate" x1="160" y1="272" x2="160" y2="304" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#F6FFFD"/>
+                                <stop offset=".5" stop-color="#C2E8DF"/>
+                                <stop offset="1" stop-color="#7BB8A8"/>
+                            </linearGradient>
+                            <linearGradient id="cake-rose" x1="44" y1="210" x2="276" y2="273" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#F8B6BE"/>
+                                <stop offset=".48" stop-color="#ED929E"/>
+                                <stop offset="1" stop-color="#C95870"/>
+                            </linearGradient>
+                            <linearGradient id="cake-mint" x1="68" y1="149" x2="252" y2="215" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#B6E1CE"/>
+                                <stop offset=".5" stop-color="#83C3AB"/>
+                                <stop offset="1" stop-color="#509880"/>
+                            </linearGradient>
+                            <linearGradient id="cake-gold" x1="94" y1="108" x2="226" y2="159" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#FBE5AA"/>
+                                <stop offset=".5" stop-color="#F0CF80"/>
+                                <stop offset="1" stop-color="#D1A355"/>
+                            </linearGradient>
+                            <linearGradient id="cake-cream" x1="160" y1="110" x2="160" y2="249" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#FFFEF9"/>
+                                <stop offset="1" stop-color="#FAE8CF"/>
+                            </linearGradient>
+                            <linearGradient id="cake-flame" x1="0" y1="-24" x2="0" y2="0" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#EE8848"/>
+                                <stop offset=".6" stop-color="#FFC668"/>
+                                <stop offset="1" stop-color="#FFE9A3"/>
+                            </linearGradient>
+                            <linearGradient id="cake-berry" x1="-9" y1="-9" x2="10" y2="14" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#F18C95"/>
+                                <stop offset=".5" stop-color="#D7546E"/>
+                                <stop offset="1" stop-color="#AC3856"/>
+                            </linearGradient>
+                            <g id="cake-pearl">
+                                <circle r="4" fill="#FFF8EA"/>
+                                <circle cx="-1" cy="-1.2" r="1.2" fill="#FFF"/>
+                            </g>
+                            <g id="cake-strawberry">
+                                <path d="M-10-4C-13 4-5 14 0 16C5 14 13 4 10-4C7-11-7-11-10-4Z" fill="url(#cake-berry)" stroke="#B9435F" stroke-width="1"/>
+                                <path d="M0-5L-9-10L-4-10L-4-15L1-11L6-14L5-9L11-9L3-5Z" fill="#4C9477"/>
+                                <path d="M-6-1L-5 1M3-2L4 0M-2 5L-1 7M6 4L5 6M0 11L1 12" stroke="#FFE8BB" stroke-width="1.6" stroke-linecap="round"/>
+                                <path d="M-7-3C-9 0-7 3-6 4" stroke="#FFC4C6" stroke-width="1.8" stroke-linecap="round"/>
+                            </g>
+                            <g id="cake-number-two" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M0 9C0-4 23-4 23 9C23 16 15 20 9 25L0 33H23" stroke="#BB4E68" stroke-width="13"/>
+                                <path d="M0 9C0-4 23-4 23 9C23 16 15 20 9 25L0 33H23" stroke="#F4A4B5" stroke-width="9"/>
+                                <path d="M1 6C4-1 17-1 20 5M17 18L12 22M2 32H18" stroke="#FFE4E7" stroke-width="2.5"/>
+                                <path d="M10-8V-14" stroke="#805B51" stroke-width="2"/>
+                                <g transform="translate(10 -15)">
+                                    <path d="M0-24C-1-15-10-12-8-5C-7 3 7 3 8-5C9-11 4-16 0-24Z" fill="url(#cake-flame)"/>
+                                    <path d="M0-11C-4-6-4-1 0 0C4-1 4-6 0-11Z" fill="#FFF8D5"/>
+                                </g>
+                            </g>
+                            <g id="cake-cream-swirl">
+                                <path d="M-10 3C-12-2-5-4-5-7C-5-11 0-11 1-17C7-12 5-7 9-3C14 3 7 7 0 7C-5 7-9 6-10 3Z" fill="#FFFAED" stroke="#E8D5B8" stroke-width="1"/>
+                                <path d="M-6 1C1 3 6 0 5-4M-3-6C1-5 3-7 3-9" stroke="#EEDCC1" stroke-width="1.4" stroke-linecap="round"/>
+                            </g>
+                        </defs>
+                        <ellipse cx="160" cy="289" rx="146" ry="15" fill="#518274" opacity=".12"/>
+                        <path d="M14 281C14 265 306 265 306 281V286C306 309 14 309 14 286Z" fill="url(#cake-plate)" stroke="#79B3A5" stroke-width="1.5"/>
+                        <ellipse cx="160" cy="280" rx="146" ry="22" fill="#EAF8F1" stroke="#F8FFFC" stroke-width="2"/>
+                        <ellipse cx="160" cy="279" rx="129" ry="15" stroke="#9ACAB9" stroke-width="1.5"/>
+                        <path d="M44 212C44 189 276 189 276 212V263C276 290 44 290 44 263Z" fill="url(#cake-rose)" stroke="#C96579" stroke-width="1.5"/>
+                        <path d="M45 250C92 271 227 271 275 250" stroke="#FFE7DC" stroke-width="9"/>
+                        <path d="M47 258C98 279 224 278 273 258" stroke="#EBA2A9" stroke-width="2"/>
+                        <ellipse cx="160" cy="212" rx="116" ry="25" fill="#FFF5E5"/>
+                        <path d="M44 212C88 234 233 234 276 212V226C276 235 265 237 260 231V227C260 221 249 222 249 230V239C249 250 234 250 234 240V231C234 222 220 224 220 233V236C220 245 207 245 207 235V231C207 224 192 225 192 233V246C192 258 176 258 176 246V235C176 227 162 227 162 235V238C162 247 148 247 148 237V235C148 227 135 227 135 235V244C135 254 119 254 119 243V231C119 224 105 223 105 231V235C105 246 90 246 90 234V227C90 221 76 219 76 226V231C76 240 62 238 62 228V222C57 222 48 220 44 217Z" fill="url(#cake-cream)" stroke="#EFD9C5" stroke-width="1" stroke-linejoin="round"/>
+                        <path d="M68 153C68 133 252 133 252 153V204C252 226 68 226 68 204Z" fill="url(#cake-mint)" stroke="#629F85" stroke-width="1.5"/>
+                        <path d="M70 191C108 206 212 206 250 191" stroke="#E0F0DF" stroke-width="4"/>
+                        <ellipse cx="160" cy="153" rx="92" ry="21" fill="#FFFAED"/>
+                        <path d="M68 153C108 171 214 171 252 153V165C252 172 242 174 238 167V164C238 159 227 161 227 167V175C227 185 214 184 214 175V170C214 163 202 165 202 172V176C202 184 189 184 189 175V172C189 165 176 166 176 174V183C176 193 162 193 162 182V174C162 167 149 168 149 175V177C149 185 136 185 136 176V171C136 164 123 163 123 171V178C123 188 110 187 110 177V167C110 160 97 159 97 166V170C97 179 83 177 83 168V162C76 161 71 159 68 157Z" fill="url(#cake-cream)" stroke="#ECDCC6" stroke-width="1" stroke-linejoin="round"/>
+                        <path d="M94 110C94 94 226 94 226 110V151C226 169 94 169 94 151Z" fill="url(#cake-gold)" stroke="#D1A65F" stroke-width="1.5"/>
+                        <ellipse cx="160" cy="110" rx="66" ry="17" fill="#FFFAEB" stroke="#EDDCC2" stroke-width="1"/>
+                        <path d="M94 110C125 124 198 124 226 110V120C226 128 215 129 215 121V118C215 114 205 116 205 121V128C205 137 193 137 193 128V124C193 118 182 120 182 126V136C182 147 169 147 169 136V127C169 121 159 121 159 128V130C159 139 147 139 147 130V126C147 120 136 119 136 125V133C136 142 124 142 124 132V122C124 116 113 115 113 120V123C113 130 102 129 102 121V116Z" fill="url(#cake-cream)" stroke="#EDDBC0" stroke-width="1" stroke-linejoin="round"/>
+                        <g stroke-linecap="round" stroke-width="3.5">
+                            <path d="M65 244L69 248M100 253L98 258M143 260L147 257M183 260L185 255M220 254L224 258M252 246L255 250" stroke="#FFF2BB"/>
+                            <path d="M82 199L86 203M119 207L120 202M157 208L161 204M196 206L194 201M232 198L235 202" stroke="#FCE3E3"/>
+                            <path d="M109 148L112 152M147 155L150 151M183 154L185 150M211 146L214 150" stroke="#FFFEF5"/>
+                        </g>
+                        <g>
+                            <use href="#cake-pearl" x="58" y="265"/>
+                            <use href="#cake-pearl" x="73" y="270"/>
+                            <use href="#cake-pearl" x="90" y="274"/>
+                            <use href="#cake-pearl" x="108" y="277"/>
+                            <use href="#cake-pearl" x="127" y="279"/>
+                            <use href="#cake-pearl" x="147" y="280"/>
+                            <use href="#cake-pearl" x="167" y="280"/>
+                            <use href="#cake-pearl" x="187" y="279"/>
+                            <use href="#cake-pearl" x="207" y="277"/>
+                            <use href="#cake-pearl" x="226" y="274"/>
+                            <use href="#cake-pearl" x="244" y="270"/>
+                            <use href="#cake-pearl" x="262" y="265"/>
+                        </g>
+                        <use href="#cake-cream-swirl" transform="translate(88 143) scale(.8)"/>
+                        <use href="#cake-cream-swirl" transform="translate(232 143) scale(.8)"/>
+                        <use href="#cake-strawberry" transform="translate(65 204) rotate(-20) scale(.85)"/>
+                        <use href="#cake-strawberry" transform="translate(254 203) rotate(22) scale(.85)"/>
+                        <use href="#cake-cream-swirl" transform="translate(107 101) scale(.75)"/>
+                        <use href="#cake-cream-swirl" transform="translate(211 100) scale(.75)"/>
+                        <use href="#cake-strawberry" transform="translate(115 101) rotate(-18) scale(.72)"/>
+                        <use href="#cake-strawberry" transform="translate(204 102) rotate(18) scale(.72)"/>
+                        <path d="M139 88V106M176 88V106" stroke="#C49A62" stroke-width="3" stroke-linecap="round"/>
+                        <use href="#cake-number-two" x="128" y="52"/>
+                        <use href="#cake-number-two" x="165" y="52"/>
+                    </svg>
                 </a>
             </section>
 
