@@ -864,6 +864,7 @@
             .cake-dock, .celebration-panel, .cake-scene { transition-duration: 0.01ms !important; }
         }
     </style>
+    <link rel="stylesheet" href="../assets/css/birthday-gifts.css">
 </head>
 <body>
     <canvas id="fallingHearts" aria-hidden="true"></canvas>
@@ -904,9 +905,18 @@
             </div>
             <p class="birthday-date">2005.01.05</p>
             <div class="birthday-flourish" aria-hidden="true"><i></i></div>
-            <button id="letterTrigger" class="letter-trigger" type="button" aria-label="打开给姐姐的一封信">
-                <span class="letter-envelope" aria-hidden="true"><i class="letter-seal">♥</i></span>
-            </button>
+            <div class="birthday-actions">
+                <button id="letterTrigger" class="letter-trigger" type="button" aria-label="打开给姐姐的一封信">
+                    <span class="letter-envelope" aria-hidden="true"><i class="letter-seal">♥</i></span>
+                </button>
+                <button id="giftTrigger" class="gift-trigger" type="button" aria-label="抽取生日礼物">
+                    <span class="gift-box" aria-hidden="true">
+                        <span class="gift-box-body"></span>
+                        <span class="gift-box-lid"><i class="gift-bow"></i></span>
+                        <i class="gift-box-tag">♥</i>
+                    </span>
+                </button>
+            </div>
         </section>
         <span id="birthdayStatus" class="sr-only" aria-live="polite">蜡烛已经点亮</span>
     </main>
@@ -933,6 +943,36 @@
         </article>
     </div>
 
+    <div id="giftDialog" class="gift-dialog" role="dialog" aria-modal="true" aria-labelledby="giftTitle" aria-describedby="giftIntro" hidden>
+        <article id="giftPaper" class="gift-paper">
+            <button id="giftClose" class="gift-close" type="button" aria-label="关闭生日礼物">×</button>
+            <p class="gift-kicker">A LITTLE SURPRISE FOR YOU</p>
+            <h2 id="giftTitle" class="gift-title">拆一份生日惊喜</h2>
+            <p id="giftIntro" class="gift-intro">把今天的好运，装进一份礼物里。</p>
+            <div class="gift-hero" aria-hidden="true">
+                <span class="gift-box">
+                    <span class="gift-box-body"></span>
+                    <span class="gift-box-lid"><i class="gift-bow"></i></span>
+                    <i class="gift-box-tag">♥</i>
+                </span>
+            </div>
+            <div id="giftResult" class="gift-result" hidden>
+                <p>这份惊喜属于你</p>
+                <h3 id="giftResultName"></h3>
+            </div>
+            <section aria-labelledby="giftPoolTitle">
+                <div class="gift-pool-heading">
+                    <h3 id="giftPoolTitle">生日礼物清单</h3>
+                    <span id="giftPoolCount"></span>
+                </div>
+                <ul id="giftPool" class="gift-pool"></ul>
+            </section>
+            <button id="giftDraw" class="gift-draw" type="button">拆开生日礼物</button>
+            <p id="giftStatus" class="gift-status" role="status" aria-live="polite">每一份礼物，都藏着一份心意。</p>
+        </article>
+    </div>
+
+    <script src="../assets/data/birthday-gifts.js"></script>
     <script>
     (function () {
         const canvas = document.getElementById('fallingHearts');
@@ -1008,11 +1048,79 @@
         const letterTrigger = document.getElementById('letterTrigger');
         const letterDialog = document.getElementById('letterDialog');
         const letterClose = document.getElementById('letterClose');
+        const backLink = document.querySelector('.back-link');
+        const giftTrigger = document.getElementById('giftTrigger');
+        const giftDialog = document.getElementById('giftDialog');
+        const giftClose = document.getElementById('giftClose');
+        const giftPaper = document.getElementById('giftPaper');
+        const giftPool = document.getElementById('giftPool');
+        const giftDraw = document.getElementById('giftDraw');
+        const giftResult = document.getElementById('giftResult');
+        const giftResultName = document.getElementById('giftResultName');
+        const giftStatus = document.getElementById('giftStatus');
+        const giftConfig = window.BIRTHDAY_GIFTS || { version: '', prizes: [] };
+        const prizes = giftConfig.prizes.filter(prize => prize.id && prize.name);
+        const giftStorageKey = 'jy-gzc-birthday-gift';
+        const giftSignature = JSON.stringify([giftConfig.version, prizes]);
         const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         let particles = [];
         let extinguished = false;
         let lastTouch = 0;
         let lastFocused = null;
+        let drawnPrize = null;
+        let drawing = false;
+        let giftTimer = null;
+        let giftSaved = true;
+        const giftCards = prizes.map((prize, index) => {
+            const card = document.createElement('li');
+            card.className = 'gift-card';
+            const number = document.createElement('span');
+            number.className = 'gift-card-number';
+            number.textContent = String(index + 1).padStart(2, '0');
+            const name = document.createElement('span');
+            name.className = 'gift-card-name';
+            name.textContent = prize.name;
+            const state = document.createElement('span');
+            state.className = 'gift-card-state';
+            state.hidden = true;
+            state.textContent = '已抽中';
+            card.append(number, name, state);
+            giftPool.append(card);
+            return card;
+        });
+        document.getElementById('giftPoolCount').textContent = `${prizes.length} 份惊喜 · 等概率`;
+
+        function readGiftResult() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(giftStorageKey));
+                return saved?.signature === giftSignature
+                    ? prizes.find(prize => prize.id === saved.prizeId) || null
+                    : null;
+            } catch {
+                return null;
+            }
+        }
+
+        function showGiftResult() {
+            giftPaper.classList.toggle('is-revealed', Boolean(drawnPrize));
+            giftResult.hidden = !drawnPrize;
+            giftResultName.textContent = drawnPrize?.name || '';
+            giftDraw.disabled = !prizes.length;
+            giftDraw.textContent = drawnPrize ? '收好这份惊喜' : '拆开生日礼物';
+            giftTrigger.setAttribute('aria-label', drawnPrize ? '查看抽中的生日礼物' : '抽取生日礼物');
+            giftCards.forEach((card, index) => {
+                const winner = prizes[index].id === drawnPrize?.id;
+                card.classList.remove('is-active');
+                card.classList.toggle('is-winner', winner);
+                card.querySelector('.gift-card-state').hidden = !winner;
+            });
+            giftStatus.textContent = drawnPrize
+                ? (giftSaved ? `抽中了${drawnPrize.name}，这份惊喜已经为你留好。` : `抽中了${drawnPrize.name}，本次打开期间会为你保留结果。`)
+                : (prizes.length ? '每一份礼物，都藏着一份心意。' : '礼物正在准备中。');
+        }
+
+        drawnPrize = readGiftResult();
+        showGiftResult();
 
         function resize() {
             canvas.width = window.innerWidth * dpr;
@@ -1079,7 +1187,7 @@
         animate();
 
         function isProtectedTarget(target) {
-            return target instanceof Element && Boolean(target.closest('.back-link, .letter-trigger, .letter-dialog'));
+            return target instanceof Element && Boolean(target.closest('.back-link, .letter-trigger, .letter-dialog, .gift-trigger, .gift-dialog'));
         }
 
         function revealCelebration() {
@@ -1103,19 +1211,86 @@
             window.setTimeout(revealCelebration, reduced ? 80 : 1150);
         }
 
-        function openLetter(event) {
-            event.stopPropagation();
+        function openDialog(dialog, focusTarget) {
             lastFocused = document.activeElement;
-            letterDialog.hidden = false;
+            dialog.hidden = false;
             stage.inert = true;
-            letterClose.focus();
+            backLink.inert = true;
+            focusTarget.focus({ preventScroll: true });
         }
 
-        function closeLetter() {
-            if (letterDialog.hidden) return;
-            letterDialog.hidden = true;
+        function closeDialog(dialog) {
+            if (dialog.hidden) return;
+            dialog.hidden = true;
             stage.inert = false;
-            lastFocused?.focus();
+            backLink.inert = false;
+            lastFocused?.focus({ preventScroll: true });
+        }
+
+        function finishGiftDraw(celebrate = true) {
+            window.clearTimeout(giftTimer);
+            giftTimer = null;
+            drawing = false;
+            giftPaper.classList.remove('is-drawing');
+            giftPool.setAttribute('aria-busy', 'false');
+            showGiftResult();
+            if (celebrate && !giftDialog.hidden) {
+                const rect = giftResult.getBoundingClientRect();
+                spawn(rect.left + rect.width / 2, rect.top + rect.height / 2, reduced ? 5 : 18);
+            }
+        }
+
+        function closeGift() {
+            if (drawing) finishGiftDraw(false);
+            closeDialog(giftDialog);
+        }
+
+        function drawGift() {
+            if (drawing || !prizes.length) return;
+            if (drawnPrize) {
+                closeGift();
+                return;
+            }
+            // 再次检查，避免另一个标签页已抽取后仍重新抽取。
+            drawnPrize = readGiftResult();
+            if (drawnPrize) {
+                showGiftResult();
+                return;
+            }
+            drawnPrize = prizes[Math.floor(Math.random() * prizes.length)];
+            // 先保存结果，动画中关闭或刷新也不会改变抽中的礼物。
+            try {
+                localStorage.setItem(giftStorageKey, JSON.stringify({
+                    signature: giftSignature,
+                    prizeId: drawnPrize.id
+                }));
+            } catch {
+                giftSaved = false;
+            }
+            drawing = true;
+            giftDraw.disabled = true;
+            giftDraw.textContent = '正在挑选你的惊喜…';
+            giftStatus.textContent = '礼物正在悄悄打开…';
+            giftPaper.classList.add('is-drawing');
+            giftPool.setAttribute('aria-busy', 'true');
+            if (reduced) {
+                finishGiftDraw();
+                return;
+            }
+            let step = 0;
+            const winnerIndex = prizes.indexOf(drawnPrize);
+            const totalSteps = prizes.length * 4 + winnerIndex + 1;
+            function advance() {
+                giftCards.forEach((card, index) => card.classList.toggle('is-active', index === step % prizes.length));
+                step++;
+                if (step >= totalSteps) {
+                    giftTimer = window.setTimeout(finishGiftDraw, 280);
+                    return;
+                }
+                const progress = step / totalSteps;
+                giftTimer = window.setTimeout(advance, 55 + 190 * Math.pow(progress, 3));
+            }
+            advance();
         }
 
         window.addEventListener('click', event => {
@@ -1128,16 +1303,53 @@
             handleInteraction(touch.clientX, touch.clientY, event.target);
         }, { passive: true });
 
-        letterTrigger.addEventListener('click', openLetter);
+        letterTrigger.addEventListener('click', event => {
+            event.stopPropagation();
+            openDialog(letterDialog, letterClose);
+        });
         letterClose.addEventListener('click', event => {
             event.stopPropagation();
-            closeLetter();
+            closeDialog(letterDialog);
         });
         letterDialog.addEventListener('click', event => {
-            if (event.target === letterDialog) closeLetter();
+            if (event.target === letterDialog) closeDialog(letterDialog);
+        });
+        giftTrigger.addEventListener('click', event => {
+            event.stopPropagation();
+            drawnPrize = readGiftResult() || drawnPrize;
+            showGiftResult();
+            openDialog(giftDialog, giftClose);
+        });
+        giftClose.addEventListener('click', closeGift);
+        giftDraw.addEventListener('click', drawGift);
+        giftDialog.addEventListener('click', event => {
+            if (event.target === giftDialog) closeGift();
+        });
+        window.addEventListener('storage', event => {
+            if (event.key !== giftStorageKey || drawing) return;
+            drawnPrize = readGiftResult() || drawnPrize;
+            showGiftResult();
         });
         window.addEventListener('keydown', event => {
-            if (!letterDialog.hidden && event.key === 'Escape') closeLetter();
+            const dialog = !giftDialog.hidden ? giftDialog : (!letterDialog.hidden ? letterDialog : null);
+            if (!dialog) return;
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                if (dialog === giftDialog) closeGift();
+                else closeDialog(letterDialog);
+            }
+            if (event.key === 'Tab') {
+                const buttons = Array.from(dialog.querySelectorAll('button:not(:disabled), a[href]'));
+                const first = buttons[0];
+                const last = buttons[buttons.length - 1];
+                if (event.shiftKey && document.activeElement === first) {
+                    event.preventDefault();
+                    last.focus();
+                } else if (!event.shiftKey && document.activeElement === last) {
+                    event.preventDefault();
+                    first.focus();
+                }
+            }
         });
     })();
     </script>
