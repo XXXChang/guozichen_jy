@@ -135,7 +135,7 @@
     -webkit-backdrop-filter: blur(18px);
 }
 .gift-paper {
-    --gift-hero-height: 132px;
+    --gift-hero-height: 90px;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -165,7 +165,7 @@
     overflow-y: auto;
     overflow-x: hidden;
     overscroll-behavior: contain;
-    padding: 28px 24px 0;
+    padding: 24px 24px 0;
     scrollbar-width: thin;
     scrollbar-color: #c9b6a9 transparent;
 }
@@ -230,8 +230,8 @@
 .gift-hero::before {
     content: "";
     position: absolute;
-    width: 120px;
-    height: 120px;
+    width: 96px;
+    height: 96px;
     border: 1px dashed rgba(73, 141, 128, .28);
     border-radius: 50%;
     background: radial-gradient(circle, #fff9d9, rgba(255, 250, 225, .1) 70%);
@@ -268,7 +268,7 @@
     align-content: center;
     justify-items: center;
     gap: 5px;
-    min-height: 76px;
+    min-height: 58px;
     padding: 6px;
     border: 1px solid #e9dcd0;
     border-radius: 14px;
@@ -278,6 +278,9 @@
 }
 .gift-card-number { color: #ac9384; font-family: Georgia, serif; font-size: 12px; letter-spacing: 2px; }
 .gift-card-name { font-size: 14px; font-weight: 500; overflow-wrap: anywhere; }
+.gift-card-retry { border-color: #e6c9c9; background: #fff1ed; }
+.gift-card-retry .gift-card-number { color: #b67981; }
+.gift-card-retry .gift-card-name { font-size: 12px; white-space: nowrap; }
 .gift-card.is-active { border-color: var(--gold); background: #fff0c9; box-shadow: 0 0 0 2px rgba(214, 166, 75, .16); transform: translateY(-3px); }
 .gift-card.is-winner { border-color: var(--mint); background: #e0eee3; box-shadow: 0 0 0 2px rgba(73, 141, 128, .12); }
 .gift-card-state { color: var(--mint); font-size: 10px; }
@@ -285,7 +288,7 @@
 .gift-card.is-collected .gift-card-state { position: absolute; top: 5px; right: 6px; font-size: 9px; line-height: 1.2; }
 .gift-card.is-collected:not(.is-winner) { border-color: #bbd2c4; background: #f0f5eb; }
 .gift-paper.has-surprise .gift-card:not(.gift-card-surprise) {
-    min-height: 54px;
+    min-height: 46px;
     gap: 3px;
     padding: 4px 6px;
 }
@@ -381,19 +384,19 @@
     .gift-trigger .gift-box { scale: .9; }
     .gift-dialog { --gift-dialog-gap: 16px; }
     .gift-paper {
-        --gift-hero-height: 112px;
+        --gift-hero-height: 84px;
         width: min(100%, 360px);
         border-radius: 24px;
     }
-    .gift-content { padding: 24px 18px 0; }
+    .gift-content { padding: 22px 18px 0; }
     .gift-footer { padding: 0 18px 16px; }
     .gift-close { width: 30px; height: 30px; font-size: 22px; }
     .gift-kicker { padding-inline: 16px; font-size: 8px; letter-spacing: 1.5px; }
     .gift-title { font-size: 23px; }
-    .gift-hero::before { width: 100px; height: 100px; }
+    .gift-hero::before { width: 80px; height: 80px; }
     .gift-hero .gift-box { scale: .7; }
     .gift-result h3 { font-size: 21px; }
-    .gift-card { min-height: 70px; gap: 4px; }
+    .gift-card { min-height: 54px; gap: 4px; }
     .gift-card-surprise { min-height: 44px; }
     .gift-card-number { font-size: 11px; }
     .gift-card-name { font-size: 13px; }
@@ -403,15 +406,16 @@
 }
 @media (max-height: 560px) {
     .gift-dialog { --gift-dialog-gap: 12px; }
-    .gift-paper { --gift-hero-height: 82px; }
+    .gift-paper { --gift-hero-height: 64px; }
     .gift-content { padding-top: 16px; }
     .gift-showcase { margin-bottom: 18px; }
     .gift-footer { padding-bottom: 12px; }
     .gift-kicker { display: none; }
-    .gift-hero::before { width: 84px; height: 84px; }
+    .gift-hero::before { width: 68px; height: 68px; }
     .gift-hero .gift-box { scale: .6; }
-    .gift-card { min-height: 64px; }
-    .gift-paper.has-surprise .gift-card:not(.gift-card-surprise) { min-height: 44px; }
+    .gift-card { min-height: 46px; gap: 3px; padding: 4px 5px; }
+    .gift-paper.has-surprise .gift-card:not(.gift-card-surprise) { min-height: 40px; }
+    .gift-paper.has-surprise .gift-card:not(.gift-card-surprise) .gift-card-number { display: none; }
     .gift-card-surprise { min-height: 36px; padding-block: 4px; }
     .gift-test-controls { margin-top: 4px; padding-top: 3px; }
 }

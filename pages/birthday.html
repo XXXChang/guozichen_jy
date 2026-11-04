@@ -864,7 +864,7 @@
             .cake-dock, .celebration-panel, .cake-scene { transition-duration: 0.01ms !important; }
         }
     </style>
-    <link rel="stylesheet" href="../assets/css/birthday-gifts.css?v=20261104-gift-layout">
+    <link rel="stylesheet" href="../assets/css/birthday-gifts.css?v=20261104-nine-grid">
 </head>
 <body>
     <canvas id="fallingHearts" aria-hidden="true"></canvas>
@@ -978,8 +978,8 @@
         </article>
     </div>
 
-    <script src="../assets/data/birthday-gifts.js?v=20261104-third-surprise"></script>
-    <script src="../assets/js/birthday-gifts.js?v=20261104-six-second-surprise"></script>
+    <script src="../assets/data/birthday-gifts.js?v=20261104-nine-grid"></script>
+    <script src="../assets/js/birthday-gifts.js?v=20261104-nine-grid"></script>
     <script>
     (function () {
         const canvas = document.getElementById('fallingHearts');
@@ -1087,10 +1087,12 @@
             if (giftCards.has(prize.id)) return giftCards.get(prize.id);
             const card = document.createElement('li');
             card.className = surprise ? 'gift-card gift-card-surprise' : 'gift-card';
+            if (prize.isRetry) card.classList.add('gift-card-retry');
             card.dataset.prizeId = prize.id;
             const number = document.createElement('span');
             number.className = 'gift-card-number';
-            number.textContent = (surprise ? '✦ ' : '') + String(index + 1).padStart(2, '0');
+            number.textContent = surprise ? '✦' : (prize.isRetry ? '♡'
+                : String(prizes.slice(0, index + 1).filter(item => !item.isRetry).length).padStart(2, '0'));
             const name = document.createElement('span');
             name.className = 'gift-card-name';
             name.textContent = prize.name;
@@ -1139,10 +1141,12 @@
             giftDraw.textContent = giftState.remaining === 0
                 ? '收好这些惊喜'
                 : (drawnPrize ? '再拆一份惊喜' : '拆开生日礼物');
-            giftTrigger.setAttribute('aria-label', drawnPrize ? '查看抽中的生日礼物' : '抽取生日礼物');
+            giftTrigger.setAttribute('aria-label', drawnPrize
+                ? (drawnPrize.isRetry ? '继续抽取生日礼物' : '查看抽中的生日礼物')
+                : '抽取生日礼物');
             giftCards.forEach((card, id) => {
                 const winner = id === drawnPrize?.id;
-                const collected = giftState.history.includes(id);
+                const collected = id !== giftGame.retryPrize?.id && giftState.history.includes(id);
                 card.classList.remove('is-active');
                 card.classList.toggle('is-winner', winner);
                 card.classList.toggle('is-collected', collected);
@@ -1154,7 +1158,7 @@
                 giftStatus.textContent = '';
             } else {
                 giftStatus.textContent = drawnPrize
-                    ? `抽中了${drawnPrize.name}，再拆一份惊喜吧。`
+                    ? (drawnPrize.isRetry ? '再拆一次，看看会有什么惊喜。' : `抽中了${drawnPrize.name}，再拆一份惊喜吧。`)
                     : (prizes.length ? '每一份礼物，都藏着一份心意。' : '礼物正在准备中。');
             }
         }
@@ -1306,13 +1310,13 @@
         function runGiftLoop(pool, winnerId, duration, onComplete) {
             const round = activeGiftRound;
             const startedAt = performance.now();
-            const winnerIndex = pool.findIndex(prize => prize.id === winnerId);
-            const totalSteps = pool.length * 6 + winnerIndex + 1;
+            const totalSteps = Math.ceil(duration / 100);
             const weights = Array.from({ length: totalSteps }, (_, index) =>
                 50 + 150 * Math.pow(index / (totalSteps - 1), 3));
             const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
             let step = 0;
             let elapsedWeight = 0;
+            let previousId = '';
 
             function complete() {
                 if (round !== activeGiftRound || !drawing) return;
@@ -1325,7 +1329,14 @@
                     complete();
                     return;
                 }
-                setActiveGift(pool[step % pool.length].id);
+                // 每次随机跳到另一格，最后一跳才落到本次结果。
+                const candidates = pool.filter(prize => prize.id !== previousId
+                    && (step !== totalSteps - 2 || prize.id !== winnerId));
+                const nextPrize = step === totalSteps - 1 && winnerId
+                    ? pool.find(prize => prize.id === winnerId)
+                    : candidates[Math.floor(Math.random() * candidates.length)];
+                previousId = nextPrize.id;
+                setActiveGift(nextPrize.id);
                 elapsedWeight += weights[step++];
                 const nextAt = startedAt + duration * elapsedWeight / totalWeight;
                 giftTimer = window.setTimeout(step >= totalSteps ? complete : advance,
@@ -1362,8 +1373,8 @@
             giftPaper.classList.add('is-drawing');
             giftPool.setAttribute('aria-busy', 'true');
             if (outcome.isSurprise) {
-                // 六秒内只轮询原来的六格，最后经过第六格，第七格出现时直接抽中。
-                runGiftLoop(prizes, prizes[prizes.length - 1].id, 6000, finishGiftDraw);
+                // 六秒内只随机跳转基础九宫格，特殊礼物出现时直接抽中。
+                runGiftLoop(prizes, null, 6000, finishGiftDraw);
             } else {
                 runGiftLoop(prizes, drawnPrize.id, 5000, finishGiftDraw);
             }

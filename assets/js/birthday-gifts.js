@@ -5,8 +5,9 @@
     const maxDraws = 3;
 
     function create(config, storage) {
-        const surprisePrize = config.surprisePrize || { id: 'gift-07', name: '礼物七' };
+        const surprisePrize = config.surprisePrize || { id: 'gift-all', name: '全部都要~' };
         const prizes = config.prizes.filter(prize => prize.id && prize.name && prize.id !== surprisePrize.id);
+        const retryPrize = prizes.find(prize => prize.isRetry);
         const allPrizes = [...prizes, surprisePrize];
         const signature = JSON.stringify([config.version, prizes, surprisePrize, maxDraws]);
         const legacySignature = JSON.stringify([config.version, prizes]);
@@ -18,7 +19,7 @@
         function normalize(record) {
             if (!record) return null;
             // 原先只保存一次结果，升级后将它作为第一次抽取保留。
-            if (record.signature === legacySignature && prizes.some(prize => prize.id === record.prizeId)) {
+            if (retryPrize && record.signature === legacySignature && record.prizeId === retryPrize.id) {
                 return { history: [record.prizeId], roundId: '' };
             }
             if (record.signature !== signature || !Array.isArray(record.history) || record.history.length > maxDraws) {
@@ -26,7 +27,7 @@
             }
             const valid = record.history.every((id, index) => index === maxDraws - 1
                 ? id === surprisePrize.id
-                : prizes.some(prize => prize.id === id));
+                : id === retryPrize?.id);
             return valid ? { history: record.history.slice(), roundId: record.roundId || '' } : null;
         }
 
@@ -77,21 +78,21 @@
             return snapshot();
         }
 
-        function draw(random = Math.random) {
+        function draw() {
             read();
-            if (history.length >= maxDraws || !prizes.length) {
+            if (history.length >= maxDraws || !retryPrize) {
                 return { ...snapshot(), added: false };
             }
             const drawNumber = history.length + 1;
             const isSurprise = drawNumber === maxDraws;
-            const prize = isSurprise ? surprisePrize : prizes[Math.floor(random() * prizes.length)];
+            const prize = isSurprise ? surprisePrize : retryPrize;
             history.push(prize.id);
             // 在播放动画前保存，关闭弹窗或刷新都不会重新抽取这一次。
             save();
             return { ...snapshot(), added: true, prize, drawNumber, isSurprise };
         }
 
-        return { prizes, surprisePrize, maxDraws, read, draw, reset };
+        return { prizes, retryPrize, surprisePrize, maxDraws, read, draw, reset };
     }
 
     root.BirthdayGiftDraw = { create };
