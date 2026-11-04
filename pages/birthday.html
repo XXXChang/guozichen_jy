@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#f6cfd1">
     <title>22 岁生日 | JY_GZC</title>
     <style>
@@ -15,10 +15,17 @@
             --ink: #563941;
         }
         * { box-sizing: border-box; }
-        html, body { width: 100%; height: 100%; }
+        html { width: 100%; height: 100%; overflow: hidden; background: #f4c8b9; }
         body {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            height: 100dvh;
             margin: 0;
             overflow: hidden;
+            overscroll-behavior: none;
+            isolation: isolate;
             color: var(--ink);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             background:
@@ -55,8 +62,8 @@
         #clickHearts { z-index: 9999; }
         .back-link {
             position: fixed;
-            top: 22px;
-            left: 24px;
+            top: calc(22px + env(safe-area-inset-top, 0px));
+            left: calc(24px + env(safe-area-inset-left, 0px));
             z-index: 50;
             display: grid;
             place-items: center;
@@ -74,7 +81,8 @@
         }
         .back-link:hover { background: rgba(255, 255, 255, 0.9); }
         .birthday-stage {
-            position: relative;
+            position: absolute;
+            inset: 0;
             z-index: 2;
             width: 100%;
             height: 100%;
@@ -85,14 +93,14 @@
             z-index: 30;
             top: 50%;
             left: 50%;
-            width: 320px;
-            height: 310px;
+            width: min(440px, 92vw, calc((100vh - 72px) * .8163));
+            width: min(440px, 92vw, calc((100dvh - 72px) * .8163));
+            aspect-ratio: 320 / 392;
             transform: translate(-50%, -50%);
             transition:
                 top 0.9s cubic-bezier(.2,.8,.2,1),
                 left 0.9s cubic-bezier(.2,.8,.2,1),
                 width 0.9s cubic-bezier(.2,.8,.2,1),
-                height 0.9s cubic-bezier(.2,.8,.2,1),
                 transform 0.9s cubic-bezier(.2,.8,.2,1);
             pointer-events: none;
         }
@@ -111,229 +119,89 @@
             -webkit-backdrop-filter: blur(14px);
         }
         .cake-scene {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 320px;
-            height: 310px;
-            filter: drop-shadow(0 24px 30px rgba(103, 52, 56, 0.24));
-            transform-origin: top left;
-            transition: transform 0.9s cubic-bezier(.2,.8,.2,1), filter 0.9s ease;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 20px 24px rgba(103, 52, 56, 0.18));
+            transition: filter 0.9s ease;
         }
-        .plate {
+        .cake-dock::after {
+            content: "";
             position: absolute;
-            left: 4px;
-            bottom: 8px;
-            width: 312px;
-            height: 38px;
-            border: 2px solid rgba(73, 141, 128, 0.42);
+            z-index: -1;
+            inset: 8% -12% 0;
             border-radius: 50%;
-            background: linear-gradient(180deg, #ffffff 0%, #d8f0eb 48%, #9fcfc4 100%);
-            box-shadow:
-                inset 0 7px 10px rgba(255, 255, 255, 0.9),
-                0 9px 16px rgba(78, 93, 89, 0.18);
+            background: radial-gradient(ellipse, rgba(255, 250, 225, .85), rgba(255, 231, 203, .28) 45%, transparent 70%);
+            filter: blur(16px);
+            opacity: .9;
+            transition: opacity .5s ease;
         }
-        .plate::before {
-            content: "";
-            position: absolute;
-            inset: 7px 23px;
-            border: 1px solid rgba(73, 141, 128, 0.28);
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.28);
-        }
-        .cake-layer {
-            position: absolute;
-            left: 50%;
-            border: 2px solid rgba(112, 65, 59, 0.18);
-            border-radius: 22px 22px 14px 14px;
-            overflow: hidden;
-            transform: translateX(-50%);
-            box-shadow:
-                inset 0 -13px 18px rgba(112, 65, 59, 0.14),
-                inset 0 5px 9px rgba(255, 255, 255, 0.25),
-                0 8px 12px rgba(94, 51, 58, 0.12);
-        }
-        .cake-layer::before {
-            content: "";
-            position: absolute;
-            z-index: 3;
-            top: -2px;
-            left: 5px;
-            right: 5px;
-            height: 20px;
-            border-radius: 17px 17px 45% 45%;
-            background: linear-gradient(180deg, #fffdf7, var(--cream));
-            box-shadow: 0 5px 0 rgba(255, 255, 255, 0.3);
-        }
-        .cake-layer::after {
-            content: "";
-            position: absolute;
-            z-index: 2;
-            top: 11px;
-            left: 11px;
-            right: 11px;
-            height: 27px;
-            background:
-                radial-gradient(circle at 10px 0, var(--cream) 0 9px, transparent 10px)
-                0 0 / 42px 27px repeat-x;
-            opacity: 0.98;
-        }
-        .cake-layer.bottom {
-            bottom: 34px;
-            width: 260px;
-            height: 78px;
-            background: linear-gradient(180deg, #f49ba5 0%, #df6f7b 52%, #c95566 100%);
-        }
-        .cake-layer.middle {
-            bottom: 104px;
-            width: 218px;
-            height: 66px;
-            background: linear-gradient(180deg, #91cabf 0%, #5aa091 54%, #3f7d72 100%);
-        }
-        .cake-layer.top {
-            bottom: 162px;
-            width: 174px;
-            height: 58px;
-            background: linear-gradient(180deg, #f7d783 0%, #dda94b 56%, #c48c2f 100%);
-        }
-        .cake-piping {
-            position: absolute;
-            z-index: 4;
-            left: 14px;
-            right: 14px;
-            bottom: 8px;
-            height: 9px;
-            background:
-                radial-gradient(circle, rgba(255, 255, 255, 0.82) 0 3px, transparent 4px)
-                0 0 / 22px 9px repeat-x;
-        }
-        .cake-sprinkles {
-            position: absolute;
-            z-index: 4;
-            top: 40px;
-            left: 30px;
-            width: 5px;
-            height: 12px;
-            border-radius: 5px;
-            background: #fff2a6;
-            rotate: 24deg;
-            box-shadow:
-                28px 7px 0 #f9d7e5,
-                56px -3px 0 #bce8dd,
-                84px 8px 0 #fff1ab,
-                112px -2px 0 #f7c8d8,
-                142px 6px 0 #c5e9df,
-                172px -1px 0 #fff0a4;
-        }
-        .cake-layer.middle .cake-sprinkles {
-            top: 36px;
-            left: 25px;
-            box-shadow:
-                27px 6px 0 #fff0a4,
-                54px -2px 0 #f7c8d8,
-                82px 7px 0 #d5f0e9,
-                110px -3px 0 #ffe59b,
-                139px 5px 0 #f6c6d7;
-        }
-        .cake-layer.top .cake-sprinkles {
-            top: 32px;
-            left: 23px;
-            box-shadow:
-                27px 5px 0 #f7c8d8,
-                55px -3px 0 #d5f0e9,
-                84px 6px 0 #fff0a4,
-                112px -2px 0 #f4bfd3;
-        }
-        .cake-garnish {
-            position: absolute;
-            z-index: 6;
-            left: 82px;
-            bottom: 209px;
-            display: flex;
-            justify-content: space-between;
-            width: 156px;
-            pointer-events: none;
-        }
-        .cake-garnish i {
+        .birthday-cake-art {
             display: block;
-            width: 17px;
-            height: 13px;
-            border: 2px solid rgba(112, 65, 59, 0.1);
-            border-radius: 50% 50% 44% 44%;
-            background: linear-gradient(180deg, #fff, #f9e5d7);
-            box-shadow: 0 4px 0 rgba(214, 166, 75, 0.23);
+            width: 100%;
+            height: 100%;
+            overflow: visible;
         }
-        .cake-garnish i:first-child,
-        .cake-garnish i:last-child {
-            background: linear-gradient(180deg, #f48a9b, #c84f65);
-            box-shadow: 0 4px 0 rgba(142, 51, 70, 0.2);
+        .candle-halo {
+            opacity: .85;
+            transition: opacity .35s ease;
         }
-        .number-candle {
-            position: absolute;
-            z-index: 5;
-            bottom: 210px;
-            width: 48px;
-            height: 62px;
-            color: var(--berry);
-            font-family: Georgia, "Times New Roman", serif;
-            font-size: 64px;
-            font-weight: 800;
-            line-height: 1;
-            text-align: center;
-            -webkit-text-stroke: 2px var(--cream);
-            paint-order: stroke fill;
-            text-shadow: 0 5px 0 rgba(214, 166, 75, 0.35), 0 8px 12px rgba(86, 57, 65, 0.18);
-        }
-        .number-candle.first { left: 105px; }
-        .number-candle.second { right: 105px; }
         .flame {
-            position: absolute;
-            left: 50%;
-            bottom: calc(100% + 7px);
-            width: 18px;
-            height: 25px;
-            border-radius: 70% 35% 65% 35%;
-            background: radial-gradient(circle at 55% 65%, #fff7b2 0 18%, #ffc84d 30%, #f17842 74%);
-            filter: drop-shadow(0 0 9px rgba(255, 166, 60, 0.85));
-            transform: translateX(-50%) rotate(45deg);
-            transform-origin: center bottom;
-            animation: flameFlicker 0.42s ease-in-out infinite alternate;
-            transition: opacity 0.35s ease, scale 0.35s ease;
+            transform-box: fill-box;
+            transform-origin: 50% 100%;
+            animation: flameFlicker .48s ease-in-out infinite alternate;
+            filter: drop-shadow(0 0 5px rgba(255, 173, 64, .7));
         }
+        .number-candle.second .flame { animation-delay: -.23s; }
         @keyframes flameFlicker {
-            from { scale: 0.94 1.04; rotate: -2deg; }
-            to { scale: 1.08 0.92; rotate: 4deg; }
+            from { transform: rotate(-5deg) scale(.93, 1.07); }
+            to { transform: rotate(6deg) scale(1.06, .94); }
         }
         .smoke {
-            position: absolute;
-            left: 50%;
-            bottom: calc(100% + 10px);
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(101, 111, 111, 0.42);
+            fill: none;
+            stroke: #8b7d79;
+            stroke-width: 2.2;
+            stroke-linecap: round;
+            stroke-dasharray: 120;
+            stroke-dashoffset: 120;
             opacity: 0;
-            transform: translateX(-50%);
+            filter: blur(.5px);
         }
-        body.candles-out .flame { opacity: 0; scale: 0.2; animation: none; }
-        body.candles-out .smoke { animation: smokeRise 1.55s ease-out forwards; }
-        body.candles-out .number-candle.second .smoke { animation-delay: 0.12s; }
+        .smoke-trail { stroke: #b9a49a; stroke-width: 3; }
+        .wick-ember { opacity: 0; }
+        body.candles-out .flame { animation: flameBlowOut .42s ease-out both; }
+        body.candles-out .number-candle.second .flame { animation-delay: .09s; }
+        body.candles-out .candle-halo { opacity: 0; }
+        body.candles-out .cake-dock::after { opacity: .35; }
+        body.candles-out .smoke { animation: smokeRise 1.8s ease-out .25s both; }
+        body.candles-out .smoke-trail { animation-delay: .48s; }
+        body.candles-out .number-candle.second .smoke { animation-delay: .38s; }
+        body.candles-out .number-candle.second .smoke-trail { animation-delay: .6s; }
+        body.candles-out .wick-ember { animation: emberFade 1.5s ease-out .2s both; }
+        @keyframes flameBlowOut {
+            0% { opacity: 1; transform: rotate(0) scale(1); }
+            45% { opacity: .85; transform: translate(9px, -1px) rotate(48deg) scale(1.35, .5); }
+            100% { opacity: 0; transform: translate(17px, 0) rotate(70deg) scale(.12, .04); }
+        }
         @keyframes smokeRise {
-            0% { opacity: 0; transform: translate(-50%, 0) scale(0.6); }
-            25% { opacity: 0.55; }
-            100% { opacity: 0; transform: translate(-25%, -62px) scale(2.3); }
+            0% { opacity: 0; transform: translate(0, 3px) scale(.7); stroke-dashoffset: 120; }
+            18% { opacity: .8; }
+            65% { opacity: .5; }
+            100% { opacity: 0; transform: translate(15px, -48px) scale(1.25); stroke-dashoffset: 0; }
+        }
+        @keyframes emberFade {
+            0%, 30% { opacity: 1; }
+            100% { opacity: 0; }
         }
         body.celebration-ready .cake-dock {
-            top: 18px;
+            top: calc(18px + env(safe-area-inset-top, 0px));
             left: 100%;
             width: 102px;
-            height: 102px;
-            transform: translateX(calc(-100% - 18px));
+            transform: translateX(calc(-100% - 18px - env(safe-area-inset-right, 0px)));
         }
         body.celebration-ready .cake-dock::before { opacity: 1; }
+        body.celebration-ready .cake-dock::after { opacity: 0; }
         body.celebration-ready .cake-scene {
-            animation: none;
-            transform: translate(5px, 7px) scale(0.29);
             filter: drop-shadow(0 10px 12px rgba(103, 52, 56, 0.2));
         }
         .celebration-panel {
@@ -344,7 +212,7 @@
             justify-items: center;
             width: 100%;
             height: 100%;
-            padding: 82px 24px 34px;
+            padding: calc(82px + env(safe-area-inset-top, 0px)) 24px calc(34px + env(safe-area-inset-bottom, 0px));
             opacity: 0;
             transform: translateY(24px) scale(0.96);
             pointer-events: none;
@@ -804,15 +672,13 @@
             border: 0;
         }
         @media (max-width: 680px) {
-            .back-link { top: 14px; left: 14px; width: 40px; height: 40px; }
+            .back-link { top: calc(14px + env(safe-area-inset-top, 0px)); left: calc(14px + env(safe-area-inset-left, 0px)); width: 40px; height: 40px; }
             body.celebration-ready .cake-dock {
-                top: 12px;
+                top: calc(12px + env(safe-area-inset-top, 0px));
                 width: 84px;
-                height: 84px;
-                transform: translateX(calc(-100% - 12px));
+                transform: translateX(calc(-100% - 12px - env(safe-area-inset-right, 0px)));
             }
-            body.celebration-ready .cake-scene { transform: translate(3px, 5px) scale(0.24); }
-            .celebration-panel { padding: 66px 16px 20px; }
+            .celebration-panel { padding: calc(66px + env(safe-area-inset-top, 0px)) 16px calc(20px + env(safe-area-inset-bottom, 0px)); }
             .celebration-panel::before { width: min(110vw, 520px); }
             .age-number { font-size: clamp(88px, 29vw, 126px); }
             .birthday-date { margin: 13px 0 20px; font-size: 14px; letter-spacing: 3px; }
@@ -852,7 +718,7 @@
             .letter-body { font-size: 15px; }
         }
         @media (max-height: 680px) {
-            .celebration-panel { padding-top: 62px; }
+            .celebration-panel { padding-top: calc(62px + env(safe-area-inset-top, 0px)); }
             .age-number { font-size: 82px; }
             .birthday-date { margin: 9px 0 13px; }
             .letter-trigger { height: 104px; }
@@ -862,9 +728,11 @@
                 animation: none !important;
             }
             .cake-dock, .celebration-panel, .cake-scene { transition-duration: 0.01ms !important; }
+            body.candles-out .flame { opacity: 0; }
+            body.candles-out .smoke, body.candles-out .wick-ember { animation: none; }
         }
     </style>
-    <link rel="stylesheet" href="../assets/css/birthday-gifts.css?v=20261104-nine-grid">
+    <link rel="stylesheet" href="../assets/css/birthday-gifts.css?v=20261104-gift-lid-space">
 </head>
 <body>
     <canvas id="fallingHearts" aria-hidden="true"></canvas>
@@ -888,13 +756,119 @@
     <main id="birthdayStage" class="birthday-stage" aria-label="生日蛋糕，点击任意位置吹灭蜡烛">
         <div class="cake-dock" aria-hidden="true">
             <div class="cake-scene">
-                <div class="plate"></div>
-                <div class="cake-layer bottom"><span class="cake-piping"></span><span class="cake-sprinkles"></span></div>
-                <div class="cake-layer middle"><span class="cake-piping"></span><span class="cake-sprinkles"></span></div>
-                <div class="cake-layer top"><span class="cake-piping"></span><span class="cake-sprinkles"></span></div>
-                <div class="cake-garnish"><i></i><i></i><i></i><i></i></div>
-                <div class="number-candle first"><span>2</span><i class="flame"></i><i class="smoke"></i></div>
-                <div class="number-candle second"><span>2</span><i class="flame"></i><i class="smoke"></i></div>
+                <svg class="birthday-cake-art" xmlns="http://www.w3.org/2000/svg" viewBox="0 -64 320 392" fill="none" aria-hidden="true" focusable="false">
+                    <defs>
+                        <linearGradient id="cake-plate" x1="160" y1="272" x2="160" y2="304" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#F6FFFD"/><stop offset=".5" stop-color="#D5EDE4"/><stop offset="1" stop-color="#8CBBAA"/>
+                        </linearGradient>
+                        <linearGradient id="cake-rose" x1="44" y1="210" x2="276" y2="273" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#FAD1D1"/><stop offset=".48" stop-color="#EEA7B5"/><stop offset="1" stop-color="#CF7C94"/>
+                        </linearGradient>
+                        <linearGradient id="cake-mint" x1="68" y1="149" x2="252" y2="215" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#D1EADC"/><stop offset=".5" stop-color="#A7D1BD"/><stop offset="1" stop-color="#75AA94"/>
+                        </linearGradient>
+                        <linearGradient id="cake-gold" x1="94" y1="108" x2="226" y2="159" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#FCEBC2"/><stop offset=".5" stop-color="#F1D89C"/><stop offset="1" stop-color="#DBB66E"/>
+                        </linearGradient>
+                        <linearGradient id="cake-cream" x1="160" y1="110" x2="160" y2="249" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#FFFEF9"/><stop offset="1" stop-color="#FAE8D3"/>
+                        </linearGradient>
+                        <linearGradient id="cake-flame" x1="0" y1="-27" x2="0" y2="1" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#EF8546"/><stop offset=".52" stop-color="#FFBD54"/><stop offset="1" stop-color="#FFECA7"/>
+                        </linearGradient>
+                        <radialGradient id="cake-candle-light">
+                            <stop stop-color="#FFD988" stop-opacity=".68"/><stop offset="1" stop-color="#FFD988" stop-opacity="0"/>
+                        </radialGradient>
+                        <linearGradient id="cake-berry" x1="-9" y1="-9" x2="10" y2="14" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#F49AA1"/><stop offset=".5" stop-color="#D9617C"/><stop offset="1" stop-color="#AC3856"/>
+                        </linearGradient>
+                        <g id="cake-pearl">
+                            <circle r="3.8" fill="#FFF8EA" stroke="#EACFB5" stroke-width=".6"/>
+                            <circle cx="-1" cy="-1.2" r="1.2" fill="#FFF"/>
+                        </g>
+                        <g id="cake-strawberry">
+                            <path d="M-10-4C-13 4-5 14 0 16C5 14 13 4 10-4C7-11-7-11-10-4Z" fill="url(#cake-berry)" stroke="#B9435F" stroke-width="1"/>
+                            <path d="M0-5L-9-10L-4-10L-4-15L1-11L6-14L5-9L11-9L3-5Z" fill="#4C9477"/>
+                            <path d="M-6-1L-5 1M3-2L4 0M-2 5L-1 7M6 4L5 6M0 11L1 12" stroke="#FFE8BB" stroke-width="1.6" stroke-linecap="round"/>
+                            <path d="M-7-3C-9 0-7 3-6 4" stroke="#FFC4C6" stroke-width="1.8" stroke-linecap="round"/>
+                        </g>
+                        <g id="cake-number-two" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M0 9C0-4 23-4 23 9C23 16 15 20 9 25L0 33H23" stroke="#C56981" stroke-width="13"/>
+                            <path d="M0 9C0-4 23-4 23 9C23 16 15 20 9 25L0 33H23" stroke="#F4B1C0" stroke-width="9"/>
+                            <path d="M1 6C4-1 17-1 20 5M17 18L12 22M2 32H18" stroke="#FFF0E9" stroke-width="2.5"/>
+                            <path d="M10-8V-14" stroke="#805B51" stroke-width="2"/>
+                        </g>
+                        <g id="cake-cream-swirl">
+                            <path d="M-10 3C-12-2-5-4-5-7C-5-11 0-11 1-17C7-12 5-7 9-3C14 3 7 7 0 7C-5 7-9 6-10 3Z" fill="#FFFAED" stroke="#E8D5B8" stroke-width="1"/>
+                            <path d="M-6 1C1 3 6 0 5-4M-3-6C1-5 3-7 3-9" stroke="#EEDCC1" stroke-width="1.4" stroke-linecap="round"/>
+                        </g>
+                    </defs>
+                    <ellipse cx="160" cy="298" rx="139" ry="12" fill="#715347" opacity=".09"/>
+                    <path d="M14 281C14 265 306 265 306 281V286C306 309 14 309 14 286Z" fill="url(#cake-plate)" stroke="#8DB9A8" stroke-width="1.5"/>
+                    <ellipse cx="160" cy="280" rx="146" ry="22" fill="#EFF9EF" stroke="#F8FFFC" stroke-width="2"/>
+                    <ellipse cx="160" cy="279" rx="129" ry="15" stroke="#D9BE83" stroke-width="1.5"/>
+                    <path d="M44 212C44 189 276 189 276 212V263C276 290 44 290 44 263Z" fill="url(#cake-rose)" stroke="#CF8E9B" stroke-width="1.2"/>
+                    <path d="M45 250C92 271 227 271 275 250" stroke="#FFECE1" stroke-width="9"/>
+                    <path d="M47 258C98 279 224 278 273 258" stroke="#EBA2A9" stroke-width="2"/>
+                    <ellipse cx="160" cy="212" rx="116" ry="25" fill="#FFF5E5"/>
+                    <path d="M44 212C88 234 233 234 276 212V226C276 235 265 237 260 231V227C260 221 249 222 249 230V239C249 250 234 250 234 240V231C234 222 220 224 220 233V236C220 245 207 245 207 235V231C207 224 192 225 192 233V246C192 258 176 258 176 246V235C176 227 162 227 162 235V238C162 247 148 247 148 237V235C148 227 135 227 135 235V244C135 254 119 254 119 243V231C119 224 105 223 105 231V235C105 246 90 246 90 234V227C90 221 76 219 76 226V231C76 240 62 238 62 228V222C57 222 48 220 44 217Z" fill="url(#cake-cream)" stroke="#EFD9C5" stroke-width="1" stroke-linejoin="round"/>
+                    <path d="M68 153C68 133 252 133 252 153V204C252 226 68 226 68 204Z" fill="url(#cake-mint)" stroke="#89B59C" stroke-width="1.2"/>
+                    <path d="M70 191C108 206 212 206 250 191" stroke="#E8F3DF" stroke-width="4"/>
+                    <ellipse cx="160" cy="153" rx="92" ry="21" fill="#FFFAED"/>
+                    <path d="M68 153C108 171 214 171 252 153V165C252 172 242 174 238 167V164C238 159 227 161 227 167V175C227 185 214 184 214 175V170C214 163 202 165 202 172V176C202 184 189 184 189 175V172C189 165 176 166 176 174V183C176 193 162 193 162 182V174C162 167 149 168 149 175V177C149 185 136 185 136 176V171C136 164 123 163 123 171V178C123 188 110 187 110 177V167C110 160 97 159 97 166V170C97 179 83 177 83 168V162C76 161 71 159 68 157Z" fill="url(#cake-cream)" stroke="#ECDCC6" stroke-width="1" stroke-linejoin="round"/>
+                    <path d="M94 110C94 94 226 94 226 110V151C226 169 94 169 94 151Z" fill="url(#cake-gold)" stroke="#D1AF77" stroke-width="1.2"/>
+                    <ellipse cx="160" cy="110" rx="66" ry="17" fill="#FFFAEB" stroke="#EDDCC2" stroke-width="1"/>
+                    <path d="M94 110C125 124 198 124 226 110V120C226 128 215 129 215 121V118C215 114 205 116 205 121V128C205 137 193 137 193 128V124C193 118 182 120 182 126V136C182 147 169 147 169 136V127C169 121 159 121 159 128V130C159 139 147 139 147 130V126C147 120 136 119 136 125V133C136 142 124 142 124 132V122C124 116 113 115 113 120V123C113 130 102 129 102 121V116Z" fill="url(#cake-cream)" stroke="#EDDBC0" stroke-width="1" stroke-linejoin="round"/>
+                    <g stroke-linecap="round" stroke-width="3">
+                        <path d="M65 244L69 248M100 253L98 258M143 260L147 257M183 260L185 255M220 254L224 258M252 246L255 250" stroke="#FFF2BB"/>
+                        <path d="M82 199L86 203M119 207L120 202M157 208L161 204M196 206L194 201M232 198L235 202" stroke="#FCE3E3"/>
+                        <path d="M109 148L112 152M147 155L150 151M183 154L185 150M211 146L214 150" stroke="#FFFEF5"/>
+                    </g>
+                    <g>
+                        <use href="#cake-pearl" x="58" y="265"/><use href="#cake-pearl" x="73" y="270"/>
+                        <use href="#cake-pearl" x="90" y="274"/><use href="#cake-pearl" x="108" y="277"/>
+                        <use href="#cake-pearl" x="127" y="279"/><use href="#cake-pearl" x="147" y="280"/>
+                        <use href="#cake-pearl" x="167" y="280"/><use href="#cake-pearl" x="187" y="279"/>
+                        <use href="#cake-pearl" x="207" y="277"/><use href="#cake-pearl" x="226" y="274"/>
+                        <use href="#cake-pearl" x="244" y="270"/><use href="#cake-pearl" x="262" y="265"/>
+                    </g>
+                    <use href="#cake-cream-swirl" transform="translate(88 143) scale(.8)"/>
+                    <use href="#cake-cream-swirl" transform="translate(232 143) scale(.8)"/>
+                    <use href="#cake-strawberry" transform="translate(65 204) rotate(-20) scale(.85)"/>
+                    <use href="#cake-strawberry" transform="translate(254 203) rotate(22) scale(.85)"/>
+                    <use href="#cake-cream-swirl" transform="translate(107 101) scale(.75)"/>
+                    <use href="#cake-cream-swirl" transform="translate(211 100) scale(.75)"/>
+                    <use href="#cake-strawberry" transform="translate(115 101) rotate(-18) scale(.72)"/>
+                    <use href="#cake-strawberry" transform="translate(204 102) rotate(18) scale(.72)"/>
+                    <g fill="#CDA25D" opacity=".8">
+                        <circle cx="83" cy="247" r="1.5"/><circle cx="122" cy="254" r="1.3"/>
+                        <circle cx="205" cy="250" r="1.6"/><circle cx="242" cy="239" r="1.3"/>
+                        <path d="M97 188l3-2 2 3-3 2zM213 188l3 1-1 3-3-1zM158 151l3-1 1 3-3 1z"/>
+                    </g>
+                    <path d="M139 88V106M176 88V106" stroke="#C49A62" stroke-width="3" stroke-linecap="round"/>
+                    <use href="#cake-number-two" x="128" y="52"/>
+                    <use href="#cake-number-two" x="165" y="52"/>
+                    <g class="number-candle first" transform="translate(138 37)">
+                        <circle class="candle-halo" cy="-9" r="35" fill="url(#cake-candle-light)"/>
+                        <g class="flame">
+                            <path d="M0-27C-1-17-10-13-8-5C-7 4 7 4 8-5C10-12 4-19 0-27Z" fill="url(#cake-flame)"/>
+                            <path d="M0-12C-5-6-4 0 0 1C5-1 4-6 0-12Z" fill="#FFF9DB"/>
+                        </g>
+                        <circle class="wick-ember" r="2.2" fill="#ED915B"/>
+                        <g class="smoke"><path pathLength="120" d="M0 0C-10-8 10-15 1-23S-5-35 2-42"/></g>
+                        <g class="smoke smoke-trail"><path pathLength="120" d="M1 1C9-8-7-13 0-21S7-31 2-36"/></g>
+                    </g>
+                    <g class="number-candle second" transform="translate(175 37)">
+                        <circle class="candle-halo" cy="-9" r="35" fill="url(#cake-candle-light)"/>
+                        <g class="flame">
+                            <path d="M0-27C-1-17-10-13-8-5C-7 4 7 4 8-5C10-12 4-19 0-27Z" fill="url(#cake-flame)"/>
+                            <path d="M0-12C-5-6-4 0 0 1C5-1 4-6 0-12Z" fill="#FFF9DB"/>
+                        </g>
+                        <circle class="wick-ember" r="2.2" fill="#ED915B"/>
+                        <g class="smoke"><path pathLength="120" d="M0 0C-8-7 8-15 1-22S-6-32 0-41"/></g>
+                        <g class="smoke smoke-trail"><path pathLength="120" d="M0 1C8-6-7-12 0-20S8-30 2-36"/></g>
+                    </g>
+                </svg>
             </div>
         </div>
 
@@ -1251,7 +1225,7 @@
             extinguished = true;
             document.body.classList.add('candles-out');
             status.textContent = '蜡烛已经熄灭';
-            window.setTimeout(revealCelebration, reduced ? 80 : 1150);
+            window.setTimeout(revealCelebration, reduced ? 80 : 2100);
         }
 
         function openDialog(dialog, focusTarget) {

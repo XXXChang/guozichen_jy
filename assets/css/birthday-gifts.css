@@ -145,7 +145,7 @@
     min-width: 0;
     min-height: 0;
     max-height: calc(100vh - var(--gift-dialog-gap) - var(--gift-dialog-gap));
-    max-height: min(580px, calc(100dvh - var(--gift-dialog-gap) - var(--gift-dialog-gap)));
+    max-height: min(660px, calc(100dvh - var(--gift-dialog-gap) - var(--gift-dialog-gap)));
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, .95);
     border-radius: 26px;
@@ -209,12 +209,12 @@
 }
 .gift-showcase {
     display: grid;
-    flex: 1 0 auto;
+    flex: none;
     align-items: center;
     grid-template-columns: minmax(0, 1fr);
     min-height: var(--gift-hero-height);
-    margin-top: 12px;
-    margin-bottom: 24px;
+    margin-top: 52px;
+    margin-bottom: 36px;
 }
 .gift-paper.is-revealed .gift-showcase {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -222,8 +222,9 @@
 }
 .gift-hero {
     position: relative;
-    display: grid;
-    place-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     height: var(--gift-hero-height);
 }
@@ -245,9 +246,9 @@
     font-size: 26px;
     transform: rotate(15deg);
 }
-.gift-hero .gift-box { margin-top: 14px; scale: .8; }
+.gift-hero .gift-box { margin: 0; scale: .8; }
 .gift-paper.is-drawing .gift-hero .gift-box { animation: giftShake .32s ease-in-out infinite; }
-.gift-paper.is-revealed .gift-box-lid { transform: translate(-16px, -30px) rotate(-22deg); }
+.gift-paper.is-revealed .gift-box-lid { transform: translate(-12px, -22px) rotate(-18deg); }
 @keyframes giftShake {
     0%, 100% { transform: rotate(-3deg); }
     50% { transform: rotate(3deg) translateY(-3px); }
@@ -389,6 +390,7 @@
         border-radius: 24px;
     }
     .gift-content { padding: 22px 18px 0; }
+    .gift-showcase { margin-top: 48px; margin-bottom: 32px; }
     .gift-footer { padding: 0 18px 16px; }
     .gift-close { width: 30px; height: 30px; font-size: 22px; }
     .gift-kicker { padding-inline: 16px; font-size: 8px; letter-spacing: 1.5px; }
@@ -408,14 +410,14 @@
     .gift-dialog { --gift-dialog-gap: 12px; }
     .gift-paper { --gift-hero-height: 64px; }
     .gift-content { padding-top: 16px; }
-    .gift-showcase { margin-bottom: 18px; }
+    .gift-showcase { margin-top: 36px; margin-bottom: 28px; }
     .gift-footer { padding-bottom: 12px; }
     .gift-kicker { display: none; }
     .gift-hero::before { width: 68px; height: 68px; }
     .gift-hero .gift-box { scale: .6; }
-    .gift-card { min-height: 46px; gap: 3px; padding: 4px 5px; }
+    .gift-card { min-height: 44px; gap: 3px; padding: 4px 5px; }
+    .gift-card:not(.gift-card-surprise) .gift-card-number { display: none; }
     .gift-paper.has-surprise .gift-card:not(.gift-card-surprise) { min-height: 40px; }
-    .gift-paper.has-surprise .gift-card:not(.gift-card-surprise) .gift-card-number { display: none; }
     .gift-card-surprise { min-height: 36px; padding-block: 4px; }
     .gift-test-controls { margin-top: 4px; padding-top: 3px; }
 }
