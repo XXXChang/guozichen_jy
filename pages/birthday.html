@@ -864,7 +864,7 @@
             .cake-dock, .celebration-panel, .cake-scene { transition-duration: 0.01ms !important; }
         }
     </style>
-    <link rel="stylesheet" href="../assets/css/birthday-gifts.css?v=20261104-six-second-surprise">
+    <link rel="stylesheet" href="../assets/css/birthday-gifts.css?v=20261104-gift-layout">
 </head>
 <body>
     <canvas id="fallingHearts" aria-hidden="true"></canvas>
@@ -943,14 +943,13 @@
         </article>
     </div>
 
-    <div id="giftDialog" class="gift-dialog" role="dialog" aria-modal="true" aria-labelledby="giftTitle" aria-describedby="giftIntro" hidden>
+    <div id="giftDialog" class="gift-dialog" role="dialog" aria-modal="true" aria-labelledby="giftTitle" hidden>
         <article id="giftPaper" class="gift-paper">
             <button id="giftClose" class="gift-close" type="button" aria-label="关闭生日礼物">×</button>
             <div class="gift-content">
                 <header class="gift-heading">
                     <p class="gift-kicker">A LITTLE SURPRISE FOR YOU</p>
                     <h2 id="giftTitle" class="gift-title">拆一份生日惊喜</h2>
-                    <p id="giftIntro" class="gift-intro">把今天的好运，装进一份礼物里。</p>
                 </header>
                 <div class="gift-showcase">
                     <div class="gift-hero" aria-hidden="true">
@@ -961,7 +960,6 @@
                         </span>
                     </div>
                     <div id="giftResult" class="gift-result" hidden>
-                        <p id="giftResultLabel">这份惊喜属于你</p>
                         <h3 id="giftResultName"></h3>
                     </div>
                 </div>
@@ -1065,7 +1063,6 @@
         const giftPool = document.getElementById('giftPool');
         const giftDraw = document.getElementById('giftDraw');
         const giftResult = document.getElementById('giftResult');
-        const giftResultLabel = document.getElementById('giftResultLabel');
         const giftResultName = document.getElementById('giftResultName');
         const giftStatus = document.getElementById('giftStatus');
         const giftReset = document.getElementById('giftReset');
@@ -1140,7 +1137,6 @@
             giftPaper.classList.toggle('is-revealed', Boolean(drawnPrize));
             giftResult.hidden = !drawnPrize;
             giftResultName.textContent = drawnPrize?.name || '';
-            giftResultLabel.textContent = giftState.surpriseUnlocked ? '特别的惊喜，只属于你' : '这份惊喜属于你';
             giftDraw.disabled = !prizes.length;
             giftDraw.textContent = giftState.remaining === 0
                 ? '收好这些惊喜'
@@ -1157,7 +1153,7 @@
             if (!giftState.saved && drawnPrize) {
                 giftStatus.textContent = '本次打开期间会为你保留抽取进度。';
             } else if (giftState.surpriseUnlocked) {
-                giftStatus.textContent = '这份特别的惊喜，只为你准备。';
+                giftStatus.textContent = '';
             } else {
                 giftStatus.textContent = drawnPrize
                     ? `抽中了${drawnPrize.name}，再拆一份惊喜吧。`
