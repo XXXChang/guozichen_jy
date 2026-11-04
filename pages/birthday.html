@@ -1119,21 +1119,19 @@
             const alreadyVisible = giftCards.has(giftGame.surprisePrize.id);
             const card = addGiftCard(giftGame.surprisePrize, prizes.length, true);
             giftPaper.classList.add('has-surprise');
-            if (!animate) card.classList.add('without-entrance');
+            card.classList.add('without-entrance');
             if (animate && !alreadyVisible) {
                 giftPaper.classList.add('is-surprise-reveal');
-                giftStatus.textContent = '咦，怎么多出了一份礼物…';
-                giftDraw.textContent = '还有一份特别的惊喜…';
                 const content = giftPaper.querySelector('.gift-content');
                 content.scrollTo({ top: content.scrollHeight, behavior: reduced ? 'auto' : 'smooth' });
             }
         }
 
-        function showGiftResult() {
-            if (giftState.surpriseUnlocked) revealSurprise();
+        function showGiftResult(animateSurprise = false) {
+            giftPaper.classList.remove('is-surprise-reveal');
+            if (giftState.surpriseUnlocked) revealSurprise(animateSurprise);
             else removeSurprise();
             updateGiftTestCount();
-            giftPaper.classList.remove('is-surprise-reveal');
             giftPaper.classList.toggle('is-revealed', Boolean(drawnPrize));
             giftResult.hidden = !drawnPrize;
             giftResultName.textContent = drawnPrize?.name || '';
@@ -1274,7 +1272,7 @@
             drawing = false;
             giftPaper.classList.remove('is-drawing');
             giftPool.setAttribute('aria-busy', 'false');
-            showGiftResult();
+            showGiftResult(celebrate && !reduced && !giftDialog.hidden);
             if (celebrate && !giftDialog.hidden) {
                 const rect = giftResult.getBoundingClientRect();
                 spawn(rect.left + rect.width / 2, rect.top + rect.height / 2, reduced ? 5 : 18);
@@ -1305,36 +1303,38 @@
             giftCards.forEach((card, prizeId) => card.classList.toggle('is-active', prizeId === id));
         }
 
-        function runGiftLoop(pool, winnerId, rounds, onComplete) {
-            let step = 0;
-            const winnerIndex = pool.findIndex(prize => prize.id === winnerId);
-            const totalSteps = pool.length * rounds + winnerIndex + 1;
-            function advance() {
-                setActiveGift(pool[step % pool.length].id);
-                step++;
-                if (step >= totalSteps) {
-                    giftTimer = window.setTimeout(onComplete, 200);
-                    return;
-                }
-                const progress = step / totalSteps;
-                giftTimer = window.setTimeout(advance, 50 + 150 * Math.pow(progress, 3));
-            }
-            advance();
-        }
-
-        function waitForSurprise(onComplete) {
+        function runGiftLoop(pool, winnerId, duration, onComplete) {
             const round = activeGiftRound;
-            const revealAt = performance.now() + 6000;
+            const startedAt = performance.now();
+            const winnerIndex = pool.findIndex(prize => prize.id === winnerId);
+            const totalSteps = pool.length * 6 + winnerIndex + 1;
+            const weights = Array.from({ length: totalSteps }, (_, index) =>
+                50 + 150 * Math.pow(index / (totalSteps - 1), 3));
+            const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
             let step = 0;
+            let elapsedWeight = 0;
+
+            function complete() {
+                if (round !== activeGiftRound || !drawing) return;
+                onComplete();
+            }
+
             function advance() {
-                if (round !== activeGiftRound) return;
-                const remaining = revealAt - performance.now();
-                if (remaining <= 0) {
-                    onComplete();
+                if (round !== activeGiftRound || !drawing) return;
+                if (performance.now() - startedAt >= duration) {
+                    complete();
                     return;
                 }
-                if (!reduced) setActiveGift(prizes[step++ % prizes.length].id);
-                giftTimer = window.setTimeout(advance, Math.min(90, remaining));
+                setActiveGift(pool[step % pool.length].id);
+                elapsedWeight += weights[step++];
+                const nextAt = startedAt + duration * elapsedWeight / totalWeight;
+                giftTimer = window.setTimeout(step >= totalSteps ? complete : advance,
+                    Math.max(0, nextAt - performance.now()));
+            }
+
+            if (reduced) {
+                giftTimer = window.setTimeout(complete, duration);
+                return;
             }
             advance();
         }
@@ -1362,22 +1362,10 @@
             giftPaper.classList.add('is-drawing');
             giftPool.setAttribute('aria-busy', 'true');
             if (outcome.isSurprise) {
-                // 从第三次点击开始等待六秒，期间只轮转原来的六格。
-                waitForSurprise(() => {
-                    revealSurprise(!reduced);
-                    if (reduced) {
-                        finishGiftDraw();
-                        return;
-                    }
-                    setActiveGift(giftGame.surprisePrize.id);
-                    giftTimer = window.setTimeout(() => {
-                        runGiftLoop([...prizes, giftGame.surprisePrize], drawnPrize.id, 2, finishGiftDraw);
-                    }, 1000);
-                });
-            } else if (reduced) {
-                finishGiftDraw();
+                // 六秒内只轮询原来的六格，最后经过第六格，第七格出现时直接抽中。
+                runGiftLoop(prizes, prizes[prizes.length - 1].id, 6000, finishGiftDraw);
             } else {
-                runGiftLoop(prizes, drawnPrize.id, 3, finishGiftDraw);
+                runGiftLoop(prizes, drawnPrize.id, 5000, finishGiftDraw);
             }
         }
 
