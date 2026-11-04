@@ -946,29 +946,37 @@
     <div id="giftDialog" class="gift-dialog" role="dialog" aria-modal="true" aria-labelledby="giftTitle" aria-describedby="giftIntro" hidden>
         <article id="giftPaper" class="gift-paper">
             <button id="giftClose" class="gift-close" type="button" aria-label="关闭生日礼物">×</button>
-            <p class="gift-kicker">A LITTLE SURPRISE FOR YOU</p>
-            <h2 id="giftTitle" class="gift-title">拆一份生日惊喜</h2>
-            <p id="giftIntro" class="gift-intro">把今天的好运，装进一份礼物里。</p>
-            <div class="gift-hero" aria-hidden="true">
-                <span class="gift-box">
-                    <span class="gift-box-body"></span>
-                    <span class="gift-box-lid"><i class="gift-bow"></i></span>
-                    <i class="gift-box-tag">♥</i>
-                </span>
-            </div>
-            <div id="giftResult" class="gift-result" hidden>
-                <p>这份惊喜属于你</p>
-                <h3 id="giftResultName"></h3>
-            </div>
-            <section aria-labelledby="giftPoolTitle">
-                <div class="gift-pool-heading">
-                    <h3 id="giftPoolTitle">生日礼物清单</h3>
-                    <span id="giftPoolCount"></span>
+            <div class="gift-content">
+                <header class="gift-heading">
+                    <p class="gift-kicker">A LITTLE SURPRISE FOR YOU</p>
+                    <h2 id="giftTitle" class="gift-title">拆一份生日惊喜</h2>
+                    <p id="giftIntro" class="gift-intro">把今天的好运，装进一份礼物里。</p>
+                </header>
+                <div class="gift-showcase">
+                    <div class="gift-hero" aria-hidden="true">
+                        <span class="gift-box">
+                            <span class="gift-box-body"></span>
+                            <span class="gift-box-lid"><i class="gift-bow"></i></span>
+                            <i class="gift-box-tag">♥</i>
+                        </span>
+                    </div>
+                    <div id="giftResult" class="gift-result" hidden>
+                        <p>这份惊喜属于你</p>
+                        <h3 id="giftResultName"></h3>
+                    </div>
                 </div>
-                <ul id="giftPool" class="gift-pool"></ul>
-            </section>
-            <button id="giftDraw" class="gift-draw" type="button">拆开生日礼物</button>
-            <p id="giftStatus" class="gift-status" role="status" aria-live="polite">每一份礼物，都藏着一份心意。</p>
+                <section class="gift-pool-section" aria-labelledby="giftPoolTitle">
+                    <div class="gift-pool-heading">
+                        <h3 id="giftPoolTitle">生日礼物清单</h3>
+                        <span id="giftPoolCount"></span>
+                    </div>
+                    <ul id="giftPool" class="gift-pool"></ul>
+                </section>
+            </div>
+            <div class="gift-footer">
+                <button id="giftDraw" class="gift-draw" type="button">拆开生日礼物</button>
+                <p id="giftStatus" class="gift-status" role="status" aria-live="polite">每一份礼物，都藏着一份心意。</p>
+            </div>
         </article>
     </div>
 
