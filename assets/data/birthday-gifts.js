@@ -1,4 +1,4 @@
-// 将 name 替换为真实礼物名称即可；奖池或版本变化后，会自动开始新的一次抽取。
+// 修改礼物名称即可；奖池或版本变化后，会开始新的一轮（三次抽取）。
 window.BIRTHDAY_GIFTS = {
     version: 'birthday-22-preview-1',
     prizes: [
@@ -8,5 +8,7 @@ window.BIRTHDAY_GIFTS = {
         { id: 'gift-04', name: '礼物四' },
         { id: 'gift-05', name: '礼物五' },
         { id: 'gift-06', name: '礼物六' }
-    ]
+    ],
+    // 第三次抽取过程中才出现，不提前放进普通奖池。
+    surprisePrize: { id: 'gift-07', name: '礼物七' }
 };

@@ -864,7 +864,7 @@
             .cake-dock, .celebration-panel, .cake-scene { transition-duration: 0.01ms !important; }
         }
     </style>
-    <link rel="stylesheet" href="../assets/css/birthday-gifts.css?v=20261104-popup">
+    <link rel="stylesheet" href="../assets/css/birthday-gifts.css?v=20261104-third-surprise">
 </head>
 <body>
     <canvas id="fallingHearts" aria-hidden="true"></canvas>
@@ -961,7 +961,7 @@
                         </span>
                     </div>
                     <div id="giftResult" class="gift-result" hidden>
-                        <p>这份惊喜属于你</p>
+                        <p id="giftResultLabel">这份惊喜属于你</p>
                         <h3 id="giftResultName"></h3>
                     </div>
                 </div>
@@ -980,7 +980,8 @@
         </article>
     </div>
 
-    <script src="../assets/data/birthday-gifts.js"></script>
+    <script src="../assets/data/birthday-gifts.js?v=20261104-third-surprise"></script>
+    <script src="../assets/js/birthday-gifts.js?v=20261104-third-surprise"></script>
     <script>
     (function () {
         const canvas = document.getElementById('fallingHearts');
@@ -1064,27 +1065,32 @@
         const giftPool = document.getElementById('giftPool');
         const giftDraw = document.getElementById('giftDraw');
         const giftResult = document.getElementById('giftResult');
+        const giftResultLabel = document.getElementById('giftResultLabel');
         const giftResultName = document.getElementById('giftResultName');
         const giftStatus = document.getElementById('giftStatus');
         const giftConfig = window.BIRTHDAY_GIFTS || { version: '', prizes: [] };
-        const prizes = giftConfig.prizes.filter(prize => prize.id && prize.name);
-        const giftStorageKey = 'jy-gzc-birthday-gift';
-        const giftSignature = JSON.stringify([giftConfig.version, prizes]);
+        let giftStorage;
+        try { giftStorage = window.localStorage; } catch { /* 无存储权限时在本次打开中保留进度。 */ }
+        const giftGame = window.BirthdayGiftDraw.create(giftConfig, giftStorage);
+        const prizes = giftGame.prizes;
+        const giftCards = new Map();
+        let giftState = giftGame.read();
         const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         let particles = [];
         let extinguished = false;
         let lastTouch = 0;
         let lastFocused = null;
-        let drawnPrize = null;
+        let drawnPrize = giftState.lastPrize;
         let drawing = false;
         let giftTimer = null;
-        let giftSaved = true;
-        const giftCards = prizes.map((prize, index) => {
+        function addGiftCard(prize, index, surprise = false) {
+            if (giftCards.has(prize.id)) return giftCards.get(prize.id);
             const card = document.createElement('li');
-            card.className = 'gift-card';
+            card.className = surprise ? 'gift-card gift-card-surprise' : 'gift-card';
+            card.dataset.prizeId = prize.id;
             const number = document.createElement('span');
             number.className = 'gift-card-number';
-            number.textContent = String(index + 1).padStart(2, '0');
+            number.textContent = (surprise ? '✦ ' : '') + String(index + 1).padStart(2, '0');
             const name = document.createElement('span');
             name.className = 'gift-card-name';
             name.textContent = prize.name;
@@ -1094,40 +1100,62 @@
             state.textContent = '已抽中';
             card.append(number, name, state);
             giftPool.append(card);
+            giftCards.set(prize.id, card);
             return card;
-        });
-        document.getElementById('giftPoolCount').textContent = `${prizes.length} 份惊喜 · 等概率`;
+        }
+        prizes.forEach((prize, index) => addGiftCard(prize, index));
 
-        function readGiftResult() {
-            try {
-                const saved = JSON.parse(localStorage.getItem(giftStorageKey));
-                return saved?.signature === giftSignature
-                    ? prizes.find(prize => prize.id === saved.prizeId) || null
-                    : null;
-            } catch {
-                return null;
+        function updateGiftPoolCount() {
+            document.getElementById('giftPoolCount').textContent = `${giftCards.size} 份惊喜`;
+        }
+
+        function revealSurprise(animate = false) {
+            const alreadyVisible = giftCards.has(giftGame.surprisePrize.id);
+            const card = addGiftCard(giftGame.surprisePrize, prizes.length, true);
+            giftPaper.classList.add('has-surprise');
+            if (!animate) card.classList.add('without-entrance');
+            updateGiftPoolCount();
+            if (animate && !alreadyVisible) {
+                giftPaper.classList.add('is-surprise-reveal');
+                giftStatus.textContent = '咦，怎么多出了一份礼物…';
+                giftDraw.textContent = '还有一份特别的惊喜…';
+                const content = giftPaper.querySelector('.gift-content');
+                content.scrollTo({ top: content.scrollHeight, behavior: reduced ? 'auto' : 'smooth' });
             }
         }
 
         function showGiftResult() {
+            if (giftState.surpriseUnlocked) revealSurprise();
+            updateGiftPoolCount();
+            giftPaper.classList.remove('is-surprise-reveal');
             giftPaper.classList.toggle('is-revealed', Boolean(drawnPrize));
             giftResult.hidden = !drawnPrize;
             giftResultName.textContent = drawnPrize?.name || '';
+            giftResultLabel.textContent = giftState.surpriseUnlocked ? '特别的惊喜，只属于你' : '这份惊喜属于你';
             giftDraw.disabled = !prizes.length;
-            giftDraw.textContent = drawnPrize ? '收好这份惊喜' : '拆开生日礼物';
+            giftDraw.textContent = giftState.remaining === 0
+                ? '收好这些惊喜'
+                : (drawnPrize ? '再拆一份惊喜' : '拆开生日礼物');
             giftTrigger.setAttribute('aria-label', drawnPrize ? '查看抽中的生日礼物' : '抽取生日礼物');
-            giftCards.forEach((card, index) => {
-                const winner = prizes[index].id === drawnPrize?.id;
+            giftCards.forEach((card, id) => {
+                const winner = id === drawnPrize?.id;
+                const collected = giftState.history.includes(id);
                 card.classList.remove('is-active');
                 card.classList.toggle('is-winner', winner);
-                card.querySelector('.gift-card-state').hidden = !winner;
+                card.classList.toggle('is-collected', collected);
+                card.querySelector('.gift-card-state').hidden = !collected;
             });
-            giftStatus.textContent = drawnPrize
-                ? (giftSaved ? `抽中了${drawnPrize.name}，这份惊喜已经为你留好。` : `抽中了${drawnPrize.name}，本次打开期间会为你保留结果。`)
-                : (prizes.length ? '每一份礼物，都藏着一份心意。' : '礼物正在准备中。');
+            if (!giftState.saved && drawnPrize) {
+                giftStatus.textContent = '本次打开期间会为你保留抽取进度。';
+            } else if (giftState.surpriseUnlocked) {
+                giftStatus.textContent = '这份特别的惊喜，只为你准备。';
+            } else {
+                giftStatus.textContent = drawnPrize
+                    ? `抽中了${drawnPrize.name}，再拆一份惊喜吧。`
+                    : (prizes.length ? '每一份礼物，都藏着一份心意。' : '礼物正在准备中。');
+            }
         }
 
-        drawnPrize = readGiftResult();
         showGiftResult();
 
         function resize() {
@@ -1253,52 +1281,64 @@
             closeDialog(giftDialog);
         }
 
+        function setActiveGift(id) {
+            giftCards.forEach((card, prizeId) => card.classList.toggle('is-active', prizeId === id));
+        }
+
+        function runGiftLoop(pool, winnerId, rounds, onComplete) {
+            let step = 0;
+            const winnerIndex = pool.findIndex(prize => prize.id === winnerId);
+            const totalSteps = pool.length * rounds + winnerIndex + 1;
+            function advance() {
+                setActiveGift(pool[step % pool.length].id);
+                step++;
+                if (step >= totalSteps) {
+                    giftTimer = window.setTimeout(onComplete, 200);
+                    return;
+                }
+                const progress = step / totalSteps;
+                giftTimer = window.setTimeout(advance, 50 + 150 * Math.pow(progress, 3));
+            }
+            advance();
+        }
+
         function drawGift() {
             if (drawing || !prizes.length) return;
-            if (drawnPrize) {
+            const outcome = giftGame.draw();
+            giftState = outcome;
+            if (!outcome.added) {
+                drawnPrize = giftState.lastPrize;
+                showGiftResult();
                 closeGift();
                 return;
             }
-            // 再次检查，避免另一个标签页已抽取后仍重新抽取。
-            drawnPrize = readGiftResult();
-            if (drawnPrize) {
-                showGiftResult();
-                return;
-            }
-            drawnPrize = prizes[Math.floor(Math.random() * prizes.length)];
-            // 先保存结果，动画中关闭或刷新也不会改变抽中的礼物。
-            try {
-                localStorage.setItem(giftStorageKey, JSON.stringify({
-                    signature: giftSignature,
-                    prizeId: drawnPrize.id
-                }));
-            } catch {
-                giftSaved = false;
-            }
+            drawnPrize = outcome.prize;
             drawing = true;
+            giftResult.hidden = true;
+            giftPaper.classList.remove('is-revealed', 'is-surprise-reveal');
+            giftCards.forEach(card => card.classList.remove('is-winner', 'is-active'));
             giftDraw.disabled = true;
             giftDraw.textContent = '正在挑选你的惊喜…';
             giftStatus.textContent = '礼物正在悄悄打开…';
             giftPaper.classList.add('is-drawing');
             giftPool.setAttribute('aria-busy', 'true');
             if (reduced) {
+                if (outcome.isSurprise) revealSurprise();
                 finishGiftDraw();
                 return;
             }
-            let step = 0;
-            const winnerIndex = prizes.indexOf(drawnPrize);
-            const totalSteps = prizes.length * 4 + winnerIndex + 1;
-            function advance() {
-                giftCards.forEach((card, index) => card.classList.toggle('is-active', index === step % prizes.length));
-                step++;
-                if (step >= totalSteps) {
-                    giftTimer = window.setTimeout(finishGiftDraw, 280);
-                    return;
-                }
-                const progress = step / totalSteps;
-                giftTimer = window.setTimeout(advance, 55 + 190 * Math.pow(progress, 3));
+            if (outcome.isSurprise) {
+                // 先照常转过六格，再让第七份礼物突然进入奖池。
+                runGiftLoop(prizes, prizes[prizes.length - 1].id, 1, () => {
+                    revealSurprise(true);
+                    setActiveGift(giftGame.surprisePrize.id);
+                    giftTimer = window.setTimeout(() => {
+                        runGiftLoop([...prizes, giftGame.surprisePrize], drawnPrize.id, 2, finishGiftDraw);
+                    }, 1000);
+                });
+            } else {
+                runGiftLoop(prizes, drawnPrize.id, 3, finishGiftDraw);
             }
-            advance();
         }
 
         window.addEventListener('click', event => {
@@ -1324,7 +1364,8 @@
         });
         giftTrigger.addEventListener('click', event => {
             event.stopPropagation();
-            drawnPrize = readGiftResult() || drawnPrize;
+            giftState = giftGame.read();
+            drawnPrize = giftState.lastPrize;
             showGiftResult();
             openDialog(giftDialog, giftClose);
         });
@@ -1334,8 +1375,9 @@
             if (event.target === giftDialog) closeGift();
         });
         window.addEventListener('storage', event => {
-            if (event.key !== giftStorageKey || drawing) return;
-            drawnPrize = readGiftResult() || drawnPrize;
+            if (event.key !== 'jy-gzc-birthday-gift' || drawing) return;
+            giftState = giftGame.read();
+            drawnPrize = giftState.lastPrize;
             showGiftResult();
         });
         window.addEventListener('keydown', event => {
