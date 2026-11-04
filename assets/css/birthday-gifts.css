@@ -254,9 +254,6 @@
 .gift-result { min-width: 0; margin: 0; }
 .gift-result p { margin: 0 0 5px; color: var(--mint); font-size: 12px; letter-spacing: 2px; }
 .gift-result h3 { margin: 0; color: var(--berry); font-size: 23px; overflow-wrap: anywhere; }
-.gift-pool-heading { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin: 0 0 12px; }
-.gift-pool-heading h3 { margin: 0; font-size: 14px; font-weight: 600; }
-.gift-pool-heading span { color: #8b7874; font-size: 11px; }
 .gift-pool {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -353,6 +350,30 @@
 .gift-draw:hover:not(:disabled) { filter: brightness(1.05); transform: translateY(-1px); }
 .gift-draw:disabled { cursor: wait; opacity: .7; }
 .gift-status { min-height: 18px; margin: 8px 0 0; color: #8b7874; font-size: 11px; line-height: 1.6; }
+.gift-test-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(86, 57, 65, .15);
+    color: #8b7874;
+    font-size: 10px;
+    line-height: 1.4;
+}
+.gift-test-count { flex: none; }
+.gift-reset {
+    min-height: 30px;
+    padding: 5px 9px;
+    border: 1px solid rgba(73, 141, 128, .25);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, .6);
+    color: var(--mint);
+    font: inherit;
+    cursor: pointer;
+}
+.gift-reset:hover { background: #edf5ed; }
 @media (max-width: 680px) {
     .birthday-actions { gap: 2px; }
     .birthday-actions > button { width: 146px; height: 124px; flex-shrink: 1; }
@@ -376,15 +397,14 @@
     .gift-card-surprise { min-height: 44px; }
     .gift-card-number { font-size: 11px; }
     .gift-card-name { font-size: 13px; }
-    .gift-pool-heading { margin-bottom: 10px; }
     .gift-pool { gap: 8px; }
     .gift-draw { min-height: 44px; margin-top: 14px; padding: 10px 14px; font-size: 14px; }
     .gift-status { font-size: 10px; }
 }
 @media (max-height: 560px) {
     .gift-dialog { --gift-dialog-gap: 12px; }
-    .gift-paper { --gift-hero-height: 88px; }
-    .gift-content { padding-top: 18px; }
+    .gift-paper { --gift-hero-height: 82px; }
+    .gift-content { padding-top: 16px; }
     .gift-footer { padding-bottom: 12px; }
     .gift-kicker { display: none; }
     .gift-hero::before { width: 84px; height: 84px; }
@@ -392,6 +412,7 @@
     .gift-card { min-height: 64px; }
     .gift-paper.has-surprise .gift-card:not(.gift-card-surprise) { min-height: 44px; }
     .gift-card-surprise { min-height: 36px; padding-block: 4px; }
+    .gift-test-controls { margin-top: 4px; padding-top: 3px; }
 }
 @media (prefers-reduced-motion: reduce) {
     .gift-trigger, .gift-paper, .gift-paper.is-drawing .gift-hero .gift-box,

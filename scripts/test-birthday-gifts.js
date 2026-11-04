@@ -134,4 +134,46 @@ check('updating the pool or version starts a new round', () => {
     assert.equal(create(renamed, storage).read().history.length, 0);
 });
 
+check('reset clears all three draws and permits repeating the surprise', () => {
+    const storage = memoryStorage();
+    const game = create(config, storage);
+    for (let cycle = 0; cycle < 3; cycle++) {
+        const reset = game.reset();
+        assert.equal(reset.history.length, 0);
+        assert.equal(reset.lastPrize, null);
+        assert.equal(reset.surpriseUnlocked, false);
+        assert.equal(create(config, storage).read().remaining, 3);
+        game.draw(() => 0);
+        game.draw(() => .5);
+        assert.equal(game.draw().prize.id, 'gift-07');
+    }
+});
+
+check('other open pages accept the lower count after a reset', () => {
+    const storage = memoryStorage();
+    const first = create(config, storage);
+    const second = create(config, storage);
+    first.draw(() => 0);
+    first.draw(() => 0);
+    first.draw();
+    assert.equal(second.read().history.length, 3);
+    first.reset();
+    assert.equal(second.read().history.length, 0);
+    assert.equal(second.draw(() => 0).drawNumber, 1);
+});
+
+check('reset still works if saved storage becomes unwritable', () => {
+    const storage = memoryStorage();
+    const game = create(config, storage);
+    game.draw(() => 0);
+    game.draw(() => 0);
+    game.draw();
+    storage.setItem = () => { throw new Error('Storage full'); };
+    assert.equal(game.reset().history.length, 0);
+    assert.equal(game.read().history.length, 0);
+    assert.equal(game.draw(() => 0).drawNumber, 1);
+    assert.equal(game.draw(() => 0).drawNumber, 2);
+    assert.equal(game.draw().prize.id, 'gift-07');
+});
+
 console.log(`${checks} birthday gift checks passed.`);

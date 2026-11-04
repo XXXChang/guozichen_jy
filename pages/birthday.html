@@ -864,7 +864,7 @@
             .cake-dock, .celebration-panel, .cake-scene { transition-duration: 0.01ms !important; }
         }
     </style>
-    <link rel="stylesheet" href="../assets/css/birthday-gifts.css?v=20261104-third-surprise">
+    <link rel="stylesheet" href="../assets/css/birthday-gifts.css?v=20261104-six-second-surprise">
 </head>
 <body>
     <canvas id="fallingHearts" aria-hidden="true"></canvas>
@@ -965,23 +965,23 @@
                         <h3 id="giftResultName"></h3>
                     </div>
                 </div>
-                <section class="gift-pool-section" aria-labelledby="giftPoolTitle">
-                    <div class="gift-pool-heading">
-                        <h3 id="giftPoolTitle">生日礼物清单</h3>
-                        <span id="giftPoolCount"></span>
-                    </div>
+                <section class="gift-pool-section" aria-label="可抽取的礼物">
                     <ul id="giftPool" class="gift-pool"></ul>
                 </section>
             </div>
             <div class="gift-footer">
                 <button id="giftDraw" class="gift-draw" type="button">拆开生日礼物</button>
                 <p id="giftStatus" class="gift-status" role="status" aria-live="polite">每一份礼物，都藏着一份心意。</p>
+                <div class="gift-test-controls">
+                    <span id="giftTestCount" class="gift-test-count" role="status">已抽 0 / 3 次</span>
+                    <button id="giftReset" class="gift-reset" type="button">测试：重置抽奖次数</button>
+                </div>
             </div>
         </article>
     </div>
 
     <script src="../assets/data/birthday-gifts.js?v=20261104-third-surprise"></script>
-    <script src="../assets/js/birthday-gifts.js?v=20261104-third-surprise"></script>
+    <script src="../assets/js/birthday-gifts.js?v=20261104-six-second-surprise"></script>
     <script>
     (function () {
         const canvas = document.getElementById('fallingHearts');
@@ -1068,6 +1068,8 @@
         const giftResultLabel = document.getElementById('giftResultLabel');
         const giftResultName = document.getElementById('giftResultName');
         const giftStatus = document.getElementById('giftStatus');
+        const giftReset = document.getElementById('giftReset');
+        const giftTestCount = document.getElementById('giftTestCount');
         const giftConfig = window.BIRTHDAY_GIFTS || { version: '', prizes: [] };
         let giftStorage;
         try { giftStorage = window.localStorage; } catch { /* 无存储权限时在本次打开中保留进度。 */ }
@@ -1083,6 +1085,7 @@
         let drawnPrize = giftState.lastPrize;
         let drawing = false;
         let giftTimer = null;
+        let activeGiftRound = 0;
         function addGiftCard(prize, index, surprise = false) {
             if (giftCards.has(prize.id)) return giftCards.get(prize.id);
             const card = document.createElement('li');
@@ -1105,8 +1108,14 @@
         }
         prizes.forEach((prize, index) => addGiftCard(prize, index));
 
-        function updateGiftPoolCount() {
-            document.getElementById('giftPoolCount').textContent = `${giftCards.size} 份惊喜`;
+        function updateGiftTestCount() {
+            giftTestCount.textContent = `已抽 ${giftState.history.length} / ${giftGame.maxDraws} 次`;
+        }
+
+        function removeSurprise() {
+            giftCards.get(giftGame.surprisePrize.id)?.remove();
+            giftCards.delete(giftGame.surprisePrize.id);
+            giftPaper.classList.remove('has-surprise', 'is-surprise-reveal');
         }
 
         function revealSurprise(animate = false) {
@@ -1114,7 +1123,6 @@
             const card = addGiftCard(giftGame.surprisePrize, prizes.length, true);
             giftPaper.classList.add('has-surprise');
             if (!animate) card.classList.add('without-entrance');
-            updateGiftPoolCount();
             if (animate && !alreadyVisible) {
                 giftPaper.classList.add('is-surprise-reveal');
                 giftStatus.textContent = '咦，怎么多出了一份礼物…';
@@ -1126,7 +1134,8 @@
 
         function showGiftResult() {
             if (giftState.surpriseUnlocked) revealSurprise();
-            updateGiftPoolCount();
+            else removeSurprise();
+            updateGiftTestCount();
             giftPaper.classList.remove('is-surprise-reveal');
             giftPaper.classList.toggle('is-revealed', Boolean(drawnPrize));
             giftResult.hidden = !drawnPrize;
@@ -1277,8 +1286,23 @@
         }
 
         function closeGift() {
-            if (drawing) finishGiftDraw(false);
+            // 第三次的六秒悬念会继续计时，关闭重开也不会提前揭晓。
+            if (drawing && !giftState.surpriseUnlocked) finishGiftDraw(false);
             closeDialog(giftDialog);
+        }
+
+        function resetGiftDraw() {
+            activeGiftRound++;
+            window.clearTimeout(giftTimer);
+            giftTimer = null;
+            drawing = false;
+            giftState = giftGame.reset();
+            drawnPrize = null;
+            giftPaper.classList.remove('is-drawing', 'is-revealed');
+            giftPool.setAttribute('aria-busy', 'false');
+            showGiftResult();
+            giftPaper.querySelector('.gift-content').scrollTop = 0;
+            giftStatus.textContent = '已重置为 0 次，可以重新测试抽奖。';
         }
 
         function setActiveGift(id) {
@@ -1302,6 +1326,23 @@
             advance();
         }
 
+        function waitForSurprise(onComplete) {
+            const round = activeGiftRound;
+            const revealAt = performance.now() + 6000;
+            let step = 0;
+            function advance() {
+                if (round !== activeGiftRound) return;
+                const remaining = revealAt - performance.now();
+                if (remaining <= 0) {
+                    onComplete();
+                    return;
+                }
+                if (!reduced) setActiveGift(prizes[step++ % prizes.length].id);
+                giftTimer = window.setTimeout(advance, Math.min(90, remaining));
+            }
+            advance();
+        }
+
         function drawGift() {
             if (drawing || !prizes.length) return;
             const outcome = giftGame.draw();
@@ -1313,7 +1354,9 @@
                 return;
             }
             drawnPrize = outcome.prize;
+            activeGiftRound++;
             drawing = true;
+            updateGiftTestCount();
             giftResult.hidden = true;
             giftPaper.classList.remove('is-revealed', 'is-surprise-reveal');
             giftCards.forEach(card => card.classList.remove('is-winner', 'is-active'));
@@ -1322,20 +1365,21 @@
             giftStatus.textContent = '礼物正在悄悄打开…';
             giftPaper.classList.add('is-drawing');
             giftPool.setAttribute('aria-busy', 'true');
-            if (reduced) {
-                if (outcome.isSurprise) revealSurprise();
-                finishGiftDraw();
-                return;
-            }
             if (outcome.isSurprise) {
-                // 先照常转过六格，再让第七份礼物突然进入奖池。
-                runGiftLoop(prizes, prizes[prizes.length - 1].id, 1, () => {
-                    revealSurprise(true);
+                // 从第三次点击开始等待六秒，期间只轮转原来的六格。
+                waitForSurprise(() => {
+                    revealSurprise(!reduced);
+                    if (reduced) {
+                        finishGiftDraw();
+                        return;
+                    }
                     setActiveGift(giftGame.surprisePrize.id);
                     giftTimer = window.setTimeout(() => {
                         runGiftLoop([...prizes, giftGame.surprisePrize], drawnPrize.id, 2, finishGiftDraw);
                     }, 1000);
                 });
+            } else if (reduced) {
+                finishGiftDraw();
             } else {
                 runGiftLoop(prizes, drawnPrize.id, 3, finishGiftDraw);
             }
@@ -1364,13 +1408,16 @@
         });
         giftTrigger.addEventListener('click', event => {
             event.stopPropagation();
-            giftState = giftGame.read();
-            drawnPrize = giftState.lastPrize;
-            showGiftResult();
+            if (!drawing) {
+                giftState = giftGame.read();
+                drawnPrize = giftState.lastPrize;
+                showGiftResult();
+            }
             openDialog(giftDialog, giftClose);
         });
         giftClose.addEventListener('click', closeGift);
         giftDraw.addEventListener('click', drawGift);
+        giftReset.addEventListener('click', resetGiftDraw);
         giftDialog.addEventListener('click', event => {
             if (event.target === giftDialog) closeGift();
         });
