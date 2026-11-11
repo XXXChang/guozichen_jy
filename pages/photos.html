@@ -480,6 +480,7 @@
 
     <!-- 背景飘落爱心 -->
     <script src="../assets/data/memories.js"></script>
+    <script src="../assets/data/story.js"></script>
     <script>
     (function () {
         const canvas = document.createElement('canvas');
@@ -655,6 +656,7 @@
         const data = window.MEMORY_DATA || { albums: [], photos: [], events: [] };
         const photoById = new Map(data.photos.map(photo => [photo.id, photo]));
         const eventById = new Map(data.events.map(event => [event.id, event]));
+        const storyNodeById = new Map((window.STORY_DATA?.nodes || []).map(node => [node.id, node]));
         const albums = data.albums.map(album => ({
             ...album,
             photos: album.photoIds
@@ -997,7 +999,7 @@
             lightboxPhoto.src = resolvePhotoSrc(photo.src);
             lightboxPhoto.alt = photo.alt;
             lightboxCaption.textContent = `${formatDate(photo.date)} · ${pad(photoIndex + 1)} / ${pad(album.photos.length)}`;
-            const linkedEvent = photo.eventId && eventById.get(photo.eventId);
+            const linkedEvent = photo.eventId && storyNodeById.get(photo.eventId);
             lightboxStoryLink.hidden = !linkedEvent;
             if (linkedEvent) {
                 lightboxStoryLink.href = `story.html?event=${encodeURIComponent(linkedEvent.id)}`;
@@ -1087,7 +1089,7 @@
 
         function openFromUrl() {
             const params = new URLSearchParams(window.location.search);
-            const requestedEvent = eventById.get(params.get('event'));
+            const requestedEvent = storyNodeById.get(params.get('event')) || eventById.get(params.get('event'));
             let requestedPhoto = photoById.get(params.get('photo'));
             let requestedAlbum = albumById.get(params.get('album'));
 

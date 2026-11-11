@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>纪念日详情</title>
     <script src="../assets/data/memories.js"></script>
+    <script src="../assets/data/story.js"></script>
     <style>
         body {
             margin: 0;
@@ -741,6 +742,7 @@
     <script>
         // ============== 纪念日卡片 ==============
         const memoryData = window.MEMORY_DATA || { meta: {}, events: [] };
+        const storyNodeIds = new Set((window.STORY_DATA?.nodes || []).map(node => node.id));
         const relationshipStart = memoryData.meta.relationshipStart || '2026-09-12';
         const firstMet = memoryData.meta.firstMet || '2025-11-08';
         const displayDate = value => value.replaceAll('-', '.');
@@ -760,7 +762,7 @@
         document.getElementById('meetYear').textContent = daysToNextAnniversary(firstMet);
 
         // ============== 日历 ==============
-        // 事件数据来自全站唯一数据源 assets/data/memories.js。
+        // 日历事件来自 assets/data/memories.js；故事线节点在 assets/data/story.js 独立维护。
         // 事件支持两种形式：
         //   1) 单日：{ date: "2026-10-01", name, tag, type }
         //   2) 区间：{ startDate: "2026-10-01", endDate: "2026-10-03", name, tag, type }
@@ -804,7 +806,6 @@
                     name: e.title || e.name || '未命名事件',
                     tag: e.tag || '事件',
                     type,
-                    story: Boolean(e.story),
                     description: e.description || '',
                     location: e.location || '',
                     photoIds: Array.isArray(e.photoIds) ? e.photoIds : [],
@@ -1058,7 +1059,7 @@
         // ============== 事件详情 Modal（覆盖式） ==============
         function renderEventActions(event) {
             const links = [];
-            if (event.story && event.id) {
+            if (storyNodeIds.has(event.id)) {
                 links.push(`<a class="event-link" href="story.html?event=${encodeURIComponent(event.id)}">查看故事</a>`);
             }
             if (event.albumIds.length > 0) {

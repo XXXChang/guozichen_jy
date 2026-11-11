@@ -6,6 +6,7 @@
     <meta name="theme-color" content="#e7ecef">
     <title>2026 · 属于我们的回忆 | JY_GZC</title>
     <script src="../assets/data/memories.js"></script>
+    <script src="../assets/data/story.js"></script>
     <script>document.documentElement.classList.add('js');</script>
     <style>
         :root {
@@ -492,7 +493,7 @@
     </div>
 
     <script>
-    // ============== 故事节点渲染（全站统一数据源） ==============
+    // ============== 故事节点渲染（独立于日历事件） ==============
     (function () {
         const timeline = document.getElementById('storyline');
         const progress = timeline.querySelector('.timeline-progress');
@@ -507,31 +508,17 @@
         const detailAlbums = document.getElementById('detailAlbums');
         const pageNav = document.querySelector('.page-nav');
         const pageMain = document.querySelector('main');
-        const data = window.MEMORY_DATA || { events: [], photos: [], albums: [] };
-        const events = data.events.filter(event => event.story === true);
-        const photosById = new Map(data.photos.map(photo => [photo.id, photo]));
-        const albumsById = new Map(data.albums.map(album => [album.id, album]));
+        const events = window.STORY_DATA?.nodes || [];
+        // 仅复用相册资源目录，节点和日期不从日历事件读取。
+        const media = window.MEMORY_DATA || { photos: [], albums: [] };
+        const photosById = new Map(media.photos.map(photo => [photo.id, photo]));
+        const albumsById = new Map(media.albums.map(album => [album.id, album]));
         const eventsById = new Map(events.map(event => [event.id, event]));
         const articlesById = new Map();
         let lastFocused = null;
 
-        function fmtDate(iso) {
-            const [y, m, d] = iso.split('-');
-            return { full: `${y}.${m}.${d}`, short: `${m}.${d}` };
-        }
-
         function fmtLabel(ev) {
-            if (ev.date) {
-                return { text: fmtDate(ev.date).full, datetime: ev.date };
-            }
-            const s = fmtDate(ev.startDate);
-            const e = fmtDate(ev.endDate || ev.startDate);
-            const [sy, sm] = ev.startDate.split('-');
-            const [ey, em] = (ev.endDate || ev.startDate).split('-');
-            const text = (sy === ey && sm === em)
-                ? `${s.full} - ${e.short}`
-                : (sy === ey ? `${s.full} - ${e.short}` : `${s.full} - ${e.full}`);
-            return { text, datetime: ev.startDate };
+            return { text: ev.date.replaceAll('-', '.'), datetime: ev.date };
         }
 
         function hasDetails(event) {

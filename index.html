@@ -901,6 +901,7 @@
     </script>
 
     <script src="assets/data/memories.js"></script>
+    <script src="assets/data/story.js"></script>
     <script src="assets/js/utils.js"></script>
     <script>
         // 打字机
@@ -977,7 +978,7 @@
         document.getElementById('albumEntryMeta').textContent =
             `${memoryData.albums?.length || 0} 个分类 · ${memoryData.photos?.length || 0} 张照片`;
         document.getElementById('storyEntryMeta').textContent =
-            `${(memoryData.events || []).filter(event => event.story).length} 个时间节点`;
+            `${window.STORY_DATA?.nodes.length || 0} 个时间节点`;
         animateNumber(daysElement, daysSince);
 
         const reminderWindow = memoryData.meta?.reminderWindowDays ?? 30;

@@ -84,7 +84,7 @@ data.photos = [
     ...albumPhotos
 ];
 
-const output = '// 全站唯一内容数据源：日历、故事线、相册和主页共同读取此文件。\n' +
+const output = '// 日历事件与相册数据源；故事线节点独立维护在 assets/data/story.js。\n' +
     `window.MEMORY_DATA = Object.freeze(${JSON.stringify(data, null, 4)});\n`;
 
 fs.writeFileSync(dataPath, output, 'utf8');
